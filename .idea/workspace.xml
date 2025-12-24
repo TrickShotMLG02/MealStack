@@ -1,24 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b55c4080-c55d-4f00-a141-bd1f0d3b403a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/MealStack.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+    <list default="true" id="b55c4080-c55d-4f00-a141-bd1f0d3b403a" name="Changes" comment="initial django setup">
+      <change afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MealStack/settings/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MealStack/settings/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/common/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/common/logging.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/admin/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/admin/ingredient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/admin/recipe.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/admin/tag.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/admin/unit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/importers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/importers/base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/importers/chefkoch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/importers/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/ingredient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/nutrition.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/recipe.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/recipe_ingredient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/recipe_step.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/tag.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/models/unit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/selectors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/services/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/services/conversions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/services/matching.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/services/nutrition.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/signals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/tasks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/tests/test_conversions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/tests/test_importers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/recipes/tests/test_nutrition.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/users/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/admin/custom.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/admin/base_site.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/recipes/recipe_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MealStack.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MealStack.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="CSS File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "TrickShotMLG02"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/TrickShotMLG02/MealStack.git",
+    "accountId": "5c32eaa6-75df-4884-ac96-8ba06c3ab881"
+  }
+}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 7
 }]]></component>
@@ -29,17 +85,26 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
     "git-widget-placeholder": "master",
+    "list.type.of.created.stylesheet": "CSS",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/recipes" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="MealStack" type="Python.DjangoServer" factoryName="Django server">
       <module name="MealStack" />
@@ -82,12 +147,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1766593309404</updated>
-      <workItem from="1766593310426" duration="128000" />
+      <workItem from="1766593310426" duration="1893000" />
     </task>
+    <task id="LOCAL−00001" summary="initial django setup">
+      <option name="closed" value="true" />
+      <created>1766593567080</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1766593567080</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial commit" />
+    <MESSAGE value="initial django setup" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial django setup" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
