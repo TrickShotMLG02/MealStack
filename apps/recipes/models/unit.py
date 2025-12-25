@@ -1,6 +1,6 @@
 from django.db import models
 
-from recipes.constants import UnitType
+from apps.recipes import UnitType
 
 
 class Unit(models.Model):
