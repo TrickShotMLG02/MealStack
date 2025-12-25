@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition
+from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag
 
 
 # Inline for ingredients
@@ -23,9 +23,14 @@ class RecipeNutritionInline(admin.StackedInline):
     max_num = 1
     extra = 0
 
+# Inline for tags
+class RecipeTagsInline(admin.TabularInline):
+    model = RecipeTag
+    extra = 1
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['title', 'servings', 'status', 'source', 'created_at']
     list_filter = ['status', 'created_at']
     search_fields = ['title', 'source']
-    inlines = [RecipeIngredientInline, RecipeStepInline, RecipeNutritionInline]
+    inlines = [RecipeIngredientInline, RecipeStepInline, RecipeNutritionInline, RecipeTagsInline]
