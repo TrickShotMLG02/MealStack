@@ -11,6 +11,9 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MealStack.settings')
+# Load settings from .env
+import MealStack.settings.settings_selector  # noqa: F401
+
+#os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MealStack.settings')
 
 application = get_wsgi_application()
