@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from apps.recipes.models import (
     Ingredient, Unit, Recipe, RecipeIngredient, RecipeStep, Tag, RecipeNutrition
@@ -50,5 +51,16 @@ class Command(BaseCommand):
         # Update nutrition using your service
         self.stdout.write("Calculating recipe nutrition...")
         update_recipe_nutrition(cake)
+
+        # Seed admin user
+        self.stdout.write("Seeding superuser...")
+        User = get_user_model()
+        if not User.objects.filter(username="admin").exists():
+            User.objects.create_superuser(
+                username="admin",
+                email="admin@example.com",
+                password="admin"
+            )
+            self.stdout.write(self.style.SUCCESS("Superuser 'admin' created."))
 
         self.stdout.write(self.style.SUCCESS("✅ Test data seeded successfully."))
