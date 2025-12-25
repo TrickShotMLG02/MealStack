@@ -1,11 +1,13 @@
 from django.db import models
 
+from recipes.constants import UnitType
+
 
 class Unit(models.Model):
     TYPE_CHOICES = [
-        ('weight', 'Weight'),
-        ('volume', 'Volume'),
-        ('count', 'Count'),
+        (UnitType.WEIGHT, 'Weight'),
+        (UnitType.VOLUME, 'Volume'),
+        (UnitType.COUNT, 'Count'),
     ]
 
     name = models.CharField(max_length=50, unique=True)

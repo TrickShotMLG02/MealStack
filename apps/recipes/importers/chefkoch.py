@@ -8,6 +8,8 @@ from apps.recipes.models import (
     Ingredient, Unit, Tag
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
+from ..constants import MeasurementUnitType
+
 
 class ChefkochImporter(BaseRecipeImporter):
     """
@@ -27,8 +29,20 @@ class ChefkochImporter(BaseRecipeImporter):
         "tl": "ml",   # teaspoon
         "el": "ml",   # tablespoon
         "cup": "ml",
-        "stück": "count",
-        "": "count",
+        "stück": "pcs",
+        "": "pcs",
+    }
+
+    UNIT_MAP = {
+        "g": MeasurementUnitType.GRAM,
+        "kg": MeasurementUnitType.KILOGRAM,
+        "ml": MeasurementUnitType.MILLILITER,
+        "l": MeasurementUnitType.LITER,
+        "tl": MeasurementUnitType.TEASPOON,
+        "el": MeasurementUnitType.TABLESPOON,
+        "cup": MeasurementUnitType.CUP,
+        "stück": MeasurementUnitType.PIECE,
+        "": MeasurementUnitType.NOT_FOUND,
     }
 
     def import_recipe(self) -> Recipe:
@@ -105,6 +119,9 @@ class ChefkochImporter(BaseRecipeImporter):
             quantity = 1
             unit = ""
             name = text
+
+        name = self.normalize_ingredient_name(name)
+        unit = unit.rstrip(",.;:!? ")
 
         # TODO: Convert EL to ml ect
         return quantity, unit, name

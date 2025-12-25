@@ -18,17 +18,18 @@
 import os
 import django
 
-# 1️⃣ Set the settings module
+# Set the settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MealStack.settings.dev")  # or prod
 
-# 2️⃣ Initialize Django
+# Initialize Django
 django.setup()
 
-# 3️⃣ Now you can import models and importers safely
+# Now you can import models and importers safely
 from apps.recipes.importers.chefkoch import ChefkochImporter
 
 def main():
     url = "https://www.chefkoch.de/rezepte/3520631525089100/Tomaten-Kaesesauce-mit-Fleischwurst.html?portionen=4"
+    url = "https://www.chefkoch.de/rezepte/2651801416564525/Karamellisierte-Balsamicozwiebeln.html?portionen=2"
 
     importer = ChefkochImporter(url)
 

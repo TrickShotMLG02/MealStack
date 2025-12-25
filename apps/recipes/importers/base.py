@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 from apps.recipes.models import Recipe
 
@@ -12,6 +13,33 @@ class BaseRecipeImporter(ABC):
         Import a recipe from the given URL and return the Recipe object.
         """
         pass
+
+    @staticmethod
+    def normalize_ingredient_name(name: str) -> str:
+        """
+        Normalize ingredient name for lookup:
+        - Remove parentheses for plurals like Ei(er) or Egg(s)
+        """
+        name = name.strip()
+
+        # Remove content inside parentheses
+        name = re.sub(r"\(.*?\)", "", name).strip()
+
+        return name
+
+    @staticmethod
+    def normalize_quantity(quantity: float, scraped_unit: str, ingredient_density: float | None = None):
+        """
+        Convert quantity to base units:
+          - weight in grams
+          - volume in ml
+          - count stays as-is
+
+        ingredient_density: grams per ml for volume->weight conversion
+        """
+        # TODO: Implement this
+
+        raise NotImplementedError("Not yet implemented")
 
     @staticmethod
     def normalize_ingredient(text: str):
