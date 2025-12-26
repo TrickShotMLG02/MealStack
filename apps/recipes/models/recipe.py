@@ -33,6 +33,8 @@ class Recipe(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        from apps.recipes.services.nutrition import update_recipe_nutrition
+        update_recipe_nutrition(self)
 
     def __str__(self):
         return self.title
