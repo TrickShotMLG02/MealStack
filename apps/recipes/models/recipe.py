@@ -19,6 +19,13 @@ class Recipe(models.Model):
     cooking_time = models.DurationField(null=True, blank=True)
     resting_time = models.DurationField(null=True, blank=True)
 
+    cuisine = models.ForeignKey(
+        'Cuisine',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     source = models.URLField(blank=True, null=True)
     author = models.CharField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')

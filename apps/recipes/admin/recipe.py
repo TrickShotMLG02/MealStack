@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
-from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup, RecipeNote, RecipeImage
+from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup, RecipeNote, RecipeImage, Cuisine
 
 
 # Nested Inline for ingredients
@@ -87,9 +87,9 @@ class RecipeAdmin(NestedModelAdmin):
     primary_image_preview.short_description = "Primary Image"
 
 
-    list_display = ['title', 'primary_image_preview', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'status']
-    list_filter = ['status', 'created_at']
-    search_fields = ['title', 'source']
+    list_display = ['title', 'primary_image_preview', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'updated_at', 'status']
+    list_filter = ['status', 'created_at', 'cuisine',]
+    search_fields = ['title', 'source',]
     inlines = [
         RecipeImageInline,
         RecipeIngredientGroupInline,

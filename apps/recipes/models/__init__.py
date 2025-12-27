@@ -1,6 +1,7 @@
 from .ingredient import *
 from .recipe_ingredient_group import *
 from .unit import *
+from .cuisine import *
 from .tag import *
 from .recipe import *
 from .recipe_tag import *
