@@ -22,14 +22,14 @@ Expected context:
 
         {% if images|length > 1 %}
         <!-- Navigation arrows inside image wrapper -->
-        <button class="carousel-prev" style="position:absolute; top:50%; left:0; transform:translateY(-50%); font-size:2em; background:none; border:none; cursor:pointer;">❮</button>
-        <button class="carousel-next" style="position:absolute; top:50%; right:0; transform:translateY(-50%); font-size:2em; background:none; border:none; cursor:pointer;">❯</button>
+        <button class="carousel-prev">❮</button>
+        <button class="carousel-next">❯</button>
         {% endif %}
     </div>
 
     {% if images|length > 1 %}
     <!-- Dots outside the image container -->
-    <div class="carousel-dots" style="text-align:center; margin-top:5px;">
+    <div class="carousel-dots">
         {% for image in images %}
         <span class="dot"></span>
         {% endfor %}
