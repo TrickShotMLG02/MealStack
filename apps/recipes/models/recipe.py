@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
 from apps.common.text_formatting import slugify
@@ -10,7 +12,13 @@ STATUS_CHOICES = [
 class Recipe(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
+
     servings = models.PositiveIntegerField(default=1)
+
+    preparation_time = models.DurationField(null=True, blank=True)
+    cooking_time = models.DurationField(null=True, blank=True)
+    resting_time = models.DurationField(null=True, blank=True)
+
     source = models.URLField(blank=True, null=True)
     author = models.CharField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
@@ -32,9 +40,39 @@ class Recipe(models.Model):
         blank=True
     )
 
+    @property
+    def total_time(self):
+        return (
+                (self.preparation_time or timedelta())
+                + (self.cooking_time or timedelta())
+                + (self.resting_time or timedelta())
+        )
+
+
+    def total_time_display(self):
+        """
+        Optional: format for admin display
+        """
+        total = self.total_time
+        # return as HH:MM
+        hours = total.total_seconds() // 3600
+        minutes = (total.total_seconds() % 3600) // 60
+        return f"{int(hours)}h {int(minutes)}m" if hours else f"{int(minutes)}m"
+
+    total_time_display.short_description = "Total Time"
+
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        if not self.preparation_time:
+            self.preparation_time = timedelta(seconds=0)
+        if not self.cooking_time:
+            self.cooking_time = timedelta(seconds=0)
+        if not self.resting_time:
+            self.resting_time = timedelta(seconds=0)
+
         super().save(*args, **kwargs)
         from apps.recipes.services.nutrition import update_recipe_nutrition
         update_recipe_nutrition(self)

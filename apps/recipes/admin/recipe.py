@@ -50,7 +50,7 @@ class RecipeTagsInline(NestedTabularInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(NestedModelAdmin):
-    list_display = ['title', 'servings', 'status', 'source', 'author', 'created_at']
+    list_display = ['title', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'status']
     list_filter = ['status', 'created_at']
     search_fields = ['title', 'source']
     inlines = [

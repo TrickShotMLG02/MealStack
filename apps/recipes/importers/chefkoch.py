@@ -1,5 +1,6 @@
 import json
 import re
+from datetime import timedelta
 
 from recipe_scrapers import scrape_me
 from .base import BaseRecipeImporter
@@ -65,6 +66,7 @@ class ChefkochImporter(BaseRecipeImporter):
         recipe = Recipe.objects.create(
             title=title,
             servings=servings,
+            preparation_time=timedelta(minutes=self.scraper.prep_time()),
             status="draft",
             source=self.url,
             author=self.scraper.author(),
