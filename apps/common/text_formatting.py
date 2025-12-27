@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import django.utils.text
 
 GERMAN_CHAR_MAP = {
@@ -26,3 +28,13 @@ def slugify(text: str) -> str:
     normalized_text = normalize_german(text)
 
     return django.utils.text.slugify(normalized_text)
+
+def time_formatting(delta: timedelta) -> str:
+    """
+    Uses timedelta to format the total time
+    :param delta: The timedelta to format into a string
+    :return: The formatted string i.e. 3h 15m
+    """
+    hours = delta.total_seconds() // 3600
+    minutes = (delta.total_seconds() % 3600) // 60
+    return f"{int(hours)}h {int(minutes)}m" if hours else f"{int(minutes)}m"
