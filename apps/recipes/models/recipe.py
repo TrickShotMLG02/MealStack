@@ -80,9 +80,10 @@ class Recipe(models.Model):
         if not self.resting_time:
             self.resting_time = timedelta(seconds=0)
 
-        super().save(*args, **kwargs)
         from apps.recipes.services.nutrition import update_recipe_nutrition
         update_recipe_nutrition(self)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
