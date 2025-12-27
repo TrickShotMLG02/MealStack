@@ -9,7 +9,7 @@ from apps.recipes.models import (
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
 from ..constants import MeasurementUnitType
-from ..models import IngredientGroup
+from ..models import RecipeIngredientGroup, RecipeStepGroup
 
 
 class ChefkochImporter(BaseRecipeImporter):
@@ -71,13 +71,19 @@ class ChefkochImporter(BaseRecipeImporter):
         )
 
         # Add Steps
+        step_group = RecipeStepGroup.objects.create(
+            recipe=recipe,
+            order=0,
+        )
+
         for i, step_text in enumerate(self.scraper.instructions_list(), start=1):
             step_text = step_text.strip()
             if step_text:
                 RecipeStep.objects.create(
-                    recipe=recipe,
+                    #recipe=recipe,
                     order=i,
-                    description=step_text
+                    description=step_text,
+                    group=step_group,
                 )
 
         # Add Ingredients
@@ -86,7 +92,7 @@ class ChefkochImporter(BaseRecipeImporter):
         for i, group in enumerate(ingredient_groups):
             group_name = group.purpose
             group_ingredients = group.ingredients
-            ingredient_group = IngredientGroup.objects.create(
+            ingredient_group = RecipeIngredientGroup.objects.create(
                 recipe=recipe,
                 name=group_name,
                 order=i,

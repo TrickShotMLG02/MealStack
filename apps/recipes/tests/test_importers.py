@@ -39,7 +39,7 @@ def main():
     recipe = importer.import_recipe()
     print(recipe.title)
 
-    for rig in recipe.ingredientgroup_set.all():
+    for rig in recipe.recipeingredientgroup_set.all():
         print(rig)
         for ri in rig.recipeingredient_set.all():
             print(f"{ri.quantity} {ri.unit.name} {ri.ingredient.name}")

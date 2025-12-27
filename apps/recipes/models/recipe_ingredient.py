@@ -6,7 +6,7 @@ class RecipeIngredient(models.Model):
     quantity = models.FloatField()
     unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
 
-    group = models.ForeignKey('IngredientGroup', on_delete=models.CASCADE, null=True, blank=True)
+    group = models.ForeignKey('RecipeIngredientGroup', on_delete=models.CASCADE, null=True, blank=True)
 
     order = models.PositiveIntegerField(default=0)  # optional for display ordering
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-class IngredientGroup(models.Model):
+class RecipeStepGroup(models.Model):
     recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)  # e.g., "Salad", "Sauce"
 
