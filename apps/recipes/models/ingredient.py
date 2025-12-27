@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.text import slugify
+from apps.common.text_formatting import slugify
 
 
 class Ingredient(models.Model):
@@ -14,6 +14,7 @@ class Ingredient(models.Model):
     carbs = models.FloatField(default=0)
     salt = models.FloatField(default=0)
 
+    # grams per ml
     density = models.FloatField(null=True, blank=True)
 
     # metadata

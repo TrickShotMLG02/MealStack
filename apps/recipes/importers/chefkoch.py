@@ -57,11 +57,16 @@ class ChefkochImporter(BaseRecipeImporter):
             if match:
                 servings = int(match.group())
 
+        # normalize title by removing "von <author>" from recipe title
+        title = str(self.scraper.title())
+        title = title.replace(f"von {self.scraper.author()}", "").strip()
+
         recipe = Recipe.objects.create(
-            title=self.scraper.title(),
+            title=title,
             servings=servings,
             status="draft",
             source=self.url,
+            author=self.scraper.author(),
         )
 
         # Add Steps

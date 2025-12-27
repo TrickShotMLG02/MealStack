@@ -1,6 +1,6 @@
 from django.db import models
-from django.utils.text import slugify
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
+from apps.common.text_formatting import slugify
 
 STATUS_CHOICES = [
     ('draft', 'Draft'),
@@ -12,6 +12,7 @@ class Recipe(models.Model):
     slug = models.SlugField(max_length=250, unique=True, blank=True)
     servings = models.PositiveIntegerField(default=1)
     source = models.URLField(blank=True, null=True)
+    author = models.CharField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -30,7 +30,7 @@ class RecipeTagsInline(admin.TabularInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'servings', 'status', 'source', 'created_at']
+    list_display = ['title', 'servings', 'status', 'source', 'author', 'created_at']
     list_filter = ['status', 'created_at']
     search_fields = ['title', 'source']
     inlines = [RecipeIngredientInline, RecipeStepInline, RecipeNutritionInline, RecipeTagsInline]

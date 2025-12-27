@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.text import slugify
+from apps.common.text_formatting import slugify
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
