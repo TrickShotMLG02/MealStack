@@ -30,7 +30,7 @@ from apps.recipes.importers.chefkoch import ChefkochImporter
 def main():
     url = "https://www.chefkoch.de/rezepte/3520631525089100/Tomaten-Kaesesauce-mit-Fleischwurst.html?portionen=4"
     #url = "https://www.chefkoch.de/rezepte/2651801416564525/Karamellisierte-Balsamicozwiebeln.html?portionen=2"
-    url = "https://www.chefkoch.de/rezepte/1120311218283565/Apfel-Quark-Kuchen-mit-Zucker-und-Zimt.html"
+    #url = "https://www.chefkoch.de/rezepte/1120311218283565/Apfel-Quark-Kuchen-mit-Zucker-und-Zimt.html"
 
     importer = ChefkochImporter(url)
 

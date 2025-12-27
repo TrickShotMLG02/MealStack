@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 from datetime import timedelta
 
 from recipe_scrapers import scrape_me
@@ -14,6 +15,7 @@ from apps.recipes.models import (
     RecipeIngredientGroup,
     RecipeStepGroup,
     RecipeImage,
+    Cuisine,
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
 from apps.recipes.constants import MeasurementUnitType
@@ -73,6 +75,7 @@ class ChefkochImporter(BaseRecipeImporter):
             title=title,
             servings=servings,
             preparation_time=timedelta(minutes=self.scraper.prep_time()),
+            cooking_time=timedelta(minutes=self.scraper.cook_time()),
             status="draft",
             source=self.url,
             author=self.scraper.author(),
@@ -128,12 +131,20 @@ class ChefkochImporter(BaseRecipeImporter):
         img_url = self.scraper.image()
         self.attach_image(recipe, img_url, primary=True)
 
-        # Optional: store image URL in a field if you have one
-        # recipe.image_url = scraper.image()
-        # recipe.save()
+        # Add cuisine (TODO: Scraper does not support cuisine scraping yet)
+        try:
+            cuisine_name = self.scraper.cuisine()
+            if cuisine_name:
+                cuisine = Cuisine.objects.get_or_create(name=cuisine_name)
+                recipe.cuisine = cuisine
+        except Exception as e:
+            print(e, file=sys.stderr)
+
 
         # Recalculate nutrition using your service
         update_recipe_nutrition(recipe)
+
+        recipe.save()
 
         return recipe
 
