@@ -30,6 +30,7 @@ from apps.recipes.importers.chefkoch import ChefkochImporter
 def main():
     url = "https://www.chefkoch.de/rezepte/3520631525089100/Tomaten-Kaesesauce-mit-Fleischwurst.html?portionen=4"
     #url = "https://www.chefkoch.de/rezepte/2651801416564525/Karamellisierte-Balsamicozwiebeln.html?portionen=2"
+    url = "https://www.chefkoch.de/rezepte/1120311218283565/Apfel-Quark-Kuchen-mit-Zucker-und-Zimt.html"
 
     importer = ChefkochImporter(url)
 
@@ -37,8 +38,11 @@ def main():
 
     recipe = importer.import_recipe()
     print(recipe.title)
-    for ri in recipe.recipeingredient_set.all():
-        print(f"{ri.quantity} {ri.unit.name} {ri.ingredient.name}")
+
+    for rig in recipe.ingredientgroup_set.all():
+        print(rig)
+        for ri in rig.recipeingredient_set.all():
+            print(f"{ri.quantity} {ri.unit.name} {ri.ingredient.name}")
 
 if __name__ == "__main__":
     main()

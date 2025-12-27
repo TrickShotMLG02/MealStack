@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'apps.recipes',
     'apps.common',
+
+    'nested_admin',
 ]
 
 MIDDLEWARE = [

@@ -1,14 +1,18 @@
 from apps.recipes.models import Recipe, RecipeIngredient, RecipeNutrition
 
-def update_recipe_nutrition(recipe: Recipe):
+def update_recipe_nutrition(recipe: Recipe) -> RecipeNutrition:
     """
     Calculate total and per-serving nutrition for a recipe.
     Assumes each ingredient has kcal, protein, fat, carbs, salt per 100g
     and units have grams_per_unit or density for volume conversions.
+    Supports multiple IngredientGroups per recipe.
     """
     total_kcal = total_protein = total_fat = total_carbs = total_salt = 0
 
-    ingredients = RecipeIngredient.objects.filter(recipe=recipe).select_related('ingredient', 'unit')
+    # Get all RecipeIngredient objects via groups
+    ingredients = RecipeIngredient.objects.filter(
+        group__recipe=recipe
+    ).select_related('ingredient', 'unit', 'group')
 
     for ri in ingredients:
         ingredient = ri.ingredient
@@ -49,8 +53,11 @@ def update_recipe_nutrition(recipe: Recipe):
         nutrition.per_serving_carbs = total_carbs / recipe.servings
         nutrition.per_serving_salt = total_salt / recipe.servings
     else:
-        nutrition.per_serving_kcal = nutrition.per_serving_protein = 0
-        nutrition.per_serving_fat = nutrition.per_serving_carbs = nutrition.per_serving_salt = 0
+        nutrition.per_serving_kcal = 0
+        nutrition.per_serving_protein = 0
+        nutrition.per_serving_fat = 0
+        nutrition.per_serving_carbs = 0
+        nutrition.per_serving_salt = 0
 
     nutrition.save()
     return nutrition

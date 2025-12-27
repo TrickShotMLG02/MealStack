@@ -9,6 +9,7 @@ from apps.recipes.models import (
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
 from ..constants import MeasurementUnitType
+from ..models import IngredientGroup
 
 
 class ChefkochImporter(BaseRecipeImporter):
@@ -80,17 +81,29 @@ class ChefkochImporter(BaseRecipeImporter):
                 )
 
         # Add Ingredients
-        for raw in self.scraper.ingredients():
-            quantity, unit_raw, name = self.normalize_ingredient(raw)
-            unit_name = self.UNIT_MAP.get(unit_raw.lower(), "count")
-            unit, _ = Unit.objects.get_or_create(name=unit_name)
-            ingredient, _ = Ingredient.objects.get_or_create(name=name)
-            RecipeIngredient.objects.create(
+        ingredient_groups = self.scraper.ingredient_groups()
+
+        for i, group in enumerate(ingredient_groups):
+            group_name = group.purpose
+            group_ingredients = group.ingredients
+            ingredient_group = IngredientGroup.objects.create(
                 recipe=recipe,
-                ingredient=ingredient,
-                quantity=quantity,
-                unit=unit
+                name=group_name,
+                order=i,
             )
+
+            for raw in group_ingredients:
+                quantity, unit_raw, name = self.normalize_ingredient(raw)
+                unit_name = self.UNIT_MAP.get(unit_raw.lower(), "count")
+                unit, _ = Unit.objects.get_or_create(name=unit_name)
+                ingredient, _ = Ingredient.objects.get_or_create(name=name)
+                RecipeIngredient.objects.create(
+                    #recipe=recipe,
+                    ingredient=ingredient,
+                    quantity=quantity,
+                    unit=unit,
+                    group=ingredient_group,
+                )
 
         # Add Tags (optional)
         for tag_name in self.scraper.keywords():

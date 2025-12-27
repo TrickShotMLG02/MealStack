@@ -1,19 +1,32 @@
+import nested_admin
 from django.contrib import admin
-from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag
+from nested_admin.nested import NestedTabularInline, NestedModelAdmin, NestedStackedInline, NestedTabularInline
+
+from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, IngredientGroup
 
 
-# Inline for ingredients
-class RecipeIngredientInline(admin.TabularInline):
+# Nested Inline for ingredients
+class RecipeIngredientInline(NestedTabularInline):
     model = RecipeIngredient
     extra = 1
+    fk_name = 'group'
+    autocomplete_fields = ['ingredient', 'unit']
+    fields = ['ingredient', 'quantity', 'unit', 'order']
+
+# Nested Ingredient group inline
+class IngredientGroupInline(NestedTabularInline):
+    model = IngredientGroup
+    inlines = [RecipeIngredientInline]
+    extra = 1
+    #fields = ['name', 'order']
 
 # Inline for steps
-class RecipeStepInline(admin.TabularInline):
+class RecipeStepInline(NestedTabularInline):
     model = RecipeStep
     extra = 1
 
 # Inline for nutrition (read-only)
-class RecipeNutritionInline(admin.StackedInline):
+class RecipeNutritionInline(NestedTabularInline):
     model = RecipeNutrition
     can_delete = False
     readonly_fields = [
@@ -24,13 +37,18 @@ class RecipeNutritionInline(admin.StackedInline):
     extra = 0
 
 # Inline for tags
-class RecipeTagsInline(admin.TabularInline):
+class RecipeTagsInline(NestedTabularInline):
     model = RecipeTag
     extra = 1
 
 @admin.register(Recipe)
-class RecipeAdmin(admin.ModelAdmin):
+class RecipeAdmin(NestedModelAdmin):
     list_display = ['title', 'servings', 'status', 'source', 'author', 'created_at']
     list_filter = ['status', 'created_at']
     search_fields = ['title', 'source']
-    inlines = [RecipeIngredientInline, RecipeStepInline, RecipeNutritionInline, RecipeTagsInline]
+    inlines = [
+        IngredientGroupInline,
+        RecipeStepInline,
+        RecipeNutritionInline,
+        RecipeTagsInline
+    ]

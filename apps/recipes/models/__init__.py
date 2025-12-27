@@ -1,4 +1,5 @@
 from .ingredient import *
+from .ingredient_group import *
 from .unit import *
 from .tag import *
 from .recipe import *
