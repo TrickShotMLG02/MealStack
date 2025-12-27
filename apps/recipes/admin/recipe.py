@@ -1,8 +1,7 @@
-import nested_admin
 from django.contrib import admin
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
-from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup
+from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup, RecipeNote
 
 
 # Nested Inline for ingredients
@@ -48,6 +47,11 @@ class RecipeTagsInline(NestedTabularInline):
     model = RecipeTag
     extra = 1
 
+# Inline for notes
+class RecipeNotesInline(NestedTabularInline):
+    model = RecipeNote
+    extra = 1
+
 @admin.register(Recipe)
 class RecipeAdmin(NestedModelAdmin):
     list_display = ['title', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'status']
@@ -56,6 +60,7 @@ class RecipeAdmin(NestedModelAdmin):
     inlines = [
         RecipeIngredientGroupInline,
         RecipeStepGroupInline,
+        RecipeNotesInline,
         RecipeNutritionInline,
-        RecipeTagsInline
+        RecipeTagsInline,
     ]
