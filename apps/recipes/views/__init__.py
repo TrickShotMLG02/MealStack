@@ -1,0 +1,1 @@
+from .recipe_detail_view import *

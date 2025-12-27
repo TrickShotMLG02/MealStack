@@ -19,9 +19,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from apps.recipes import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('_nested_admin/', include('nested_admin.urls')), # Here
+    path('_nested_admin/', include('nested_admin.urls')),
+    path('recipes/', include('apps.recipes.urls', namespace='recipes')),
+    path("<slug:slug>/", views.recipe_detail, name="detail"),
 ]
 
 # TODO: Only for DEV Environment
@@ -29,4 +33,9 @@ if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT,
+    )
+
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT
     )
