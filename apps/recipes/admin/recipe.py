@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from nested_admin.nested import NestedTabularInline, NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
-from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup, RecipeNote
+from apps.recipes.models import Recipe, RecipeIngredient, RecipeStep, RecipeNutrition, RecipeTag, RecipeIngredientGroup, RecipeStepGroup, RecipeNote, RecipeImage
 
 
 # Nested Inline for ingredients
@@ -52,12 +53,45 @@ class RecipeNotesInline(NestedTabularInline):
     model = RecipeNote
     extra = 1
 
+class RecipeImageInline(NestedTabularInline):
+    model = RecipeImage
+    extra = 0
+    readonly_fields = ("preview",)
+
+    fields = ("preview", "image", "caption", "is_primary", "ordering")
+
+    def preview(self, obj):
+        if not obj.image:
+            return "-"
+        return format_html(
+            '<img src="{}" style="height: 100px; object-fit: contain;" />',
+            obj.image.url,
+        )
+
 @admin.register(Recipe)
 class RecipeAdmin(NestedModelAdmin):
-    list_display = ['title', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'status']
+
+    def primary_image_preview(self, obj):
+        """
+        Returns the primary image for this recipe, or '-' if none.
+        """
+        # 'images' is the related_name on RecipeImage.foreignkey
+        primary_image = obj.recipeimage_set.filter(is_primary=True).first()
+        if primary_image and primary_image.image:
+            return format_html(
+                '<img src="{}" style="height:50px; object-fit:contain;" />',
+                primary_image.image.url
+            )
+        return "-"
+
+    primary_image_preview.short_description = "Primary Image"
+
+
+    list_display = ['title', 'primary_image_preview', 'servings', 'preparation_time', 'cooking_time', 'resting_time', 'total_time_display', 'author', 'created_at', 'status']
     list_filter = ['status', 'created_at']
     search_fields = ['title', 'source']
     inlines = [
+        RecipeImageInline,
         RecipeIngredientGroupInline,
         RecipeStepGroupInline,
         RecipeNotesInline,

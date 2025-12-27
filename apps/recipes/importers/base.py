@@ -1,6 +1,10 @@
 import re
 from abc import ABC, abstractmethod
-from apps.recipes.models import Recipe
+
+import requests
+from django.core.files.base import ContentFile
+
+from apps.recipes.models import Recipe, RecipeImage
 
 class BaseRecipeImporter(ABC):
     """
@@ -65,3 +69,17 @@ class BaseRecipeImporter(ABC):
         :return: JSON string
         """
         pass
+
+    @staticmethod
+    def attach_image(recipe, image_url, *, primary=False, ordering=0):
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+
+        filename = image_url.split("/")[-1].split("?")[0]
+
+        RecipeImage.objects.create(
+            recipe=recipe,
+            image=ContentFile(response.content, name=filename),
+            is_primary=primary,
+            ordering=ordering,
+        )

@@ -4,6 +4,7 @@ from .unit import *
 from .tag import *
 from .recipe import *
 from .recipe_tag import *
+from .recipe_image import *
 from .recipe_note import *
 from .recipe_ingredient import *
 from .recipe_step import *

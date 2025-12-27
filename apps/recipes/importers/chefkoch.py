@@ -5,12 +5,18 @@ from datetime import timedelta
 from recipe_scrapers import scrape_me
 from .base import BaseRecipeImporter
 from apps.recipes.models import (
-    Recipe, RecipeIngredient, RecipeStep,
-    Ingredient, Unit, Tag
+    Recipe,
+    RecipeIngredient,
+    RecipeStep,
+    Ingredient,
+    Unit,
+    Tag,
+    RecipeIngredientGroup,
+    RecipeStepGroup,
+    RecipeImage,
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
-from ..constants import MeasurementUnitType
-from ..models import RecipeIngredientGroup, RecipeStepGroup
+from apps.recipes.constants import MeasurementUnitType
 
 
 class ChefkochImporter(BaseRecipeImporter):
@@ -117,6 +123,10 @@ class ChefkochImporter(BaseRecipeImporter):
         for tag_name in self.scraper.keywords():
             tag, _ = Tag.objects.get_or_create(name=tag_name)
             recipe.tags.add(tag)
+
+        # Add image
+        img_url = self.scraper.image()
+        self.attach_image(recipe, img_url, primary=True)
 
         # Optional: store image URL in a field if you have one
         # recipe.image_url = scraper.image()
