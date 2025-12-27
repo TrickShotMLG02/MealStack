@@ -4,6 +4,7 @@ from django.utils.text import slugify
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=200)
+    brand = models.CharField(max_length=200, null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
 
     # nutrition
@@ -21,7 +22,7 @@ class Ingredient(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(f"{self.brand}-{self.name}" if self.brand else self.name)
         super().save(*args, **kwargs)
 
     def __str__(self):
