@@ -25,7 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),
     path('recipes/', include('apps.recipes.urls', namespace='recipes')),
-    path("<slug:slug>/", views.recipe_detail, name="detail"),
 ]
 
 # TODO: Only for DEV Environment

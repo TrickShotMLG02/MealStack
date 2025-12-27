@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}All Recipes - MealStack{% endblock %}
+
+{% block content %}
+<h1>All Recipes</h1>
+
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+    <div class="recipe-card">
+        <!-- Always show primary or placeholder -->
+        <img src="{{ recipe.primary_or_placeholder }}" alt="{{ recipe.title }}">
+
+        <h2><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
+        <p>Servings: {{ recipe.servings }}</p>
+        <p>Total time: {{ recipe.total_time_display }}</p>
+    </div>
+    {% empty %}
+    <p>No recipes available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

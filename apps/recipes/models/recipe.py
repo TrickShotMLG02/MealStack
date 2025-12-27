@@ -1,6 +1,8 @@
 from datetime import timedelta
 
 from django.db import models
+from django.templatetags.static import static
+
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
 from apps.common.text_formatting import slugify
 
@@ -67,6 +69,40 @@ class Recipe(models.Model):
         return f"{int(hours)}h {int(minutes)}m" if hours else f"{int(minutes)}m"
 
     total_time_display.short_description = "Total Time"
+
+
+    @property
+    def primary_or_placeholder(self):
+        """
+        Returns the primary image if it exists.
+        Otherwise, it returns the placeholder image.
+        """
+        primary = self.recipeimage_set.filter(is_primary=True).first()
+        if primary and primary.image:
+            return primary.image.url
+        return static('recipes/images/placeholder.jpg')
+
+    @property
+    def images_or_placeholder(self):
+        """
+        Returns a list of RecipeImage objects if they exist.
+        If no images exist, returns a list with a single dummy object
+        containing a placeholder image URL.
+        """
+        images = list(self.recipeimage_set.all().order_by('-is_primary', 'ordering'))
+        if images:
+            return images
+
+        # Create a dummy object with .image.url so carousel still works
+        class DummyImage:
+            @property
+            def image(self):
+                class ImageAttr:
+                    url = static('recipes/images/placeholder.jpg')
+
+                return ImageAttr()
+
+        return [DummyImage()]
 
 
     def save(self, *args, **kwargs):

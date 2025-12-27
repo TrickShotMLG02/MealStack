@@ -18,7 +18,7 @@
     <h1 class="recipe-title">{{ recipe.title }}</h1>
 
     <!-- Carousel -->
-    {% include "recipes/components/carousel.html" with images=images width=600 height=400 %}
+    {% include "recipes/components/carousel.html" with images=recipe.images_or_placeholder width=600 height=400 %}
 
 
     <!-- Metadata -->
