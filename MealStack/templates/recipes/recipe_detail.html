@@ -37,7 +37,7 @@
     <!-- Ingredients -->
     <section class="recipe-section">
         <h2>Ingredients</h2>
-        {% for group in recipe.ingredient_groups.all %}
+        {% for group in recipe.recipeingredientgroup_set.all %}
             <h3>{{ group.name }}</h3>
             <ul class="ingredients-list">
                 {% for ri in group.recipeingredient_set.all %}
@@ -50,7 +50,7 @@
     <!-- Steps -->
     <section class="recipe-section">
         <h2>Steps</h2>
-        {% for group in recipe.step_groups.all %}
+        {% for group in recipe.recipestepgroup_set.all %}
             <h3>{{ group.name }}</h3>
             <ol class="steps-list">
                 {% for step in group.recipestep_set.all %}
