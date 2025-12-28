@@ -8,15 +8,13 @@
     {% block extra_css %}{% endblock %}  {# page-specific CSS goes here #}
 </head>
 <body>
-    <header>
-        <h1>MealStack</h1>
-    </header>
+    {% include 'components/header.html' %}
+
     <main>
         {% block content %}{% endblock %}
     </main>
-    <footer>
-        &copy; 2025
-    </footer>
+
+    {% include 'components/footer.html' %}
 
     {% block extra_js %}{% endblock %}  {# page-specific JS goes here #}
 </body>
