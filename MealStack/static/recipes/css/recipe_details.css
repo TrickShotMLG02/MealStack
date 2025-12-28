@@ -12,7 +12,7 @@ a:hover {
     max-width: 900px;
     margin: 40px auto;
     padding: 25px 30px;
-    background: #fff;
+    background: var(--card-bg-color);
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
@@ -20,7 +20,7 @@ a:hover {
 /* Title */
 .recipe-title {
     font-size: 2.5rem;
-    color: #2c3e50;
+    color: var(--heading-color);
     margin-bottom: 15px;
 }
 
@@ -46,8 +46,8 @@ a:hover {
 
 .tag {
     display: inline-block;
-    background: #e74c3c;
-    color: #fff;
+    background: var(--accent-color);
+    color: var(--text-color);
     padding: 4px 12px;
     border-radius: 20px;
     margin-right: 5px;

@@ -1,5 +1,5 @@
 .site-header {
-    background-color: #f8f8f8;
+    background-color: var(--header-bg-color);
     padding: 0.5em 1em;
     border-bottom: 1px solid #ddd;
 }
@@ -32,17 +32,33 @@
 .search-input {
     flex: 1;
     padding: 0.4em 0.6em;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-radius: 4px 0 0 4px;
+    background-color: var(--input-bg-color);
+    color: var(--input-text-color);
+}
+
+.search-input::placeholder {
+    color: var(--input-placeholder-color);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--input-focus-border-color);
 }
 
 .search-button {
     padding: 0.4em 0.8em;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border-color);
     border-left: 0;
     border-radius: 0 4px 4px 0;
-    background-color: #eee;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
     cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: var(--button-hover-bg);
 }
 
 .header-right .btn {
