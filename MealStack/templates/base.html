@@ -7,15 +7,17 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}  {# page-specific CSS goes here #}
 </head>
-<body>
+<body class="site-body">
+
     {% include 'components/header.html' %}
 
-    <main>
+    <main class="site-main">
         {% block content %}{% endblock %}
     </main>
 
     {% include 'components/footer.html' %}
 
     {% block extra_js %}{% endblock %}  {# page-specific JS goes here #}
+
 </body>
 </html>

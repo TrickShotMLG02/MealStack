@@ -21,6 +21,18 @@ body {
     line-height: 1.6;
 }
 
+/* Ensure body fills viewport and uses column flex layout */
+.site-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* full height of viewport */
+    margin: 0;
+}
+
+/* Main content grows to fill remaining space */
+.site-main {
+    flex: 1;
+}
 
 /*
 *****************
