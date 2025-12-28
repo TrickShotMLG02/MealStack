@@ -35,7 +35,7 @@ a:hover {
 /* Metadata */
 .recipe-meta {
     font-size: 0.95rem;
-    color: #666;
+    color: var(--text-muted-color);
     margin-bottom: 20px;
 }
 
@@ -46,12 +46,14 @@ a:hover {
 
 .tag {
     display: inline-block;
-    background: var(--accent-color);
-    color: var(--text-color);
+    background: var(--tag-bg-color);
+    color: var(--tag-text-color);
     padding: 4px 12px;
     border-radius: 20px;
     margin-right: 5px;
     font-size: 0.85rem;
+
+    border: 1px solid var(--tag-border-color);
 }
 
 /* Sections */

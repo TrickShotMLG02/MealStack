@@ -35,6 +35,14 @@
     --card-shadow-color: rgba(0, 0, 0, 0.1);
 
     /* ---------------------------
+       Tags / Chips
+    --------------------------- */
+
+    --tag-bg-color: color-mix(in srgb, var(--accent-color) 75%, transparent);
+    --tag-text-color: var(--text-color);
+    --tag-border-color: color-mix(in srgb, var(--accent-color) 35%, transparent);
+
+    /* ---------------------------
        Text Colors
     --------------------------- */
 
