@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}MealStack{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/themes/default_palette.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+    <link id="theme-link" rel="stylesheet" href="{% static 'css/themes/theme_light.css' %}">
+    <script src="{% static 'js/theme_switch.js' %}"></script>
+
     {% block extra_css %}{% endblock %}  {# page-specific CSS goes here #}
 </head>
 <body class="site-body">
