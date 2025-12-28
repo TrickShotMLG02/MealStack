@@ -1,9 +1,78 @@
 :root {
+    /* ---------------------------
+       Brand & UI Colors
+    --------------------------- */
+
+    /* Primary brand color – used for buttons, links, highlights, and interactive elements */
     --primary-color: #007bff;
+
+    /* Secondary color – for less prominent buttons, badges, or muted text */
     --secondary-color: #6c757d;
-    --background-color: #ffffff;
-    --text-color: #333333;
+
+    /* Accent color – used for attention-grabbing elements like alerts, icons, or highlights */
     --accent-color: #ff9800;
+
+    /* ---------------------------
+       Background & Surface Colors
+    --------------------------- */
+
+    /* Main background color – page background */
+    --background-color: #ffffff;
+
+    /* Default card / container background */
+    --card-bg-color: #ffffff;
+
+    /* Header background – for site header / navbar */
     --header-bg-color: #f8f8f8;
+
+    /* Footer background – for site footer */
     --footer-bg-color: #f1f1f1;
+
+    /* Borders / dividers */
+    --border-color: #dddddd;
+
+    /* Shadow color for cards / modals */
+    --card-shadow-color: rgba(0, 0, 0, 0.1);
+
+    /* ---------------------------
+       Text Colors
+    --------------------------- */
+
+    /* Default text color */
+    --text-color: #333333;
+
+    /* Links */
+    --link-color: var(--primary-color);
+    --link-hover-color: #0056b3;
+
+    /* Muted / secondary text */
+    --text-muted-color: #6c757d;
+
+    /* ---------------------------
+       Feedback / Status Colors
+    --------------------------- */
+
+    --success-color: #28a745; /* Success messages, badges */
+    --error-color: #dc3545;   /* Error messages, alerts */
+    --warning-color: #ffc107; /* Warnings, caution highlights */
+    --info-color: #17a2b8;    /* Informational messages */
+
+    /* ---------------------------
+       Buttons
+    --------------------------- */
+
+    --button-bg-color: var(--primary-color);
+    --button-text-color: #ffffff;
+    --button-hover-bg: #0056b3;
+    --button-border-radius: 4px;
+
+    /* ---------------------------
+       Misc / Additional
+    --------------------------- */
+
+    --input-bg-color: #ffffff;
+    --input-border-color: #cccccc;
+    --input-text-color: #333333;
+
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Generic shadow for modals or dropdowns */
 }
