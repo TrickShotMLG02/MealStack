@@ -117,7 +117,21 @@ Shared Components
 
 /* Tags Container */
 .tag-container {
+    text-align: center;
     margin-bottom: 20px;
+}
+
+/* Only for this specific tag container */
+.tag-container.horizontal-tags .tag {
+    display: inline-block;
+    margin: 3px 3px 0 0;
+}
+
+/* Only for this specific tag container */
+.tag-container.vertical-tags .tag {
+    /* TOOD: Align tags in vertical tag container centered */
+    display: inline-block;
+    margin: 3px 3px 0.5em 0;
 }
 
 /* Tags (Non-interactable and Interactable) */
@@ -127,11 +141,8 @@ Shared Components
     color: var(--tag-text-color);
     padding: 4px 12px;
     border-radius: 20px;
-    margin-right: 5px;
     font-size: 0.85rem;
-
     border: 1px solid var(--tag-border-color);
-
     cursor: default;
     user-select: none;
 }
@@ -144,4 +155,27 @@ Shared Components
 .tag--interactive:hover {
     background-color: var(--tag-bg-hover-color);
     border-color: var(--tag-border-hover-color);
+}
+
+
+/* ---------------------------
+   Base Card
+--------------------------- */
+.card {
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+    /* text-align: center; */
+    padding: 1em;
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+
+/* ---------------------------
+   Hoverable Card Modifier
+--------------------------- */
+.card.hoverable:hover {
+    box-shadow: 0 12px 28px var(--card-shadow-color);
+    transform: translateY(-2px);
+    cursor: pointer;
 }

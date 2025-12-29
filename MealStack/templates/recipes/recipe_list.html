@@ -12,13 +12,18 @@
 
 <div class="recipe-grid">
     {% for recipe in recipes %}
-    <div class="recipe-card">
+    <div class="card hoverable">
         <!-- Always show primary or placeholder -->
         <img src="{{ recipe.primary_or_placeholder }}" alt="{{ recipe.title }}">
 
         <h2><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
-        <p>Servings: {{ recipe.servings }}</p>
-        <p>Total time: {{ recipe.total_time_display }}</p>
+
+        <!-- Tags -->
+        <div class="tag-container vertical-tags">
+            <!-- <span class="tag">Servings: {{ recipe.servings }}</span> -->
+            <span class="tag">Total time: {{ recipe.total_time_display }}</span>
+            <span class="tag">Total time: {{ recipe.total_time_display }}</span>
+        </div>
     </div>
     {% empty %}
     <p>No recipes available.</p>

@@ -11,10 +11,7 @@ a:hover {
 .recipe-container {
     max-width: 900px;
     margin: 40px auto;
-    padding: 25px 30px;
-    background: var(--card-bg-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 20px var(--card-shadow-color);
+    padding: 25px 30px; /* override default padding */
 }
 
 /* Title */

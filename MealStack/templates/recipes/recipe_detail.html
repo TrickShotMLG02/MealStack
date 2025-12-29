@@ -15,79 +15,82 @@
 {% block content %}
 <div class="recipe-container">
 
-    <!-- Title -->
-    <h1 class="recipe-title">{{ recipe.title }}</h1>
+    <div class="card">
 
-    <!-- Carousel -->
-    {% include "recipes/components/carousel.html" with images=recipe.images_or_placeholder width=600 height=400 %}
+        <!-- Title -->
+        <h1 class="recipe-title">{{ recipe.title }}</h1>
+
+        <!-- Carousel -->
+        {% include "recipes/components/carousel.html" with images=recipe.images_or_placeholder width=600 height=400 %}
 
 
-    <!-- Metadata -->
-    <div class="recipe-meta">
-        <span>Servings: {{ recipe.servings }}</span> |
-        <span>Prep: {{ recipe.preparation_time|default:"0:00" }}</span> |
-        <span>Cook: {{ recipe.cooking_time|default:"0:00" }}</span> |
-        <span>Rest: {{ recipe.resting_time|default:"0:00" }}</span> |
-        {% if recipe.cuisine %}<span>Cuisine: {{ recipe.cuisine.name }}</span>{% endif %}
-    </div>
+        <!-- Metadata -->
+        <div class="recipe-meta">
+            <span>Servings: {{ recipe.servings }}</span> |
+            <span>Prep: {{ recipe.preparation_time|default:"0:00" }}</span> |
+            <span>Cook: {{ recipe.cooking_time|default:"0:00" }}</span> |
+            <span>Rest: {{ recipe.resting_time|default:"0:00" }}</span> |
+            {% if recipe.cuisine %}<span>Cuisine: {{ recipe.cuisine.name }}</span>{% endif %}
+        </div>
 
-    <!-- Tags -->
-    {% if recipe.tags.exists %}
-    <div class="tag-container">
-        {% for tag in recipe.tags.all %}
-            <span class="tag">{{ tag.name }}</span>
-        {% endfor %}
-    </div>
-    {% endif %}
+        <!-- Tags -->
+        {% if recipe.tags.exists %}
+        <div class="tag-container horizontal-tags">
+            {% for tag in recipe.tags.all %}
+                <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-    <!-- Ingredients -->
-    <section class="recipe-section">
-        <h2>Ingredients</h2>
-        {% for group in recipe.recipeingredientgroup_set.all %}
-            <h3>{{ group.name }}</h3>
-            <ul class="ingredients-list">
-                {% for ri in group.recipeingredient_set.all %}
-                    <li>{{ ri.quantity }} {{ ri.unit.name }} {{ ri.ingredient.name }}</li>
-                {% endfor %}
+        <!-- Ingredients -->
+        <section class="recipe-section">
+            <h2>Ingredients</h2>
+            {% for group in recipe.recipeingredientgroup_set.all %}
+                <h3>{{ group.name }}</h3>
+                <ul class="ingredients-list">
+                    {% for ri in group.recipeingredient_set.all %}
+                        <li>{{ ri.quantity }} {{ ri.unit.name }} {{ ri.ingredient.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </section>
+
+        <!-- Steps -->
+        <section class="recipe-section">
+            <h2>Steps</h2>
+            {% for group in recipe.recipestepgroup_set.all %}
+                <h3>{{ group.name }}</h3>
+                <ol class="steps-list">
+                    {% for step in group.recipestep_set.all %}
+                        <li>{{ step.description }}</li>
+                    {% endfor %}
+                </ol>
+            {% endfor %}
+        </section>
+
+        <!-- Notes -->
+        {% if recipe.notes %}
+        <section class="recipe-section">
+            <h2>Notes</h2>
+            <p>{{ recipe.notes }}</p>
+        </section>
+        {% endif %}
+
+        <!-- Nutrition -->
+        {% if recipe.nutrition %}
+        <section class="recipe-section">
+            <h2>Nutrition (per 100g)</h2>
+            <ul class="nutrition-list">
+                <li>Calories: {{ recipe.nutrition.kcal }} kcal</li>
+                <li>Protein: {{ recipe.nutrition.protein }} g</li>
+                <li>Fat: {{ recipe.nutrition.fat }} g</li>
+                <li>Carbs: {{ recipe.nutrition.carbs }} g</li>
+                <li>Salt: {{ recipe.nutrition.salt }} g</li>
             </ul>
-        {% endfor %}
-    </section>
+        </section>
+        {% endif %}
 
-    <!-- Steps -->
-    <section class="recipe-section">
-        <h2>Steps</h2>
-        {% for group in recipe.recipestepgroup_set.all %}
-            <h3>{{ group.name }}</h3>
-            <ol class="steps-list">
-                {% for step in group.recipestep_set.all %}
-                    <li>{{ step.description }}</li>
-                {% endfor %}
-            </ol>
-        {% endfor %}
-    </section>
-
-    <!-- Notes -->
-    {% if recipe.notes %}
-    <section class="recipe-section">
-        <h2>Notes</h2>
-        <p>{{ recipe.notes }}</p>
-    </section>
-    {% endif %}
-
-    <!-- Nutrition -->
-    {% if recipe.nutrition %}
-    <section class="recipe-section">
-        <h2>Nutrition (per 100g)</h2>
-        <ul class="nutrition-list">
-            <li>Calories: {{ recipe.nutrition.kcal }} kcal</li>
-            <li>Protein: {{ recipe.nutrition.protein }} g</li>
-            <li>Fat: {{ recipe.nutrition.fat }} g</li>
-            <li>Carbs: {{ recipe.nutrition.carbs }} g</li>
-            <li>Salt: {{ recipe.nutrition.salt }} g</li>
-        </ul>
-    </section>
-    {% endif %}
-
+    </div>
 </div>
 
 
