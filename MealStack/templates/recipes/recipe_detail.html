@@ -46,7 +46,9 @@
         <section class="recipe-section">
             <h2>Ingredients</h2>
             {% for group in recipe.recipeingredientgroup_set.all %}
-                <h3>{{ group.name }}</h3>
+                {% if recipe.recipeingredientgroup_set.all|length > 1 %}
+                    <h3>{{ group.name }}</h3>
+                {% endif %}
                 <ul class="ingredients-list">
                     {% for ri in group.recipeingredient_set.all %}
                         <li>{{ ri.quantity }} {{ ri.unit.name }} {{ ri.ingredient.name }}</li>
@@ -59,7 +61,9 @@
         <section class="recipe-section">
             <h2>Steps</h2>
             {% for group in recipe.recipestepgroup_set.all %}
-                <h3>{{ group.name }}</h3>
+                {% if recipe.recipestepgroup_set.all|length > 1 %}
+                    <h3>{{ group.name }}</h3>
+                {% endif %}
                 <ol class="steps-list">
                     {% for step in group.recipestep_set.all %}
                         <li>{{ step.description }}</li>
