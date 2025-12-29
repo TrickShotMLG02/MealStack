@@ -1,9 +1,11 @@
+/* Site header */
 .site-header {
     background-color: var(--header-bg-color);
     padding: 0.5em 1em;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-color);
 }
 
+/* Header container layout */
 .header-container {
     display: flex;
     align-items: center;
@@ -12,23 +14,28 @@
     margin: 0 auto;
 }
 
+/* Left section – app title */
 .header-left .app-title {
     margin: 0;
     font-size: 1.8em;
     font-weight: bold;
+    color: var(--heading-color);
 }
 
+/* Center section – search bar */
 .header-center {
     flex: 1;
     text-align: center;
 }
 
+/* Search form layout */
 .search-form {
     display: inline-flex;
     width: 100%;
     max-width: 400px;
 }
 
+/* Search input */
 .search-input {
     flex: 1;
     padding: 0.4em 0.6em;
@@ -47,6 +54,7 @@
     border-color: var(--input-focus-border-color);
 }
 
+/* Search button */
 .search-button {
     padding: 0.4em 0.8em;
     border: 1px solid var(--input-border-color);
@@ -55,22 +63,25 @@
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .search-button:hover {
     background-color: var(--button-hover-bg);
 }
 
+/* Right section buttons */
 .header-right .btn {
     margin-left: 0.5em;
     padding: 0.4em 0.8em;
     text-decoration: none;
-    background-color: #007bff;
-    color: #fff;
+    background-color: var(--secondary-color);
+    color: var(--button-text-color);
     border-radius: 4px;
     font-size: 0.9em;
+    transition: background-color 0.2s;
 }
 
 .header-right .btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-color);
 }

@@ -3,14 +3,14 @@
        Brand & UI Colors
     --------------------------- */
 
-    /* Primary brand color – used for buttons, links, highlights, and interactive elements */
-    --primary-color: #f7f7f7;
+    /* Primary brand color – buttons, links, highlights */
+    --primary-color: #d95523; /* Warm, rich tomato/orange – appetizing and bold */
 
-    /* Secondary color – for less prominent buttons, badges, or muted text */
-    --secondary-color: #6c757d;
+    /* Secondary color – less prominent buttons, badges, muted text */
+    --secondary-color: #a76f4b; /* Warm brown – complements primary, soft but readable */
 
-    /* Accent color – used for attention-grabbing elements like alerts, icons, or highlights */
-    --accent-color: #ff9800;
+    /* Accent color – attention-grabbing elements, highlights */
+    --accent-color: #f4b400; /* Golden yellow – like butter or baked goods, bright and inviting */
 
 
 
@@ -18,23 +18,12 @@
        Background & Surface Colors
     --------------------------- */
 
-    /* Main background color – page background */
-    --background-color: #ffffff;
-
-    /* Default card / container background */
-    --card-bg-color: #ffffff;
-
-    /* Header background – for site header / navbar */
-    --header-bg-color: #f8f8f8;
-
-    /* Footer background – for site footer */
-    --footer-bg-color: #f1f1f1;
-
-    /* Borders / dividers */
-    --border-color: #dddddd;
-
-    /* Shadow color for cards / modals */
-    --card-shadow-color: rgba(0, 0, 0, 0.1);
+    --background-color: #fffaf5;   /* Very light cream – warm, easy on the eyes */
+    --card-bg-color: #ffffff;      /* Keep cards white for readability */
+    --header-bg-color: #ffe8d6;    /* Soft peach – welcoming */
+    --footer-bg-color: #ffe0c6;    /* Slightly darker peach for contrast */
+    --border-color: #e6d5c0;       /* Light warm beige for subtle separation */
+    --card-shadow-color: rgba(0, 0, 0, 0.08); /* Soft shadows */
 
 
 
@@ -42,7 +31,7 @@
        Tags / Chips
     --------------------------- */
 
-    --tag-bg-color: color-mix(in srgb, var(--accent-color) 75%, transparent);
+    --tag-bg-color: color-mix(in srgb, var(--accent-color) 70%, transparent);
     --tag-bg-hover-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
     --tag-text-color: var(--text-color);
     --tag-border-color: color-mix(in srgb, var(--accent-color) 35%, transparent);
@@ -54,15 +43,10 @@
        Text Colors
     --------------------------- */
 
-    /* Default text color */
-    --text-color: #333333;
-
-    /* Links */
+    --text-color: #3a3a3a;       /* Slightly warmer than pure gray for a cozy feel */
     --link-color: var(--primary-color);
-    --link-hover-color: #0056b3;
-
-    /* Muted / secondary text */
-    --text-muted-color: #6c757d;
+    --link-hover-color: #b84419; /* Darker primary for hover */
+    --text-muted-color: #7d6e64; /* Muted brownish gray */
 
 
 
@@ -70,9 +54,9 @@
        Headings (h1–h6)
     --------------------------- */
 
-    --heading-color: #1a1a1a;          /* Main heading text color */
-    --heading-muted-color: #4a4a4a;    /* Subheadings / h3–h6 */
-    --heading-accent-color: var(--primary-color); /* Optional emphasis */
+    --heading-color: #2c2c2c;
+    --heading-muted-color: #5a4d45;
+    --heading-accent-color: var(--primary-color);
 
 
 
@@ -80,10 +64,10 @@
        Feedback / Status Colors
     --------------------------- */
 
-    --success-color: #28a745; /* Success messages, badges */
-    --error-color: #dc3545;   /* Error messages, alerts */
-    --warning-color: #ffc107; /* Warnings, caution highlights */
-    --info-color: #17a2b8;    /* Informational messages */
+    --success-color: #4caf50; /* Fresh green – herbs, natural freshness */
+    --error-color: #e53935;   /* Bright tomato red */
+    --warning-color: #ffb300; /* Golden amber – attention without harshness */
+    --info-color: #039be5;    /* Sky blue – contrasts warm palette for info */
 
 
 
@@ -91,10 +75,10 @@
        Form / Input Fields
     --------------------------- */
 
-    --input-bg-color: #ffffff;
-    --input-text-color: #333333;
-    --input-placeholder-color: #999999;
-    --input-border-color: #cccccc;
+    --input-bg-color: #fffaf5;
+    --input-text-color: #3a3a3a;
+    --input-placeholder-color: #b8a99f;
+    --input-border-color: #e6d5c0;
     --input-focus-border-color: var(--primary-color);
 
 
@@ -105,8 +89,8 @@
 
     --button-bg-color: var(--primary-color);
     --button-text-color: #ffffff;
-    --button-hover-bg: #0056b3;
-    --button-border-radius: 4px;
+    --button-hover-bg: #b84419;
+    --button-border-radius: 6px; /* slightly rounder for a friendly look */
 
 
 
@@ -114,5 +98,5 @@
        Misc / Additional
     --------------------------- */
 
-    --shadow-color: rgba(0, 0, 0, 0.1); /* Generic shadow for modals or dropdowns */
+    --shadow-color: rgba(0, 0, 0, 0.08);
 }

@@ -1,3 +1,4 @@
+/* Recipe grid / list container */
 .recipe-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -5,21 +6,60 @@
     margin-top: 2em;
 }
 
+/* Individual recipe card */
 .recipe-card {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 1em;
     text-align: center;
-    transition: box-shadow 0.3s;
+    background: var(--card-bg-color);
+    box-shadow: 0 2px 6px var(--card-shadow-color);
+    transition: box-shadow 0.3s, transform 0.2s;
 }
 
+/* Hover effect */
 .recipe-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px var(--card-shadow-color);
+    transform: translateY(-2px);
 }
 
+/* Recipe card image */
 .recipe-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
     border-radius: 6px;
+}
+
+/* Recipe card title */
+.recipe-card .recipe-title {
+    margin-top: 0.75em;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--heading-color);
+}
+
+/* Recipe card metadata (time, difficulty, etc.) */
+.recipe-card .recipe-meta {
+    font-size: 0.9rem;
+    color: var(--text-muted-color);
+    margin-top: 0.25em;
+}
+
+/* Tags or badges inside card */
+.recipe-card .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    border-radius: 15px;
+    background: var(--tag-bg-color);
+    color: var(--tag-text-color);
+    border: 1px solid var(--tag-border-color);
+    margin: 3px 3px 0 0;
+    cursor: default;
+}
+
+.recipe-card .tag:hover {
+    background: var(--tag-bg-hover-color);
+    border-color: var(--tag-border-hover-color);
 }
