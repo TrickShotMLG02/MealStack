@@ -12,6 +12,8 @@
     /* Accent color – used for attention-grabbing elements like alerts, icons, or highlights */
     --accent-color: #ff9800;
 
+
+
     /* ---------------------------
        Background & Surface Colors
     --------------------------- */
@@ -34,13 +36,19 @@
     /* Shadow color for cards / modals */
     --card-shadow-color: rgba(0, 0, 0, 0.1);
 
+
+
     /* ---------------------------
        Tags / Chips
     --------------------------- */
 
     --tag-bg-color: color-mix(in srgb, var(--accent-color) 75%, transparent);
+    --tag-bg-hover-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
     --tag-text-color: var(--text-color);
     --tag-border-color: color-mix(in srgb, var(--accent-color) 35%, transparent);
+    --tag-border-hover-color: color-mix(in srgb, var(--accent-color) 55%, transparent);
+
+
 
     /* ---------------------------
        Text Colors
@@ -56,6 +64,8 @@
     /* Muted / secondary text */
     --text-muted-color: #6c757d;
 
+
+
     /* ---------------------------
        Headings (h1–h6)
     --------------------------- */
@@ -63,6 +73,8 @@
     --heading-color: #1a1a1a;          /* Main heading text color */
     --heading-muted-color: #4a4a4a;    /* Subheadings / h3–h6 */
     --heading-accent-color: var(--primary-color); /* Optional emphasis */
+
+
 
     /* ---------------------------
        Feedback / Status Colors
@@ -72,6 +84,8 @@
     --error-color: #dc3545;   /* Error messages, alerts */
     --warning-color: #ffc107; /* Warnings, caution highlights */
     --info-color: #17a2b8;    /* Informational messages */
+
+
 
     /* ---------------------------
        Form / Input Fields
@@ -83,6 +97,8 @@
     --input-border-color: #cccccc;
     --input-focus-border-color: var(--primary-color);
 
+
+
     /* ---------------------------
        Buttons
     --------------------------- */
@@ -92,10 +108,11 @@
     --button-hover-bg: #0056b3;
     --button-border-radius: 4px;
 
+
+
     /* ---------------------------
        Misc / Additional
     --------------------------- */
-
 
     --shadow-color: rgba(0, 0, 0, 0.1); /* Generic shadow for modals or dropdowns */
 }

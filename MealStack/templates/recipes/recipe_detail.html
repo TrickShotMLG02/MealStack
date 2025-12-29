@@ -33,7 +33,7 @@
 
     <!-- Tags -->
     {% if recipe.tags.exists %}
-    <div class="recipe-tags">
+    <div class="tag-container">
         {% for tag in recipe.tags.all %}
             <span class="tag">{{ tag.name }}</span>
         {% endfor %}

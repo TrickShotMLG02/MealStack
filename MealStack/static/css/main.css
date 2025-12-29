@@ -34,6 +34,7 @@ body {
     flex: 1;
 }
 
+
 /*
 *****************
 Settings for Links
@@ -55,4 +56,43 @@ a:hover {
 /* On active (clicking) */
 a:active {
     color: #004080;
+}
+
+
+
+/*
+*****************
+Shared Components
+*****************
+*/
+
+/* Tags Container */
+.tag-container {
+    margin-bottom: 20px;
+}
+
+/* Tags (Non-interactable and Interactable) */
+.tag {
+    display: inline-block;
+    background: var(--tag-bg-color);
+    color: var(--tag-text-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-right: 5px;
+    font-size: 0.85rem;
+
+    border: 1px solid var(--tag-border-color);
+
+    cursor: default;
+    user-select: none;
+}
+
+.tag--interactive {
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.tag--interactive:hover {
+    background-color: var(--tag-bg-hover-color);
+    border-color: var(--tag-border-hover-color);
 }
