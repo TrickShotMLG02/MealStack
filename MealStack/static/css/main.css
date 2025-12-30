@@ -179,3 +179,10 @@ Shared Components
     transform: translateY(-2px);
     cursor: pointer;
 }
+
+
+
+/* Alignment */
+.text-centered {
+    text-align: center;
+}

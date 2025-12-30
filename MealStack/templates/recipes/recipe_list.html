@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>All Recipes</h1>
+<h1 class="text-centered">All Recipes</h1>
 
 <div class="recipe-grid">
     {% for recipe in recipes %}
@@ -16,12 +16,11 @@
         <!-- Always show primary or placeholder -->
         <img src="{{ recipe.primary_or_placeholder }}" alt="{{ recipe.title }}">
 
-        <h2><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
+        <h2 class="recipe-title"><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
 
         <!-- Tags -->
         <div class="tag-container vertical-tags">
-            <!-- <span class="tag">Servings: {{ recipe.servings }}</span> -->
-            <span class="tag">Total time: {{ recipe.total_time_display }}</span>
+            <span class="tag">Servings: {{ recipe.servings }}</span>
             <span class="tag">Total time: {{ recipe.total_time_display }}</span>
         </div>
     </div>

@@ -3,7 +3,20 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5em;
+
+
+    max-width: 75%;
+    margin: 40px auto;
+    padding: 25px 30px; /* override default padding */
+
     margin-top: 2em;
+}
+
+.recipe-title {
+    font-size: 2.5rem;
+    color: var(--heading-color);
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 /* Recipe card image */
