@@ -1,6 +1,9 @@
-from django.core.management import call_command, BaseCommand
+from django.core.management import BaseCommand
 from apps.recipes.management.commands.seed_admin_user import Command as SeedAdminUser
 from apps.recipes.management.commands.seed_units import Command as SeedUnits
+from apps.recipes.management.commands.seed_ingredients import Command as SeedIngredients
+from apps.recipes.management.commands.seed_tags import Command as SeedTags
+from apps.recipes.management.commands.seed_recipe import Command as SeedRecipe
 
 class Command(BaseCommand):
     help = "Run all seed commands"
@@ -11,6 +14,9 @@ class Command(BaseCommand):
     SEED_COMMANDS = [
         SeedAdminUser,
         SeedUnits,
+        SeedIngredients,
+        SeedTags,
+        SeedRecipe
     ]
 
     def handle(self, *args, **kwargs):
