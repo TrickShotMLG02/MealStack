@@ -1,0 +1,147 @@
+# See
+# https://github.com/marketplace/actions/github-labeler
+
+# ============= #
+# GitHub Labels #
+# ============= #
+
+# Priority & Status (with emojis)
+- name: "🟥 priority: critical"
+  color: d73a4a
+  description: Must fix immediately (production bug, data loss, security)
+- name: "🟧 priority: high"
+  color: e99695
+  description: Important, should be done soon
+- name: "🟨 priority: medium"
+  color: ffbf00
+  description: Normal priority
+- name: "🟩 priority: low"
+  color: 0e8a16
+  description: Nice to have or polish
+
+- name: "⚡ status: in progress"
+  color: 0075ca
+  description: Actively being worked on
+- name: "⛔ status: blocked"
+  color: 5319e7
+  description: Waiting on dependencies or decisions
+- name: "🔍 status: ready for review"
+  color: bfe5bf
+  description: Needs code review or QA
+- name: "✅ status: done"
+  color: 1d76db
+  description: Completed and merged/deployed
+
+# Type / Category
+- name: "type: backend"
+  color: 0052cc
+  description: Django models, views, serializers, business logic
+- name: "type: frontend"
+  color: e99695
+  description: Templates, CSS, JS, frontend behavior
+- name: "type: api"
+  color: 1d76db
+  description: REST or GraphQL API work
+- name: "type: feature"
+  color: 0e8a16
+  description: New user-facing functionality
+- name: "type: bug"
+  color: d73a4a
+  description: Something broken or incorrect
+- name: "type: refactor"
+  color: 5319e7
+  description: Code cleanup or restructuring
+- name: "type: optimization"
+  color: fbca04
+  description: Performance, query, or caching improvements
+- name: "type: testing"
+  color: f9d0c4
+  description: Unit, integration, or end-to-end tests
+- name: "type: documentation"
+  color: 5319e7
+  description: README, docs, or inline documentation
+- name: "type: content"
+  color: c2e0c6
+  description: Recipes, copy, images, or editorial content
+- name: "type: design"
+  color: f7c6c7
+  description: UX/UI design or layout decisions
+
+# Scope / Feature Areas
+- name: "scope: recipes"
+  color: 0e8a16
+  description: Recipe creation, editing, and display
+- name: "scope: ingredients"
+  color: c2e0c6
+  description: Ingredient models, parsing, or scaling
+- name: "scope: search & filtering"
+  color: fbca04
+  description: Search, tags, categories, filters
+- name: "scope: users & auth"
+  color: 0052cc
+  description: Authentication, profiles, permissions
+- name: "scope: favorites & collections"
+  color: e99695
+  description: Saved recipes, collections, likes
+- name: "scope: ratings & reviews"
+  color: f9d0c4
+  description: Comments, ratings, feedback
+- name: "scope: admin"
+  color: 5319e7
+  description: Django admin or moderation tools
+- name: "scope: performance"
+  color: fbca04
+  description: Speed, caching, database efficiency
+- name: "scope: seo"
+  color: 006b75
+  description: Metadata, indexing, discoverability
+
+# Platform / Environment
+- name: "platform: web"
+  color: 1d76db
+  description: Browser-based functionality
+- name: "platform: mobile"
+  color: fbca04
+  description: Mobile web responsiveness
+- name: "platform: api"
+  color: 0052cc
+  description: External API consumers
+- name: "platform: admin"
+  color: 5319e7
+  description: Admin-only features
+
+# Meta / Project Management
+- name: "chore"
+  color: 5319e7
+  description: Maintenance, dependencies, or tooling
+- name: "task"
+  color: 0e8a16
+  description: General to-do item
+- name: "research"
+  color: f9d0c4
+  description: Investigation, spikes, or feasibility checks
+- name: "milestone"
+  color: 0052cc
+  description: Part of a release or roadmap goal
+
+# UX & Product Feedback
+- name: "feedback: usability"
+  color: c2e0c6
+  description: Ease of use, clarity, friction
+- name: "feedback: accessibility"
+  color: fbca04
+  description: Accessibility issues or improvements
+- name: "feedback: visual design"
+  color: f7c6c7
+  description: Layout, spacing, colors, typography
+- name: "feedback: content quality"
+  color: f9d0c4
+  description: Recipe clarity, wording, or accuracy
+
+# Good for Contributors
+- name: "good first issue"
+  color: 7057ff
+  description: Beginner-friendly task
+- name: "help wanted"
+  color: 008672
+  description: Community help encouraged
