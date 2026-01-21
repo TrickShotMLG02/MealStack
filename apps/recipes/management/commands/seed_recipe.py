@@ -39,3 +39,5 @@ class Command(SeedCommand):
         RecipeStep.objects.create(recipe=cake, order=3, description="Bake at 180°C for 25 minutes.")
 
         update_recipe_nutrition(cake)
+
+        # TODO: Fix this seed
