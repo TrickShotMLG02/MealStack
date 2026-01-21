@@ -3,7 +3,7 @@
 import sys
 
 # Load settings from .env
-import MealStack.settings.settings_selector  # noqa: F401
+import MealStack.settings.profile_selector  # noqa: F401
 
 
 def main():

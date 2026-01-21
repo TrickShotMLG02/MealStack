@@ -12,7 +12,7 @@ import os
 from django.core.asgi import get_asgi_application
 
 # Load settings from .env
-import MealStack.settings.settings_selector  # noqa: F401
+import MealStack.settings.profile_selector  # noqa: F401
 
 #os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'MealStack.settings')
 
