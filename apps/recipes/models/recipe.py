@@ -29,7 +29,7 @@ class Recipe(models.Model):
     )
 
     source = models.URLField(blank=True, null=True)
-    author = models.CharField(blank=True, null=True)
+    author = models.CharField(max_length=40, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

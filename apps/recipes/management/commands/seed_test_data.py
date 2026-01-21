@@ -10,23 +10,6 @@ class Command(BaseCommand):
     help = "Seed test recipes, ingredients, units, tags, and nutrition"
 
     def handle(self, *args, **kwargs):
-        # Seed admin user
-        self.stdout.write("Seeding superuser...")
-        User = get_user_model()
-        if not User.objects.filter(username="admin").exists():
-            User.objects.create_superuser(
-                username="admin",
-                email="admin@example.com",
-                password="admin"
-            )
-            self.stdout.write(self.style.SUCCESS("Superuser 'admin' created."))
-
-
-        self.stdout.write("Seeding units...")
-        gram, _ = Unit.objects.get_or_create(name="gram", type="weight", grams_per_unit=1)
-        ml, _ = Unit.objects.get_or_create(name="ml", type="volume", ml_per_unit=1)
-        piece, _ = Unit.objects.get_or_create(name="piece", type="count")
-
         self.stdout.write("Seeding ingredients...")
         sugar, _ = Ingredient.objects.get_or_create(
             name="Sugar", kcal=400, protein=0, fat=0, carbs=100, salt=0
