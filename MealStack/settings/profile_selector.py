@@ -41,6 +41,11 @@ def apply_env_overrides():
     if allowed_hosts_env:
         settings.ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",") if host.strip()]
 
+    # ALLOWED_HOSTS override
+    csrf_trusted_origins_env = os.getenv("CSRF_TRUSTED_ORIGINS")
+    if csrf_trusted_origins_env:
+        settings.CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_trusted_origins_env.split(",") if origin.strip()]
+
     # DATABASE overrides
     db_engine_env = os.getenv("DB_ENGINE")
     if db_engine_env:
