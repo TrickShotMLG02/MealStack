@@ -35,7 +35,15 @@ cp .env.example .env
 ```
 Edit .env to your configuration
 
-### 2️⃣ Database Setup
+### 2️⃣ Install Dependencies
+
+Meal Stack supports **uv** as the package manager. If you don’t have uv installed, follow the installation guide: https://docs.astral.sh/uv/getting-started/
+```
+uv python install
+uv sync
+```
+
+### 3️⃣ Database Setup
 
 Create migrations
 ```
@@ -47,7 +55,7 @@ Apply migrations
 python manage.py migrate
 ```
 
-### 3️⃣ Seed Initial Data
+### 4️⃣ Seed Initial Data
 
 Choose either:
 
@@ -65,12 +73,12 @@ python manage.py seed_ingredients
 python manage.py seed_recipe
 ```
 
-### 4️⃣ Collect Static Files
+### 5️⃣ Collect Static Files
 ```
 python manage.py collectstatic
 ```
 
-### 5️⃣ Run the Development Server
+### 6️⃣ Run the Development Server
 ```
 python manage.py runserver
 ```
@@ -102,7 +110,7 @@ docker run --env-file .env -p 8000:8000 trickshotmlg/mealstack:dev
 ## 🤝 Contributing
 
 Contributions are welcome!  
-- Check the [good first issues](https://github.com/TrickShotMLG02/MealStack/labels/good%20first%20issue) to get started.
+- Check the [Contribution Issue](https://github.com/TrickShotMLG02/MealStack/issues/1) to get started.
 - Fork the repo, make your changes, and submit a pull request.
 
 ---
