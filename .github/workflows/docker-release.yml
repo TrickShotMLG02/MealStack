@@ -45,7 +45,7 @@ jobs:
           echo "Branches containing commit: $BRANCHES"
 
           if [[ "$TAG" == *"-dev" ]]; then
-            if [[ "$BRANCHES" != *"dev"* ]]; then
+            if [[ "$BRANCHES" != *"development"* ]]; then
               echo "❌ Dev tag ($TAG) must be created from the dev branch"
               exit 1
             fi
