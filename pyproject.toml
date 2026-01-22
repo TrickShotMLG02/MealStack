@@ -11,4 +11,5 @@ dependencies = [
     "django-cleanup==9.0.0",
     "pillow==12.1.0",
     "mysqlclient==2.2.7",
+    "openfoodfacts>=3.3.0",
 ]

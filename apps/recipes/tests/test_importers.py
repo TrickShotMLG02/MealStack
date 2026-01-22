@@ -25,7 +25,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MealStack.settings.dev")  # or 
 django.setup()
 
 # Now you can import models and importers safely
-from apps.recipes.importers.chefkoch import ChefkochImporter
+from apps.recipes.importers.recipes.chefkoch import ChefkochImporter
 
 def main():
     url = "https://www.chefkoch.de/rezepte/3520631525089100/Tomaten-Kaesesauce-mit-Fleischwurst.html?portionen=4"
