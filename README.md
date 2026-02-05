@@ -80,8 +80,7 @@ python manage.py collectstatic
 
 ### 6️⃣ Compile Localized Messages
 ```
-python manage.py makemessages -l de
-python manage.py makemessages -l <other supported languages>
+python manage.py makemessages -a
 python manage.py compilemessages
 ```
 
