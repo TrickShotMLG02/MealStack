@@ -31,7 +31,6 @@
             {% if recipe.preparation_time %}<span class="tag">Prep: {{ recipe.preparation_time|pretty_duration }}</span>{% endif %}
             {% if recipe.cooking_time %}<span class="tag">Cook: {{ recipe.cooking_time|pretty_duration }}</span>{% endif %}
             {% if recipe.resting_time %}<span class="tag">Rest: {{ recipe.resting_time|pretty_duration }}</span>{% endif %}
-            {% if recipe.cuisine %}<span>Cuisine: {{ recipe.cuisine.name }}</span>{% endif %}
         </div>
 
         <!-- Tags -->
@@ -40,6 +39,7 @@
             {% for tag in recipe.tags.all %}
                 <span class="tag">{{ tag.name }}</span>
             {% endfor %}
+            {% if recipe.cuisine %}<span class="tag">{{ recipe.cuisine.name }}</span>{% endif %}
         </div>
         {% endif %}
 
