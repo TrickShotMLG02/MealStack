@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <link rel="stylesheet" href="{% static 'css/header.css' %}">
 
 <header class="site-header">
@@ -13,7 +13,7 @@
         <!-- Search bar -->
         <div class="header-center">
             <form method="get" action="{% url 'recipes:recipe_list' %}" class="search-form">
-                <input type="text" name="q" placeholder="Search recipes..." class="search-input">
+                <input type="text" name="q" placeholder="{% trans 'Search recipes...' %}" class="search-input">
                 <button type="submit" class="search-button">🔍</button>
             </form>
         </div>
@@ -21,8 +21,8 @@
         <!-- Buttons / actions -->
         <div class="header-right">
             {% block header_buttons %}
-                <a href="#" class="btn">Login</a>
-                <a href="#" class="btn">Sign Up</a>
+                <a href="#" class="btn">{% trans "Login" %}</a>
+                <a href="#" class="btn">{% trans "Sign Up" %}</a>
                 <button id="theme-toggle">🌞 / 🌙</button>
             {% endblock %}
         </div>

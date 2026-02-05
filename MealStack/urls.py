@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),
     path('recipes/', include('apps.recipes.urls', namespace='recipes')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 # TODO: Only for DEV Environment

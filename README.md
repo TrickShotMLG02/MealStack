@@ -78,7 +78,14 @@ python manage.py seed_recipe
 python manage.py collectstatic
 ```
 
-### 6️⃣ Run the Development Server
+### 6️⃣ Compile Localized Messages
+```
+python manage.py makemessages -l de
+python manage.py makemessages -l <other supported languages>
+python manage.py compilemessages
+```
+
+### 7️⃣ Run the Development Server
 ```
 python manage.py runserver
 ```
