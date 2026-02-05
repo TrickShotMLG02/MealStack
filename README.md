@@ -1,7 +1,7 @@
 # 🍲 Meal Stack
 
 ![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue)
-![Meal Stack stable](https://img.shields.io/docker/v/trickshotmlg/mealstack?label=stable&sort=semver)
+![Meal Stack stable](https://img.shields.io/docker/v/trickshotmlg/mealstack/latest?label=stable&sort=semver)
 ![Meal Stack unstable](https://img.shields.io/docker/v/trickshotmlg/mealstack/dev?label=unstable&sort=semver)
 ![Python](https://img.shields.io/badge/python-3.12.4-blue)
 
