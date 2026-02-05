@@ -1,5 +1,7 @@
+import os
 from datetime import timedelta
 
+from django.conf import settings
 from django.db import models
 from django.templatetags.static import static
 
@@ -77,7 +79,9 @@ class Recipe(models.Model):
         """
         primary = self.recipeimage_set.filter(is_primary=True).first()
         if primary and primary.image:
-            return primary.image.url
+            image_path = os.path.join(settings.MEDIA_ROOT, primary.image.name)
+            if os.path.exists(image_path):
+                return primary.image.url
         return static('recipes/images/placeholder.jpg')
 
     @property
