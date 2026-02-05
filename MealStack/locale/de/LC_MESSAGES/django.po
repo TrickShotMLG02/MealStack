@@ -9,10 +9,10 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-06 00:23+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2026-02-06 00:30+0100\n"
+"Last-Translator: YOUR NAME <YOUR EMAIL>\n"
+"Language-Team: German <LL@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,73 +41,73 @@ msgstr "Registrieren"
 #: .\MealStack\templates\recipes\recipe_detail.html:30
 #: .\MealStack\templates\recipes\recipe_list.html:23
 msgid "Servings:"
-msgstr ""
+msgstr "Portionen:"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:31
 msgid "Prep:"
-msgstr ""
+msgstr "Vorbereitung:"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:32
 msgid "Cook:"
-msgstr ""
+msgstr "Kochen:"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:33
 msgid "Rest:"
-msgstr ""
+msgstr "Ruhezeit:"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:48
 msgid "Ingredients"
-msgstr ""
+msgstr "Zutaten"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:63
 msgid "Steps"
-msgstr ""
+msgstr "Schritte"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:79
 msgid "Notes"
-msgstr ""
+msgstr "Notizen"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:87
 msgid "Nutrition (per serving)"
-msgstr ""
+msgstr "Nährwerte (pro Portion)"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:89
 msgid "Calories"
-msgstr ""
+msgstr "Kalorien"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:90
 msgid "Fat"
-msgstr ""
+msgstr "Fett"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:91
 msgid "Saturates"
-msgstr ""
+msgstr "Gesättigte Fettsäuren"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:92
 msgid "Carbs"
-msgstr ""
+msgstr "Kohlenhydrate"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:93
 msgid "Sugar"
-msgstr ""
+msgstr "Zucker"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:94
 msgid "Protein"
-msgstr ""
+msgstr "Eiweiß"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:95
 msgid "Salt"
-msgstr ""
+msgstr "Salz"
 
 #: .\MealStack\templates\recipes\recipe_list.html:4
 #: .\MealStack\templates\recipes\recipe_list.html:11
 msgid "All Recipes"
-msgstr ""
+msgstr "Alle Rezepte"
 
 #: .\MealStack\templates\recipes\recipe_list.html:24
 msgid "Total time:"
-msgstr ""
+msgstr "Gesamtzeit:"
 
 #: .\MealStack\templates\recipes\recipe_list.html:28
 msgid "No recipes available."
-msgstr ""
+msgstr "Keine Rezepte verfügbar."
