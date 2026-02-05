@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-06 00:12+0100\n"
+"POT-Creation-Date: 2026-02-06 00:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,3 +37,77 @@ msgstr "Anmelden"
 #: .\MealStack\templates\components\header.html:25
 msgid "Sign Up"
 msgstr "Registrieren"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:30
+#: .\MealStack\templates\recipes\recipe_list.html:23
+msgid "Servings:"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:31
+msgid "Prep:"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:32
+msgid "Cook:"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:33
+msgid "Rest:"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:48
+msgid "Ingredients"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:63
+msgid "Steps"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:79
+msgid "Notes"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:87
+msgid "Nutrition (per serving)"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:89
+msgid "Calories"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:90
+msgid "Fat"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:91
+msgid "Saturates"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:92
+msgid "Carbs"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:93
+msgid "Sugar"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:94
+msgid "Protein"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_detail.html:95
+msgid "Salt"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_list.html:4
+#: .\MealStack\templates\recipes\recipe_list.html:11
+msgid "All Recipes"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_list.html:24
+msgid "Total time:"
+msgstr ""
+
+#: .\MealStack\templates\recipes\recipe_list.html:28
+msgid "No recipes available."
+msgstr ""

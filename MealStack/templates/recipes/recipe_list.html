@@ -1,15 +1,14 @@
 {% extends "base.html" %}
-{% load time_tags %}
-{% load static %}
+{% load i18n time_tags static %}
 
-{% block title %}All Recipes - MealStack{% endblock %}
+{% block title %}{% trans "All Recipes" %} - MealStack{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'recipes/css/recipe_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1 class="text-centered">All Recipes</h1>
+<h1 class="text-centered">{% trans "All Recipes" %}</h1>
 
 <div class="recipe-grid">
     {% for recipe in recipes %}
@@ -21,12 +20,12 @@
 
         <!-- Tags -->
         <div class="tag-container vertical-tags">
-            <span class="tag">Servings: {{ recipe.servings }}</span>
-            <span class="tag">Total time: {{ recipe.total_time|pretty_duration }}</span>
+            <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
+            <span class="tag">{% trans "Total time:" %} {{ recipe.total_time|pretty_duration }}</span>
         </div>
     </div>
     {% empty %}
-    <p>No recipes available.</p>
+    <p>{% trans "No recipes available." %}</p>
     {% endfor %}
 </div>
 {% endblock %}

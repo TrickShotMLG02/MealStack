@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load time_tags %}
-{% load static %}
+{% load i18n time_tags static %}
+
 
 {% block title %}{{ recipe.title }} - MealStack{% endblock %}
 
@@ -27,10 +27,10 @@
 
         <!-- Metadata -->
         <div class="tag-container horizontal-tags">
-            <span class="tag">Servings: {{ recipe.servings }}</span>
-            {% if recipe.preparation_time %}<span class="tag">Prep: {{ recipe.preparation_time|pretty_duration }}</span>{% endif %}
-            {% if recipe.cooking_time %}<span class="tag">Cook: {{ recipe.cooking_time|pretty_duration }}</span>{% endif %}
-            {% if recipe.resting_time %}<span class="tag">Rest: {{ recipe.resting_time|pretty_duration }}</span>{% endif %}
+            <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
+            {% if recipe.preparation_time %}<span class="tag">{% trans "Prep:" %} {{ recipe.preparation_time|pretty_duration }}</span>{% endif %}
+            {% if recipe.cooking_time %}<span class="tag">{% trans "Cook:" %} {{ recipe.cooking_time|pretty_duration }}</span>{% endif %}
+            {% if recipe.resting_time %}<span class="tag">{% trans "Rest:" %} {{ recipe.resting_time|pretty_duration }}</span>{% endif %}
         </div>
 
         <!-- Tags -->
@@ -45,7 +45,7 @@
 
         <!-- Ingredients -->
         <section class="recipe-section">
-            <h2>Ingredients</h2>
+            <h2>{% trans "Ingredients" %}</h2>
             {% for group in recipe.recipeingredientgroup_set.all %}
                 {% if recipe.recipeingredientgroup_set.all|length > 1 %}
                     <h3>{{ group.name }}</h3>
@@ -60,7 +60,7 @@
 
         <!-- Steps -->
         <section class="recipe-section">
-            <h2>Steps</h2>
+            <h2>{% trans "Steps" %}</h2>
             {% for group in recipe.recipestepgroup_set.all %}
                 {% if recipe.recipestepgroup_set.all|length > 1 %}
                     <h3>{{ group.name }}</h3>
@@ -76,7 +76,7 @@
         <!-- Notes -->
         {% if recipe.notes %}
         <section class="recipe-section">
-            <h2>Notes</h2>
+            <h2>{% trans "Notes" %}</h2>
             <p>{{ recipe.notes }}</p>
         </section>
         {% endif %}
@@ -84,15 +84,15 @@
         <!-- Nutrition -->
         {% if recipe.recipe_nutrition %}
         <section class="recipe-section">
-            <h2>Nutrition (per serving)</h2>
+            <h2>{% trans "Nutrition (per serving)" %}</h2>
             <ul class="nutrition-list">
-                <li>Calories: {{ recipe.recipe_nutrition.per_serving_kcal|floatformat:0 }} kcal</li>
-                <li>Fat: {{ recipe.recipe_nutrition.per_serving_fat|floatformat:0 }} g</li>
-                <li>Saturates: {{ recipe.recipe_nutrition.per_serving_saturates|floatformat:0 }} g</li>
-                <li>Carbs: {{ recipe.recipe_nutrition.per_serving_carbs|floatformat:0 }} g</li>
-                <li>Sugar: {{ recipe.recipe_nutrition.per_serving_sugar|floatformat:0 }} g</li>
-                <li>Protein: {{ recipe.recipe_nutrition.per_serving_protein|floatformat:0 }} g</li>
-                <li>Salt: {{ recipe.recipe_nutrition.per_serving_salt|floatformat:0 }} g</li>
+                <li>{% trans "Calories" %}: {{ recipe.recipe_nutrition.per_serving_kcal|floatformat:0 }} kcal</li>
+                <li>{% trans "Fat" %}: {{ recipe.recipe_nutrition.per_serving_fat|floatformat:0 }} g</li>
+                <li>{% trans "Saturates" %}: {{ recipe.recipe_nutrition.per_serving_saturates|floatformat:0 }} g</li>
+                <li>{% trans "Carbs" %}: {{ recipe.recipe_nutrition.per_serving_carbs|floatformat:0 }} g</li>
+                <li>{% trans "Sugar" %}: {{ recipe.recipe_nutrition.per_serving_sugar|floatformat:0 }} g</li>
+                <li>{% trans "Protein" %}: {{ recipe.recipe_nutrition.per_serving_protein|floatformat:0 }} g</li>
+                <li>{% trans "Salt" %}: {{ recipe.recipe_nutrition.per_serving_salt|floatformat:0 }} g</li>
             </ul>
         </section>
         {% endif %}
