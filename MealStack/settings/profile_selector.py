@@ -79,6 +79,11 @@ def apply_env_overrides():
     if tz_env:
         settings.TIME_ZONE = tz_env
 
+    # Default Language
+    lang_env = os.getenv("DEFAULT_LANGUAGE")
+    if lang_env:
+        settings.LANGUAGE_CODE = lang_env
+
 
 # Call it immediately to apply overrides
 apply_env_overrides()
