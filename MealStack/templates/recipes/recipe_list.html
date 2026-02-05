@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load time_tags %}
 {% load static %}
 
 {% block title %}All Recipes - MealStack{% endblock %}
@@ -21,7 +22,7 @@
         <!-- Tags -->
         <div class="tag-container vertical-tags">
             <span class="tag">Servings: {{ recipe.servings }}</span>
-            <span class="tag">Total time: {{ recipe.total_time_display }}</span>
+            <span class="tag">Total time: {{ recipe.total_time|pretty_duration }}</span>
         </div>
     </div>
     {% empty %}

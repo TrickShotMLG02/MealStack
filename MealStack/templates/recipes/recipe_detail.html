@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load time_tags %}
 {% load static %}
 
 {% block title %}{{ recipe.title }} - MealStack{% endblock %}
@@ -25,11 +26,11 @@
 
 
         <!-- Metadata -->
-        <div class="recipe-meta">
-            <span>Servings: {{ recipe.servings }}</span> |
-            <span>Prep: {{ recipe.preparation_time|default:"0:00" }}</span> |
-            <span>Cook: {{ recipe.cooking_time|default:"0:00" }}</span> |
-            <span>Rest: {{ recipe.resting_time|default:"0:00" }}</span> |
+        <div class="tag-container horizontal-tags">
+            <span class="tag">Servings: {{ recipe.servings }}</span>
+            {% if recipe.preparation_time %}<span class="tag">Prep: {{ recipe.preparation_time|pretty_duration }}</span>{% endif %}
+            {% if recipe.cooking_time %}<span class="tag">Cook: {{ recipe.cooking_time|pretty_duration }}</span>{% endif %}
+            {% if recipe.resting_time %}<span class="tag">Rest: {{ recipe.resting_time|pretty_duration }}</span>{% endif %}
             {% if recipe.cuisine %}<span>Cuisine: {{ recipe.cuisine.name }}</span>{% endif %}
         </div>
 

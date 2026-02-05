@@ -5,6 +5,7 @@ from django.templatetags.static import static
 
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
 from apps.common.text_formatting import slugify
+from apps.common.time import format_timedelta
 
 STATUS_CHOICES = [
     ('draft', 'Draft'),
@@ -63,10 +64,7 @@ class Recipe(models.Model):
         Optional: format for admin display
         """
         total = self.total_time
-        # return as HH:MM
-        hours = total.total_seconds() // 3600
-        minutes = (total.total_seconds() % 3600) // 60
-        return f"{int(hours)}h {int(minutes)}m" if hours else f"{int(minutes)}m"
+        return format_timedelta(total)
 
     total_time_display.short_description = "Total Time"
 
