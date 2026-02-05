@@ -82,15 +82,17 @@
         {% endif %}
 
         <!-- Nutrition -->
-        {% if recipe.nutrition %}
+        {% if recipe.recipe_nutrition %}
         <section class="recipe-section">
-            <h2>Nutrition (per 100g)</h2>
+            <h2>Nutrition (per serving)</h2>
             <ul class="nutrition-list">
-                <li>Calories: {{ recipe.nutrition.kcal }} kcal</li>
-                <li>Protein: {{ recipe.nutrition.protein }} g</li>
-                <li>Fat: {{ recipe.nutrition.fat }} g</li>
-                <li>Carbs: {{ recipe.nutrition.carbs }} g</li>
-                <li>Salt: {{ recipe.nutrition.salt }} g</li>
+                <li>Calories: {{ recipe.recipe_nutrition.per_serving_kcal|floatformat:0 }} kcal</li>
+                <li>Fat: {{ recipe.recipe_nutrition.per_serving_fat|floatformat:0 }} g</li>
+                <li>Saturates: {{ recipe.recipe_nutrition.per_serving_saturates|floatformat:0 }} g</li>
+                <li>Carbs: {{ recipe.recipe_nutrition.per_serving_carbs|floatformat:0 }} g</li>
+                <li>Sugar: {{ recipe.recipe_nutrition.per_serving_sugar|floatformat:0 }} g</li>
+                <li>Protein: {{ recipe.recipe_nutrition.per_serving_protein|floatformat:0 }} g</li>
+                <li>Salt: {{ recipe.recipe_nutrition.per_serving_salt|floatformat:0 }} g</li>
             </ul>
         </section>
         {% endif %}
