@@ -74,8 +74,8 @@ class Recipe(models.Model):
     @property
     def primary_or_placeholder(self):
         """
-        Returns the primary image if it exists.
-        Otherwise, it returns the placeholder image.
+        Returns the primary image if it exists on disk.
+        Otherwise, returns the placeholder image.
         """
         primary = self.recipeimage_set.filter(is_primary=True).first()
         if primary and primary.image:
@@ -87,15 +87,10 @@ class Recipe(models.Model):
     @property
     def images_or_placeholder(self):
         """
-        Returns a list of RecipeImage objects if they exist.
-        If no images exist, returns a list with a single dummy object
-        containing a placeholder image URL.
+        Returns a list of RecipeImage objects.
+        If an image is missing or the file doesn't exist, its URL is replaced with a placeholder.
+        If no images exist, returns a single placeholder.
         """
-        images = list(self.recipeimage_set.all().order_by('-is_primary', 'ordering'))
-        if images:
-            return images
-
-        # Create a dummy object with .image.url so carousel still works
         class DummyImage:
             @property
             def image(self):
@@ -104,7 +99,17 @@ class Recipe(models.Model):
 
                 return ImageAttr()
 
-        return [DummyImage()]
+        images = list(self.recipeimage_set.all().order_by('-is_primary', 'ordering'))
+        if not images:
+            return [DummyImage()]
+
+        result = []
+        for img in images:
+            # Check if ImageField exists and file is on disk
+            path_exists = img.image and os.path.exists(os.path.join(settings.MEDIA_ROOT, img.image.name))
+            result.append(img if path_exists else DummyImage())
+
+        return result
 
 
     def save(self, *args, **kwargs):
