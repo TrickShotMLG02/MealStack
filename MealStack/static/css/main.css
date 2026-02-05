@@ -2,6 +2,16 @@
 Global Settings Across all Pages
 ==============================*/
 
+/*=================
+Settings for header
+===================*/
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 
 
 /*===============
