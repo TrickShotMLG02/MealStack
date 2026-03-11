@@ -68,7 +68,7 @@ jobs:
             echo "docker_tags=${IMAGE_NAME}:${TAG},${IMAGE_NAME}:dev" >> $GITHUB_OUTPUT
           else
             echo "docker_tags=${IMAGE_NAME}:${TAG},${IMAGE_NAME}:latest" >> $GITHUB_OUTPUT
-
+          fi
       # Build and push multi-platform image using Buildx
       - name: Build and push Docker image (multi-platform)
         uses: docker/build-push-action@v5
