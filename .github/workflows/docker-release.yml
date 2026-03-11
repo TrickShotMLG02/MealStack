@@ -16,6 +16,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Set up QEMU for cross-platform builds
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,10 +40,8 @@ jobs:
         run: |
           TAG="${{ steps.tag.outputs.tag }}"
 
-          # Fetch all remote branches
           git fetch --prune --unshallow origin +refs/heads/*:refs/remotes/origin/*
 
-          # List remote branches containing this commit
           BRANCHES=$(git branch -r --contains HEAD | sed 's/origin\///')
 
           echo "Tag: $TAG"
@@ -65,11 +68,12 @@ jobs:
             echo "docker_tags=${IMAGE_NAME}:${TAG},${IMAGE_NAME}:dev" >> $GITHUB_OUTPUT
           else
             echo "docker_tags=${IMAGE_NAME}:${TAG},${IMAGE_NAME}:latest" >> $GITHUB_OUTPUT
-          fi
 
-      - name: Build and push Docker image
+      # Build and push multi-platform image using Buildx
+      - name: Build and push Docker image (multi-platform)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.docker_tags }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
