@@ -43,7 +43,7 @@ RUN /root/.local/bin/uv sync
 # Compile localization files
 # This will generate .po files if not present and compile .mo files
 RUN uv run python manage.py makemessages -a || true  # -a: all languages, ignore if no changes
-RUN uv run python manage.py compilemessages
+RUN uv run python manage.py compilemessages --ignore "*/site-packages/*"
 
 EXPOSE 8000
 
