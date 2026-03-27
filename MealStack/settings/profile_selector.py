@@ -120,6 +120,22 @@ def apply_env_overrides():
     if lang_env:
         settings.LANGUAGE_CODE = lang_env
 
+    # Reverse Proxy https -> http fixes
+    secure_proxy_ssl_header_env = os.getenv("SECURE_PROXY_SSL_HEADER")
+    if secure_proxy_ssl_header_env:
+        try:
+            header, value = secure_proxy_ssl_header_env.split(",", 1)
+            settings.SECURE_PROXY_SSL_HEADER = (header.strip(), value.strip())
+        except ValueError:
+            raise ValueError(
+                "SECURE_PROXY_SSL_HEADER must be in format 'HEADER,VALUE' "
+                "e.g. 'HTTP_X_FORWARDED_PROTO,https'"
+            )
+
+    use_x_forwarded_host_env = os.getenv("USE_X_FORWARDED_HOST")
+    if use_x_forwarded_host_env:
+        settings.USE_X_FORWARDED_HOST = use_x_forwarded_host_env.lower() in ("true", "1", "yes")
+
 
 # Call it immediately to apply overrides
 apply_env_overrides()
