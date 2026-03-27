@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-06 00:23+0100\n"
+"POT-Creation-Date: 2026-03-27 14:23+0000\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -18,96 +18,104 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\MealStack\settings\base.py:124
+#: MealStack/settings/base.py:128
 msgid "English"
 msgstr "Englisch"
 
-#: .\MealStack\settings\base.py:125
+#: MealStack/settings/base.py:129
 msgid "German"
 msgstr "Deutsch"
 
-#: .\MealStack\templates\components\header.html:16
+#: MealStack/templates/admin/login.html:10
+msgid "Login with OAuth"
+msgstr "Mit OAuth anmelden"
+
+#: MealStack/templates/admin/login.html:18
+msgid "Use internal authentication"
+msgstr "Interne Anmeldung verwenden"
+
+#: MealStack/templates/components/header.html:16
 msgid "Search recipes..."
 msgstr "Rezepte suchen..."
 
-#: .\MealStack\templates\components\header.html:24
+#: MealStack/templates/components/header.html:24
 msgid "Login"
 msgstr "Anmelden"
 
-#: .\MealStack\templates\components\header.html:25
+#: MealStack/templates/components/header.html:25
 msgid "Sign Up"
 msgstr "Registrieren"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:30
-#: .\MealStack\templates\recipes\recipe_list.html:23
+#: MealStack/templates/recipes/recipe_detail.html:30
+#: MealStack/templates/recipes/recipe_list.html:23
 msgid "Servings:"
 msgstr "Portionen:"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:31
+#: MealStack/templates/recipes/recipe_detail.html:31
 msgid "Prep:"
 msgstr "Vorbereitung:"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:32
+#: MealStack/templates/recipes/recipe_detail.html:32
 msgid "Cook:"
 msgstr "Kochen:"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:33
+#: MealStack/templates/recipes/recipe_detail.html:33
 msgid "Rest:"
 msgstr "Ruhezeit:"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:48
+#: MealStack/templates/recipes/recipe_detail.html:48
 msgid "Ingredients"
 msgstr "Zutaten"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:63
+#: MealStack/templates/recipes/recipe_detail.html:63
 msgid "Steps"
 msgstr "Schritte"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:79
+#: MealStack/templates/recipes/recipe_detail.html:79
 msgid "Notes"
 msgstr "Notizen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:87
+#: MealStack/templates/recipes/recipe_detail.html:87
 msgid "Nutrition (per serving)"
 msgstr "Nährwerte (pro Portion)"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:89
+#: MealStack/templates/recipes/recipe_detail.html:89
 msgid "Calories"
 msgstr "Kalorien"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:90
+#: MealStack/templates/recipes/recipe_detail.html:90
 msgid "Fat"
 msgstr "Fett"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:91
+#: MealStack/templates/recipes/recipe_detail.html:91
 msgid "Saturates"
 msgstr "Gesättigte Fettsäuren"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:92
+#: MealStack/templates/recipes/recipe_detail.html:92
 msgid "Carbs"
 msgstr "Kohlenhydrate"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:93
+#: MealStack/templates/recipes/recipe_detail.html:93
 msgid "Sugar"
 msgstr "Zucker"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:94
+#: MealStack/templates/recipes/recipe_detail.html:94
 msgid "Protein"
 msgstr "Eiweiß"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:95
+#: MealStack/templates/recipes/recipe_detail.html:95
 msgid "Salt"
 msgstr "Salz"
 
-#: .\MealStack\templates\recipes\recipe_list.html:4
-#: .\MealStack\templates\recipes\recipe_list.html:11
+#: MealStack/templates/recipes/recipe_list.html:4
+#: MealStack/templates/recipes/recipe_list.html:11
 msgid "All Recipes"
 msgstr "Alle Rezepte"
 
-#: .\MealStack\templates\recipes\recipe_list.html:24
+#: MealStack/templates/recipes/recipe_list.html:24
 msgid "Total time:"
 msgstr "Gesamtzeit:"
 
-#: .\MealStack\templates\recipes\recipe_list.html:28
+#: MealStack/templates/recipes/recipe_list.html:28
 msgid "No recipes available."
 msgstr "Keine Rezepte verfügbar."

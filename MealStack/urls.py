@@ -21,12 +21,19 @@ from django.urls import path, include
 
 from apps.recipes import views
 
+
 urlpatterns = [
+    path("admin/login/", views.CustomAdminLoginView.as_view(), name="admin_login"),
     path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),
     path('recipes/', include('apps.recipes.urls', namespace='recipes')),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
+
+if settings.OIDC_ENABLED:
+    urlpatterns += [
+        path("oidc/", include("mozilla_django_oidc.urls")),
+    ]
 
 # TODO: Only for DEV Environment
 if settings.DEBUG:

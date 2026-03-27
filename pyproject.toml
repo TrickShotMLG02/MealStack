@@ -12,4 +12,5 @@ dependencies = [
     "pillow==12.1.0",
     "mysqlclient==2.2.7",
     "openfoodfacts>=3.3.0",
+    "mozilla-django-oidc>=5.0.2",
 ]

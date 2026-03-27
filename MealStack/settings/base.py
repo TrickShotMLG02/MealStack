@@ -28,6 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+OIDC_ENABLED = False
+OIDC_ALLOW_LOCAL_LOGIN = True
+
+AUTHENTICATION_BACKENDS = []
 
 # Application definition
 

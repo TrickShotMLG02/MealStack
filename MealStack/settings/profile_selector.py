@@ -73,6 +73,42 @@ def apply_env_overrides():
         else:
             raise ValueError(f"Unknown DB_ENGINE: {db_engine_env}")
 
+    # OIDC override
+    oidc_enabled_env = os.getenv("OIDC_ENABLED")
+    if oidc_enabled_env:
+        settings.OIDC_ENABLED = oidc_enabled_env.lower() in ("true", "1", "yes")
+
+    # Default auth override
+    oidc_allow_local_login_env = os.getenv("OIDC_ALLOW_LOCAL_LOGIN")
+    if oidc_allow_local_login_env:
+        settings.OIDC_ALLOW_LOCAL_LOGIN = oidc_allow_local_login_env.lower() in ("true", "1", "yes")
+
+    if not settings.OIDC_ENABLED or settings.OIDC_ALLOW_LOCAL_LOGIN:
+        settings.AUTHENTICATION_BACKENDS.append(
+            "django.contrib.auth.backends.ModelBackend"
+        )
+
+    if settings.OIDC_ENABLED:
+        settings.AUTHENTICATION_BACKENDS.append(
+            "apps.common.backend.auth_backends.OIDCAuthBackend"
+        )
+
+        settings.OIDC_RP_CLIENT_ID = os.getenv("OIDC_CLIENT_ID")
+        settings.OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_CLIENT_SECRET")
+
+        settings.OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv("OIDC_AUTHORIZATION_ENDPOINT")
+        settings.OIDC_OP_TOKEN_ENDPOINT = os.getenv("OIDC_TOKEN_ENDPOINT")
+        settings.OIDC_OP_USER_ENDPOINT = os.getenv("OIDC_USERINFO_ENDPOINT")
+        settings.OIDC_OP_JWKS_ENDPOINT = os.getenv("OIDC_JWKS_ENDPOINT")
+
+        settings.OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO")
+        settings.OIDC_OP_ISSUER = os.getenv("OIDC_ISSUER")
+
+        settings.OIDC_RP_SCOPES = os.getenv(
+            "OIDC_SCOPES", "openid email profile"
+        )
+
+        settings.LOGIN_REDIRECT_URL = "/admin/"
 
     # Timezone Override
     tz_env = os.getenv("TIME_ZONE")
