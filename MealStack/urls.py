@@ -16,15 +16,16 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import include
 
 from apps.recipes import views
+from apps.recipes.admin import *
 
 
 urlpatterns = [
     path("admin/login/", views.CustomAdminLoginView.as_view(), name="admin_login"),
-    path('admin/', admin.site.urls),
+    path('admin/', my_admin_site.urls),
+    #path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),
     path('recipes/', include('apps.recipes.urls', namespace='recipes')),
     path('i18n/', include('django.conf.urls.i18n')),
