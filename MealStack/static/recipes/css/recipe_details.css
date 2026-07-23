@@ -418,7 +418,8 @@ a.recipe-action--primary:focus {
     color: var(--text-muted-color);
     font-size: 0.9rem;
     font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
-    font-variant-numeric: diagonal-fractions;
+    font-variant-numeric: normal;
+    font-feature-settings: "frac" 0;
     white-space: nowrap;
 }
 
