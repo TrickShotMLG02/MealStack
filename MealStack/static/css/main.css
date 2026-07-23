@@ -6,10 +6,24 @@ Global Settings Across all Pages
 Settings for header
 ===================*/
 
-.logo-link {
+.skip-link {
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    transform: translate(-50%, -140%);
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    background: var(--heading-color);
+    color: #fff;
+    font-weight: 700;
     text-decoration: none;
-    color: inherit;
-    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    transition: transform 160ms ease;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    transform: translate(-50%, 0);
 }
 
 

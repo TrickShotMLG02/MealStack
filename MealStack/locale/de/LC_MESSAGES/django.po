@@ -249,6 +249,21 @@ msgstr "Rezept-URL"
 msgid "Tags"
 msgstr "Tags"
 
+msgid "Recipe library"
+msgstr "Rezeptbibliothek"
+
+msgid "Header actions"
+msgstr "Header-Aktionen"
+
+msgid "Toggle theme"
+msgstr "Design wechseln"
+
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
+msgid "Admin"
+msgstr "Admin"
+
 msgid "Metric"
 msgstr "Wert"
 
