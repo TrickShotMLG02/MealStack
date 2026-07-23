@@ -291,11 +291,12 @@ msgstr "Suche löschen"
 msgid "No recipes matched your search."
 msgstr "Keine Rezepte entsprechen deiner Suche."
 
-msgid "Showing %(recipe_count)s recipe for \"%(query)s\""
-msgstr "Es wird %(recipe_count)s Rezept für \"%(query)s\" angezeigt"
-
-msgid "Showing %(recipe_count)s recipes for \"%(query)s\""
-msgstr "Es werden %(recipe_count)s Rezepte für \"%(query)s\" angezeigt"
+#: .\MealStack\templates\recipes\recipe_list.html:20
+#, python-format
+msgid "Showing %(recipe_count)s search result for \"%(query)s\""
+msgid_plural "Showing %(recipe_count)s search results for \"%(query)s\""
+msgstr[0] "Es wird %(recipe_count)s Suchergebnis für \"%(query)s\" angezeigt"
+msgstr[1] "Es werden %(recipe_count)s Suchergebnisse für \"%(query)s\" angezeigt"
 
 msgid "Metric"
 msgstr "Wert"

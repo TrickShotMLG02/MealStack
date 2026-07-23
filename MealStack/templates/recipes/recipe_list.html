@@ -17,10 +17,10 @@
             <h1 class="{% if search_query %}recipe-list-header__title{% else %}text-centered{% endif %}">{% trans "All Recipes" %}</h1>
             {% if search_query %}
                 <p class="recipe-list-header__meta">
-                    {% blocktrans with query=search_query count recipe_count=recipes|length %}
-                        Showing {{ recipe_count }} recipe for "{{ query }}"
+                    {% blocktrans trimmed with query=search_query count recipe_count=recipes|length %}
+                        Showing {{ recipe_count }} search result for "{{ query }}"
                     {% plural %}
-                        Showing {{ recipe_count }} recipes for "{{ query }}"
+                        Showing {{ recipe_count }} search results for "{{ query }}"
                     {% endblocktrans %}
                 </p>
             {% endif %}
