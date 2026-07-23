@@ -125,8 +125,5 @@ class Recipe(models.Model):
 
         super().save(*args, **kwargs)
 
-        from apps.recipes.services.nutrition import update_recipe_nutrition
-        update_recipe_nutrition(self)
-
     def __str__(self):
         return self.title
