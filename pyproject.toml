@@ -13,4 +13,5 @@ dependencies = [
     "mysqlclient==2.2.7",
     "openfoodfacts>=3.3.0",
     "mozilla-django-oidc>=5.0.2",
+    "reportlab>=5.0.0",
 ]

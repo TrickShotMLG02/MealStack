@@ -32,9 +32,17 @@ function initCarousel(carouselContainer) {
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.carousel-container').forEach(container => {
         const carousel = initCarousel(container);
+        const prevButton = container.querySelector('.carousel-prev');
+        const nextButton = container.querySelector('.carousel-next');
 
-        container.querySelector('.carousel-prev').onclick = () => carousel.changeSlide(-1);
-        container.querySelector('.carousel-next').onclick = () => carousel.changeSlide(1);
+        if (prevButton) {
+            prevButton.onclick = () => carousel.changeSlide(-1);
+        }
+
+        if (nextButton) {
+            nextButton.onclick = () => carousel.changeSlide(1);
+        }
+
         container.querySelectorAll('.dot').forEach((dot, i) => {
             dot.onclick = () => carousel.currentSlide(i);
         });
