@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+from math import gcd
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -69,8 +70,40 @@ def _recipe_notes(recipe: Recipe):
     return getattr(recipe, "prefetched_notes", None) or list(recipe.recipenote_set.all())
 
 
-def _format_quantity(quantity: float) -> str:
+def _format_decimal_quantity(quantity: float) -> str:
     return f"{quantity:.2f}".rstrip("0").rstrip(".")
+
+
+def _format_fraction_quantity(quantity: float) -> str:
+    value = float(quantity)
+    sign = "-" if value < 0 else ""
+    absolute = abs(value)
+    whole = int(absolute + 1e-9)
+    remainder = absolute - whole
+
+    if remainder < 0.02:
+        return f"{sign}{whole}"
+
+    best = None
+    for denominator in [2, 3, 4, 5, 6, 8, 10, 12, 16]:
+        numerator = round(remainder * denominator)
+        if numerator in (0, denominator):
+            continue
+
+        approximation = numerator / denominator
+        error = abs(approximation - remainder)
+        if best is None or error < best["error"]:
+            best = {"numerator": numerator, "denominator": denominator, "error": error}
+
+    if best is None or best["error"] > 0.03:
+        return _format_decimal_quantity(value)
+
+    divisor = gcd(best["numerator"], best["denominator"])
+    numerator = best["numerator"] // divisor
+    denominator = best["denominator"] // divisor
+    fraction = f"{numerator}/{denominator}"
+
+    return f"{sign}{whole} {fraction}" if whole else f"{sign}{fraction}"
 
 
 def _duration_display(value) -> str:
@@ -166,8 +199,8 @@ class CroppedImageBox(Flowable):
         self.canv.restoreState()
 
 
-def _section_table(rows, col_widths, background, border_color, extra_styles=None):
-    table = Table(rows, colWidths=col_widths, repeatRows=0)
+def _section_table(rows, col_widths, background, border_color, extra_styles=None, repeat_rows=0):
+    table = Table(rows, colWidths=col_widths, repeatRows=repeat_rows)
     commands = [
         ("BACKGROUND", (0, 0), (-1, -1), background),
         ("BOX", (0, 0), (-1, -1), 0.7, border_color),
@@ -482,8 +515,6 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
     if nutrition:
         nutrition_totals = scale_nutrition(nutrition, target_servings)
         story.append(Paragraph(_("Nutrition"), styles["SectionHeading"]))
-        story.append(_boxed_paragraph(f"{_('Selected servings')}: {target_servings}", styles, "RecipeIntro", doc.width * 0.35, PALETTE["panel_soft"], PALETTE["line"]))
-        story.append(Spacer(1, 4))
         nutrition_rows = [
             [
                 Paragraph(_("Metric"), styles["NutritionLabel"]),
@@ -559,7 +590,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
             quantity = scale_quantity(ri.quantity, recipe.servings, target_servings)
             ingredient_rows.append(
                 [
-                    Paragraph(f"{_format_quantity(quantity)} {escape(ri.unit.name)}", styles["IngredientAmount"]),
+                    Paragraph(f"{_format_fraction_quantity(quantity)} {escape(ri.unit.name)}", styles["IngredientAmount"]),
                     Paragraph(escape(ri.ingredient.name), styles["IngredientName"]),
                 ]
             )
@@ -583,6 +614,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
                         else []
                     ),
                 ],
+                repeat_rows=1 if has_group_title else 0,
             )
             story.append(ingredient_table)
             story.append(Spacer(1, 6))
@@ -630,6 +662,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
                         else []
                     ),
                 ],
+                repeat_rows=1 if has_group_title else 0,
             )
             story.append(step_table)
             story.append(Spacer(1, 6))

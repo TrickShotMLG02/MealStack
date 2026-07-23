@@ -249,8 +249,15 @@ msgstr "Rezept-URL"
 msgid "Tags"
 msgstr "Tags"
 
+msgid "Metric"
+msgstr "Wert"
+
+msgid "Per serving"
+msgstr "Pro Portion"
+
+msgid "Saturates"
+msgstr "Gesättigte Fettsäuren"
+
 #~ msgid "Nutrition (per serving)"
 #~ msgstr "Nährwerte (pro Portion)"
 
-#~ msgid "Saturates"
-#~ msgstr "Gesättigte Fettsäuren"
