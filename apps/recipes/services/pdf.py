@@ -24,6 +24,7 @@ from reportlab.platypus import (
 from django.core.exceptions import ObjectDoesNotExist
 
 from apps.recipes.models import Recipe
+from apps.recipes.services.servings import scale_nutrition, scale_quantity
 
 
 def _recipe_image_path(recipe: Recipe) -> Path | None:
@@ -59,7 +60,12 @@ def _recipe_notes(recipe: Recipe):
     return getattr(recipe, "prefetched_notes", None) or list(recipe.recipenote_set.all())
 
 
-def build_recipe_pdf(recipe: Recipe, recipe_url: str) -> bytes:
+def _format_quantity(quantity: float) -> str:
+    return f"{quantity:.2f}".rstrip("0").rstrip(".")
+
+
+def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = None) -> bytes:
+    target_servings = servings or recipe.servings
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -149,7 +155,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str) -> bytes:
             pass
 
     summary_data = [
-        [Paragraph(_("Servings"), styles["SmallLabel"]), str(recipe.servings)],
+        [Paragraph(_("Servings"), styles["SmallLabel"]), str(target_servings)],
         [Paragraph(_("Total time"), styles["SmallLabel"]), recipe.total_time_display()],
     ]
     summary_table = Table(summary_data, colWidths=[40 * mm, 120 * mm])
@@ -181,14 +187,15 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str) -> bytes:
         nutrition = None
 
     if nutrition:
+        nutrition_totals = scale_nutrition(nutrition, target_servings)
         story.append(Paragraph(_("Nutrition"), styles["SectionHeading"]))
         nutrition_data = [
-            [_("Calories"), f"{nutrition.per_serving_kcal:.0f} kcal"],
-            [_("Protein"), f"{nutrition.per_serving_protein:.0f} g"],
-            [_("Fat"), f"{nutrition.per_serving_fat:.0f} g"],
-            [_("Carbs"), f"{nutrition.per_serving_carbs:.0f} g"],
-            [_("Sugar"), f"{nutrition.per_serving_sugar:.0f} g"],
-            [_("Salt"), f"{nutrition.per_serving_salt:.0f} g"],
+            [_("Calories"), f"{nutrition_totals.kcal:.0f} kcal"],
+            [_("Protein"), f"{nutrition_totals.protein:.0f} g"],
+            [_("Fat"), f"{nutrition_totals.fat:.0f} g"],
+            [_("Carbs"), f"{nutrition_totals.carbs:.0f} g"],
+            [_("Sugar"), f"{nutrition_totals.sugar:.0f} g"],
+            [_("Salt"), f"{nutrition_totals.salt:.0f} g"],
         ]
         nutrition_table = Table(nutrition_data, colWidths=[45 * mm, 45 * mm])
         nutrition_table.setStyle(
@@ -213,7 +220,8 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str) -> bytes:
         if len(ingredient_groups) > 1:
             story.append(Paragraph(escape(group.name or _("Ingredients")), styles["SmallLabel"]))
         for ri in group.recipeingredient_set.all():
-            line = f"{ri.quantity:g} {escape(ri.unit.name)} {escape(ri.ingredient.name)}"
+            quantity = scale_quantity(ri.quantity, recipe.servings, target_servings)
+            line = f"{_format_quantity(quantity)} {escape(ri.unit.name)} {escape(ri.ingredient.name)}"
             story.append(Paragraph(line, styles["BodyText"]))
         story.append(Spacer(1, 4))
 

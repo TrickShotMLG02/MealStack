@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<article class="recipe-detail">
+<article class="recipe-detail" data-base-servings="{{ recipe.servings }}">
     <header class="recipe-hero">
         <div class="recipe-hero__media-stack">
             <div class="recipe-hero__media">
@@ -29,7 +29,7 @@
                 <div class="recipe-glance__grid">
                     <div>
                         <span class="nutrition-label">{% trans "Servings" %}</span>
-                        <strong>{{ recipe.servings }}</strong>
+                        <strong data-servings-display>{{ recipe.servings }}</strong>
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Ingredients" %}</span>
@@ -74,7 +74,7 @@
             <dl class="recipe-facts" aria-label="{% trans 'Recipe facts' %}">
                 <div>
                     <dt>{% trans "Servings" %}</dt>
-                    <dd>{{ recipe.servings }}</dd>
+                    <dd data-servings-display>{{ recipe.servings }}</dd>
                 </div>
                 <div>
                     <dt>{% trans "Prep" %}</dt>
@@ -105,24 +105,27 @@
             {% if nutrition %}
             <section class="recipe-summary-panel" aria-labelledby="nutrition-summary-title">
                 <div class="section-heading">
-                    <h2 id="nutrition-summary-title">{% trans "Per Serving" %}</h2>
+                    <h2 id="nutrition-summary-title">{% trans "Nutrition" %}</h2>
                 </div>
+                <p class="recipe-panel-note">
+                    {% trans "Selected servings" %}: <strong data-selected-servings-summary>{{ selected_servings }}</strong>
+                </p>
                 <div class="nutrition-pills">
                     <div>
                         <span class="nutrition-label">{% trans "Calories" %}</span>
-                        <strong>{{ nutrition.per_serving_kcal|floatformat:0 }}</strong>
+                        <strong data-nutrition-value="kcal" data-per-serving="{{ nutrition.per_serving_kcal }}" data-unit=" kcal">{{ nutrition_totals.kcal|floatformat:0 }} kcal</strong>
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Protein" %}</span>
-                        <strong>{{ nutrition.per_serving_protein|floatformat:0 }} g</strong>
+                        <strong data-nutrition-value="protein" data-per-serving="{{ nutrition.per_serving_protein }}" data-unit=" g">{{ nutrition_totals.protein|floatformat:0 }} g</strong>
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Carbs" %}</span>
-                        <strong>{{ nutrition.per_serving_carbs|floatformat:0 }} g</strong>
+                        <strong data-nutrition-value="carbs" data-per-serving="{{ nutrition.per_serving_carbs }}" data-unit=" g">{{ nutrition_totals.carbs|floatformat:0 }} g</strong>
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Fat" %}</span>
-                        <strong>{{ nutrition.per_serving_fat|floatformat:0 }} g</strong>
+                        <strong data-nutrition-value="fat" data-per-serving="{{ nutrition.per_serving_fat }}" data-unit=" g">{{ nutrition_totals.fat|floatformat:0 }} g</strong>
                     </div>
                 </div>
             </section>
@@ -138,6 +141,24 @@
     </section>
 
     <div class="recipe-toolbar" role="toolbar" aria-label="{% trans 'Recipe actions' %}">
+        <div class="recipe-servings-control" data-servings-control>
+            <label class="recipe-servings-control__label" for="recipe-servings-input">{% trans "Servings" %}</label>
+            <div class="recipe-servings-control__stepper">
+                <button type="button" class="recipe-servings-control__button" data-servings-decrease aria-label="{% trans 'Decrease servings' %}">−</button>
+                <input
+                    id="recipe-servings-input"
+                    class="recipe-servings-control__input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value="{{ selected_servings }}"
+                    inputmode="numeric"
+                    data-servings-input
+                    aria-label="{% trans 'Servings' %}"
+                >
+                <button type="button" class="recipe-servings-control__button" data-servings-increase aria-label="{% trans 'Increase servings' %}">+</button>
+            </div>
+        </div>
         <button
             type="button"
             class="recipe-action"
@@ -153,6 +174,7 @@
             href="{% url 'recipes:recipe_export_pdf' recipe.slug %}"
             target="_blank"
             rel="noopener noreferrer"
+            data-pdf-link
         >
             {% trans "Print PDF" %}
         </a>
@@ -179,7 +201,14 @@
                     <ul class="ingredient-list">
                         {% for ri in group.recipeingredient_set.all %}
                             <li>
-                                <span class="ingredient-amount">{{ ri.quantity }} {{ ri.unit.name }}</span>
+                                <span
+                                    class="ingredient-amount"
+                                    data-ingredient-quantity
+                                    data-base-quantity="{{ ri.quantity }}"
+                                    data-unit="{{ ri.unit.name }}"
+                                >
+                                    {{ ri.quantity }} {{ ri.unit.name }}
+                                </span>
                                 <span class="ingredient-name">{{ ri.ingredient.name }}</span>
                             </li>
                         {% empty %}
@@ -211,14 +240,17 @@
                 <div class="section-heading">
                     <h2 id="nutrition-title">{% trans "Nutrition" %}</h2>
                 </div>
+                <p class="recipe-panel-note">
+                    {% trans "Selected servings" %}: <strong data-selected-servings-note>{{ selected_servings }}</strong>
+                </p>
                 <table class="nutrition-table">
                     <tbody>
-                        <tr><th>{% trans "Calories" %}</th><td>{{ nutrition.per_serving_kcal|floatformat:0 }} kcal</td></tr>
-                        <tr><th>{% trans "Protein" %}</th><td>{{ nutrition.per_serving_protein|floatformat:0 }} g</td></tr>
-                        <tr><th>{% trans "Fat" %}</th><td>{{ nutrition.per_serving_fat|floatformat:0 }} g</td></tr>
-                        <tr><th>{% trans "Carbs" %}</th><td>{{ nutrition.per_serving_carbs|floatformat:0 }} g</td></tr>
-                        <tr><th>{% trans "Sugar" %}</th><td>{{ nutrition.per_serving_sugar|floatformat:0 }} g</td></tr>
-                        <tr><th>{% trans "Salt" %}</th><td>{{ nutrition.per_serving_salt|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Calories" %}</th><td data-nutrition-value="kcal" data-per-serving="{{ nutrition.per_serving_kcal }}" data-unit=" kcal">{{ nutrition_totals.kcal|floatformat:0 }} kcal</td></tr>
+                        <tr><th>{% trans "Protein" %}</th><td data-nutrition-value="protein" data-per-serving="{{ nutrition.per_serving_protein }}" data-unit=" g">{{ nutrition_totals.protein|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Fat" %}</th><td data-nutrition-value="fat" data-per-serving="{{ nutrition.per_serving_fat }}" data-unit=" g">{{ nutrition_totals.fat|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Carbs" %}</th><td data-nutrition-value="carbs" data-per-serving="{{ nutrition.per_serving_carbs }}" data-unit=" g">{{ nutrition_totals.carbs|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Sugar" %}</th><td data-nutrition-value="sugar" data-per-serving="{{ nutrition.per_serving_sugar }}" data-unit=" g">{{ nutrition_totals.sugar|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Salt" %}</th><td data-nutrition-value="salt" data-per-serving="{{ nutrition.per_serving_salt }}" data-unit=" g">{{ nutrition_totals.salt|floatformat:0 }} g</td></tr>
                     </tbody>
                 </table>
             </section>

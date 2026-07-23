@@ -78,6 +78,14 @@ msgstr "Kochmodus"
 msgid "Exit cook mode"
 msgstr "Kochmodus beenden"
 
+#: .\MealStack\templates\recipes\recipe_detail.html:57
+msgid "Decrease servings"
+msgstr "Portionen verringern"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:57
+msgid "Increase servings"
+msgstr "Portionen erhöhen"
+
 #: .\MealStack\templates\recipes\recipe_detail.html:63
 msgid "Print PDF"
 msgstr "PDF drucken"
@@ -142,6 +150,10 @@ msgstr "Gesamt"
 #: .\MealStack\templates\recipes\recipe_detail.html:107
 msgid "Per Serving"
 msgstr "Pro Portion"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:108
+msgid "Selected servings"
+msgstr "Gewählte Portionen"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:111
 #: .\MealStack\templates\recipes\recipe_detail.html:180

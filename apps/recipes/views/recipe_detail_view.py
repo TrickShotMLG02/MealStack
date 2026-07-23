@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from apps.recipes.models import Recipe, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
 from apps.recipes.services.pdf import build_recipe_pdf
+from apps.recipes.services.servings import coerce_servings, scale_nutrition
 
 
 def _recipe_detail_queryset():
@@ -42,8 +43,11 @@ def _recipe_detail_queryset():
         ),
     )
 
+
 def recipe_detail(request, slug):
     recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
+    nutrition = getattr(recipe, "recipe_nutrition", None)
+    selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
 
     images = getattr(recipe, "prefetched_images", None) or recipe.images_or_placeholder
     ingredient_count = sum(
@@ -58,19 +62,22 @@ def recipe_detail(request, slug):
     return render(request, "recipes/recipe_detail.html", {
         "recipe": recipe,
         "images": images,
-        "nutrition": getattr(recipe, "recipe_nutrition", None),
+        "nutrition": nutrition,
+        "nutrition_totals": scale_nutrition(nutrition, selected_servings),
         "notes": getattr(recipe, "prefetched_notes", []),
         "ingredient_groups": getattr(recipe, "prefetched_ingredient_groups", []),
         "step_groups": getattr(recipe, "prefetched_step_groups", []),
         "ingredient_count": ingredient_count,
         "step_count": step_count,
+        "selected_servings": selected_servings,
     })
 
 
 def recipe_export_pdf(request, slug):
     recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
     recipe_url = request.build_absolute_uri(reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug}))
-    pdf_bytes = build_recipe_pdf(recipe, recipe_url)
+    selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
+    pdf_bytes = build_recipe_pdf(recipe, recipe_url, selected_servings)
 
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="{recipe.slug or "recipe"}.pdf"'

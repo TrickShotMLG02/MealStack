@@ -172,6 +172,12 @@
     font-size: 1.1rem;
 }
 
+.recipe-panel-note {
+    margin: -0.25rem 0 0.85rem;
+    color: var(--text-muted-color);
+    font-size: 0.88rem;
+}
+
 .recipe-layout {
     display: grid;
     grid-template-columns: minmax(280px, 0.95fr) minmax(0, 1.35fr);
@@ -184,6 +190,76 @@
     flex-wrap: wrap;
     gap: 0.6rem;
     margin: 0 0 1rem;
+    align-items: center;
+}
+
+.recipe-servings-control {
+    display: grid;
+    gap: 0.35rem;
+    min-width: 12.5rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--card-bg-color);
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+}
+
+.recipe-servings-control__label {
+    color: var(--text-muted-color);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.recipe-servings-control__stepper {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(4.5rem, 1fr) 2.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--background-color);
+}
+
+.recipe-servings-control__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--heading-color);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.recipe-servings-control__button:hover,
+.recipe-servings-control__button:focus {
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+}
+
+.recipe-servings-control__input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-inline: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--heading-color);
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    appearance: textfield;
+}
+
+.recipe-servings-control__input:focus {
+    outline: none;
+}
+
+.recipe-servings-control__input::-webkit-outer-spin-button,
+.recipe-servings-control__input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
 }
 
 .recipe-action,
@@ -191,18 +267,23 @@ a.recipe-action:link,
 a.recipe-action:visited,
 a.recipe-action:hover,
 a.recipe-action:focus {
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    height: 2.75rem;
     padding: 0.68rem 1rem;
     border-radius: 999px;
     border: 1px solid var(--border-color);
     background: var(--card-bg-color);
     color: var(--heading-color);
     font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
     text-decoration: none;
     cursor: pointer;
     box-shadow: 0 8px 20px var(--card-shadow-color);
+    flex: 0 0 auto;
 }
 
 .recipe-action--primary,
@@ -449,6 +530,10 @@ a.recipe-action--primary:focus {
     gap: 1rem;
 }
 
+.recipe-detail--cook-mode .recipe-servings-control {
+    min-width: 10rem;
+}
+
 .recipe-detail--cook-mode .group-title {
     margin-top: 0.9rem;
 }
@@ -515,6 +600,7 @@ a.recipe-action--primary:focus {
         gap: 0.45rem;
     }
 
+    .recipe-servings-control,
     .recipe-action {
         width: 100%;
     }
