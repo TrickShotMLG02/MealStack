@@ -98,16 +98,17 @@ def _metric_card(label: str, value: str, styles, width: float, background: color
             [Paragraph(escape(value), styles["CardValue"])],
         ],
         colWidths=[width],
+        rowHeights=[8 * mm, 12 * mm],
     )
     card.setStyle(
         TableStyle(
             [
                 ("BACKGROUND", (0, 0), (-1, -1), background),
                 ("BOX", (0, 0), (-1, -1), 0.7, border),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 4),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ]
         )
@@ -266,10 +267,11 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
             name="CardLabel",
             parent=styles["BodyText"],
             fontName="Helvetica-Bold",
-            fontSize=7.4,
-            leading=8.6,
+            fontSize=6.8,
+            leading=7.4,
             textColor=PALETTE["muted"],
             alignment=1,
+            splitLongWords=False,
         )
     )
     styles.add(
@@ -281,6 +283,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
             leading=15,
             textColor=PALETTE["ink"],
             alignment=1,
+            splitLongWords=False,
         )
     )
     styles.add(
@@ -385,24 +388,36 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
         Paragraph(_format_meta(recipe), styles["RecipeMeta"]),
     ]
 
+    metric_card_width = hero_left_content_width / 4
+
     if tags:
         tag_text = ", ".join(escape(tag.name) for tag in tags)
         intro_flowables.append(_boxed_paragraph(tag_text, styles, "TagLine", hero_left_content_width, PALETTE["accent_soft"], PALETTE["accent"]))
+        intro_flowables.append(Spacer(1, 3 * mm))
 
-    metric_card_width = (hero_left_content_width - 9 * mm) / 4
-
-    intro_flowables.append(
-        Table(
-            [[
-                _metric_card(_("Servings"), str(target_servings), styles, metric_card_width, PALETTE["accent_soft"], PALETTE["accent"]),
-                _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-                _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-                _metric_card(_("Total"), _duration_display(recipe.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
-            ]],
-            colWidths=[metric_card_width] * 4,
-            hAlign="LEFT",
+    metric_row = Table(
+        [[
+            _metric_card(_("Servings"), str(target_servings), styles, metric_card_width, PALETTE["accent_soft"], PALETTE["accent"]),
+            _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Total"), _duration_display(recipe.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
+        ]],
+        colWidths=[metric_card_width] * 4,
+        rowHeights=[20 * mm],
+        hAlign="LEFT",
+    )
+    metric_row.setStyle(
+        TableStyle(
+            [
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
         )
     )
+    intro_flowables.append(metric_row)
 
     if has_hero_image:
         try:
