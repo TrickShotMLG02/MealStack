@@ -23,8 +23,8 @@ class MyAdminSite(admin.AdminSite):
             ],
         }
         recipe_importers_section = {
-            "name": "Recipe Importers",
-            "app_label": "recipe_importers",
+            "name": "Recipe Scrapers",
+            "app_label": "recipe_scrapers",
             "url_path": "/admin/importers/recipe/",
             "models": [
                 {

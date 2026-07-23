@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
+from apps.recipes.importers.recipes.bbcgoodfood import BBCGoodFoodImporter
 from apps.recipes.importers.recipes.chefkoch import ChefkochImporter
+from apps.recipes.importers.recipes.epicurious import EpicuriousImporter
 from apps.recipes.importers.ingredients.openfoodfacts import OpenFoodFactsImporter
 from apps.recipes.importers.ingredients.base import EANNotFound
 
@@ -23,20 +25,55 @@ def ingredient_importer(request):
     return render(request, "admin/ingredient_importer.html", {"message": message})
 
 
-def recipe_importer(request):
+def _recipe_importer_view(request, importer_cls, site_name, url_placeholder):
     message = None
     if request.method == "POST":
         url = request.POST.get("url")
         if url:
             try:
-                importer = ChefkochImporter(url=url)
+                importer = importer_cls(url=url)
                 recipe = importer.import_recipe()
                 message = f"Recipe '{recipe.title}' imported successfully!"
             except Exception as e:
                 message = f"Error: {str(e)}"
         else:
             message = "Please provide a valid recipe URL."
-    return render(request, "admin/recipe_importer.html", {"message": message})
+    return render(
+        request,
+        "admin/recipe_importer.html",
+        {
+            "message": message,
+            "site_name": site_name,
+            "url_placeholder": url_placeholder,
+        },
+    )
+
+
+def chefkoch_importer(request):
+    return _recipe_importer_view(
+        request,
+        ChefkochImporter,
+        "Chefkoch",
+        "https://www.chefkoch.de/rezepte/...",
+    )
+
+
+def bbcgoodfood_importer(request):
+    return _recipe_importer_view(
+        request,
+        BBCGoodFoodImporter,
+        "BBC Good Food",
+        "https://www.bbcgoodfood.com/recipes/...",
+    )
+
+
+def epicurious_importer(request):
+    return _recipe_importer_view(
+        request,
+        EpicuriousImporter,
+        "Epicurious",
+        "https://www.epicurious.com/recipes/food/views/...",
+    )
 
 
 INGREDIENT_IMPORTERS = [
@@ -51,7 +88,17 @@ RECIPE_IMPORTERS = [
     {
         "name": "Chefkoch",
         "url_path": "recipe/chefkoch/",
-        "view": recipe_importer,
+        "view": chefkoch_importer,
+    },
+    {
+        "name": "BBC Good Food",
+        "url_path": "recipe/bbc-good-food/",
+        "view": bbcgoodfood_importer,
+    },
+    {
+        "name": "Epicurious",
+        "url_path": "recipe/epicurious/",
+        "view": epicurious_importer,
     },
 ]
 
@@ -74,7 +121,7 @@ def importers_home(request):
             "section_title": "Importers",
             "importers": [
                 {"name": "Ingredient Importers", "url": "/admin/importers/ingredient/"},
-                {"name": "Recipe Importers", "url": "/admin/importers/recipe/"},
+                {"name": "Recipe Scrapers", "url": "/admin/importers/recipe/"},
             ],
         },
     )
@@ -96,7 +143,7 @@ def recipe_importers_home(request):
         request,
         "admin/importers_home.html",
         {
-            "section_title": "Recipe Importers",
+            "section_title": "Recipe Scrapers",
             "importers": _build_importers_list(RECIPE_IMPORTERS),
         },
     )

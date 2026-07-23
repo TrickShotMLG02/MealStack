@@ -20,7 +20,7 @@ class RecipeListSearchTests(TestCase):
         recipe = Recipe.objects.create(
             title=title,
             servings=4,
-            status="draft",
+            status="published",
             author=author,
             source=source,
         )

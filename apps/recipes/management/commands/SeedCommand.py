@@ -4,7 +4,7 @@ from django.core.management import BaseCommand
 
 
 class SeedCommand(BaseCommand, ABC):
-    help = "Abstract base seeder (Change this in subclasses)."
+    help = "Abstract base seeder."
 
     @abstractmethod
     def get_seed_name(self):
@@ -12,7 +12,6 @@ class SeedCommand(BaseCommand, ABC):
         This method is called for printing the seed name.
         """
         pass
-
 
     def handle(self, *args, silent=False, raise_on_error=False, **kwargs):
         """
@@ -22,26 +21,18 @@ class SeedCommand(BaseCommand, ABC):
         """
 
         def write(msg: str):
-            """
-            This method is called to write the message to the stdout.
-            It only writes the message if `silent` is `False`.
-            :param msg: The message to write.
-            """
             if not silent:
                 self.stdout.write(msg)
-
 
         write(f"Seeding {self.get_seed_name()}...")
         try:
             self.seed(*args, **kwargs)
-        except Exception as e:
-            write(f"❌ Failed to seed {self.get_seed_name()}: {e}")
+        except Exception as exc:
+            write(f"Failed to seed {self.get_seed_name()}: {exc}")
             if raise_on_error:
-                raise e
+                raise exc
         else:
-            write(self.style.SUCCESS(f"✅ Successfully seeded {self.get_seed_name()}."))
-
-
+            write(self.style.SUCCESS(f"Successfully seeded {self.get_seed_name()}."))
 
     @abstractmethod
     def seed(self, *args, **kwargs):

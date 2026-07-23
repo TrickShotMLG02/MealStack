@@ -31,7 +31,7 @@ def recipe_list(request):
         )
 
     recipes = (
-        Recipe.objects.filter(status='draft')
+        Recipe.objects.filter(status='published')
         .select_related("cuisine")
         .prefetch_related(*prefetches)
         .order_by('-created_at')

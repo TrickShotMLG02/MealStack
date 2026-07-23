@@ -44,20 +44,19 @@ class OpenFoodFactsImporter(BaseIngredientImporter):
         proteins = nutriments.get('proteins_100g', 0)
         salt = nutriments.get('salt_100g', 0)
 
-        ingredient = Ingredient.objects.create(
+        ingredient, _ = Ingredient.objects.update_or_create(
             ean=code,
-            name=product_name,
-            generic_name=generic_name,
-            brand=brands[0],
-
-            kcal=kcal,
-            fat=fat,
-            saturates=saturated_fat,
-            carbs=carbs,
-            sugar=sugar,
-            protein=proteins,
-            salt=salt,
+            defaults={
+                "name": product_name,
+                "generic_name": generic_name,
+                "brand": brands[0],
+                "kcal": kcal,
+                "fat": fat,
+                "saturates": saturated_fat,
+                "carbs": carbs,
+                "sugar": sugar,
+                "protein": proteins,
+                "salt": salt,
+            },
         )
-
-        ingredient.save()
         return ingredient

@@ -24,6 +24,13 @@ It supports recipe search, tagging, categories, localized UI text, recipe import
 - Import recipes from Chefkoch
 - Use light and dark themes
 
+## 📷 Preview
+
+<p>
+  <img src="docs/screenshots/recipe-list.png" alt="Meal Stack recipe list view" width="49%">
+  <img src="docs/screenshots/recipe-detail.png" alt="Meal Stack recipe detail view" width="49%">
+</p>
+
 ## 🚀 Quick Start
 
 ### 1. Clone and configure

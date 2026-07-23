@@ -305,7 +305,7 @@ def search_suggestions(query: str, limit: int = 6) -> list[SearchSuggestion]:
     seen: set[tuple[str, str]] = set()
 
     recipe_candidates = (
-        Recipe.objects.filter(status="draft")
+        Recipe.objects.filter(status="published")
         .select_related("cuisine")
         .only("title", "slug", "author", "source", "cuisine__name")
     )
@@ -338,21 +338,21 @@ def search_suggestions(query: str, limit: int = 6) -> list[SearchSuggestion]:
 
     tag_names = _distinct_values(
         list(
-            Recipe.objects.filter(status="draft")
+            Recipe.objects.filter(status="published")
             .values_list("tags__name", flat=True)
             .distinct()
         )
     )
     cuisine_names = _distinct_values(
         list(
-            Recipe.objects.filter(status="draft", cuisine__isnull=False)
+            Recipe.objects.filter(status="published", cuisine__isnull=False)
             .values_list("cuisine__name", flat=True)
             .distinct()
         )
     )
     ingredient_names = _distinct_values(
         list(
-            Recipe.objects.filter(status="draft")
+            Recipe.objects.filter(status="published")
             .values_list("recipeingredientgroup__recipeingredient__ingredient__name", flat=True)
             .distinct()
         )

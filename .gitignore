@@ -54,6 +54,8 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
+/MealStack/media/
+*.sqlite3
 
 # Flask stuff:
 instance/
