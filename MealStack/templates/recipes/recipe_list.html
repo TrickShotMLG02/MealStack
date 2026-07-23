@@ -8,24 +8,30 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="text-centered">{% trans "All Recipes" %}</h1>
+<section class="recipe-list-page">
+    <header class="recipe-list-header">
+        <h1 class="text-centered">{% trans "All Recipes" %}</h1>
+    </header>
 
-<div class="recipe-grid">
-    {% for recipe in recipes %}
-    <div class="card hoverable">
-        <!-- Always show primary or placeholder -->
-        <img src="{{ recipe.primary_or_placeholder }}" alt="{{ recipe.title }}">
+    <div class="recipe-grid">
+        {% for recipe in recipes %}
+        <a class="recipe-card card hoverable" href="{% url 'recipes:recipe_detail' recipe.slug %}" aria-label="{{ recipe.title }}">
+            <div class="recipe-card__media">
+                <img src="{{ recipe.list_image_url }}" alt="{{ recipe.title }}">
+            </div>
 
-        <h2 class="recipe-title"><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
+            <div class="recipe-card__body">
+                <h3 class="recipe-title">{{ recipe.title }}</h3>
 
-        <!-- Tags -->
-        <div class="tag-container vertical-tags">
-            <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
-            <span class="tag">{% trans "Total time:" %} {{ recipe.total_time|pretty_duration }}</span>
-        </div>
+                <div class="tag-container horizontal-tags recipe-card__meta">
+                    <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
+                    <span class="tag">{% trans "Total time:" %} {{ recipe.total_time|pretty_duration }}</span>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="recipe-list-empty">{% trans "No recipes available." %}</p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p>{% trans "No recipes available." %}</p>
-    {% endfor %}
-</div>
+</section>
 {% endblock %}

@@ -1,28 +1,104 @@
-/* Recipe grid / list container */
+.recipe-list-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 3rem;
+}
+
+.recipe-list-header {
+    margin-bottom: 1.5rem;
+}
+
 .recipe-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5em;
-
-
-    max-width: 75%;
-    margin: 40px auto;
-    padding: 25px 30px; /* override default padding */
-
-    margin-top: 2em;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
 }
 
-.recipe-title {
-    font-size: 2.5rem;
-    color: var(--heading-color);
-    margin-bottom: 15px;
-    text-align: center;
+.recipe-card.card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    background: var(--card-bg-color);
+    height: 21rem;
 }
 
-/* Recipe card image */
-.card img {
+.recipe-card.card:hover {
+    text-decoration: none;
+}
+
+.recipe-card__media {
+    flex: 0 0 12.25rem;
+    overflow: hidden;
+    background: var(--background-color);
+}
+
+.recipe-card__media img {
     width: 100%;
-    height: 200px;
+    height: 100%;
+    display: block;
     object-fit: cover;
-    border-radius: 8px;
+}
+
+.recipe-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1rem 1rem 1.15rem;
+    flex: 1;
+    min-height: 0;
+}
+
+.recipe-card .recipe-title {
+    margin: 0;
+    color: var(--heading-color);
+    font-size: 1.25rem;
+    line-height: 1.25;
+    border: 0;
+    padding: 0;
+    text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 3.1rem;
+}
+
+.recipe-card__meta {
+    margin: 0;
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: flex-start;
+    min-height: 3.25rem;
+}
+
+.recipe-card__meta .tag {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .recipe-card.card {
+        height: 20rem;
+    }
+
+    .recipe-card__media {
+        flex-basis: 11rem;
+    }
+}
+
+.recipe-list-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 1rem 0;
+    color: var(--text-muted-color);
 }
