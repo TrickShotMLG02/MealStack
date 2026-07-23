@@ -34,7 +34,7 @@ class RecipeListSearchTests(TestCase):
 
         if ingredient_names:
             group = RecipeIngredientGroup.objects.create(recipe=recipe, name="Main", order=0)
-            unit = Unit.objects.create(name="gram", type="weight", grams_per_unit=1)
+            unit, _ = Unit.objects.get_or_create(name="gram", defaults={"type": "weight", "grams_per_unit": 1})
             for index, ingredient_name in enumerate(ingredient_names):
                 ingredient = Ingredient.objects.create(name=ingredient_name)
                 RecipeIngredient.objects.create(
@@ -98,6 +98,36 @@ class RecipeListSearchTests(TestCase):
                 self.assertContains(response, recipe.title)
                 self.assertNotContains(response, "Plain Rice")
 
+    def test_ingredient_queries_only_match_recipes_with_that_ingredient(self):
+        recipe = self._create_recipe(
+            "Garden Soup",
+            ingredient_names=["Basil"],
+        )
+        misleading_recipe = self._create_recipe(
+            "Basil Free Soup",
+            ingredient_names=["Tomato"],
+            note_text="A basic starter.",
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"), {"q": "basil"})
+        self.assertContains(response, recipe.title)
+        self.assertNotContains(response, misleading_recipe.title)
+
+    def test_ingredient_search_mode_is_exact_for_selected_suggestions(self):
+        recipe = self._create_recipe(
+            "Garden Soup",
+            ingredient_names=["Basil"],
+        )
+        misleading_recipe = self._create_recipe(
+            "Basil Free Soup",
+            ingredient_names=["Tomato"],
+            note_text="A basic starter.",
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"), {"q": "basil", "kind": "ingredient"})
+        self.assertContains(response, recipe.title)
+        self.assertNotContains(response, misleading_recipe.title)
+
     def test_search_returns_unique_recipes_for_multi_match_queries(self):
         recipe = self._create_recipe(
             "Pesto Pasta",
@@ -127,3 +157,64 @@ class RecipeListSearchTests(TestCase):
 
         self.assertIn(recipe.title, labels)
         self.assertIn("Basil", labels)
+
+        ingredient_suggestion = next(item for item in payload if item["label"] == "Basil")
+        self.assertIn("kind=ingredient", ingredient_suggestion["href"])
+
+    def test_tag_suggestions_use_tag_search_mode(self):
+        recipe = self._create_recipe(
+            "Herb Pasta",
+            tag_names=["Dinner"],
+        )
+
+        response = self.client.get(reverse("recipes:recipe_search_suggestions"), {"q": "din"})
+        payload = response.json()["suggestions"]
+        tag_suggestion = next(item for item in payload if item["label"] == "Dinner")
+
+        self.assertIn("kind=tag", tag_suggestion["href"])
+
+        result_response = self.client.get(reverse("recipes:recipe_list"), {"q": "Dinner", "kind": "tag"})
+        self.assertContains(result_response, recipe.title)
+
+    def test_cuisine_suggestions_use_cuisine_search_mode(self):
+        recipe = self._create_recipe(
+            "Herb Pasta",
+            cuisine_name="Italian",
+        )
+
+        response = self.client.get(reverse("recipes:recipe_search_suggestions"), {"q": "ita"})
+        payload = response.json()["suggestions"]
+        cuisine_suggestion = next(item for item in payload if item["label"] == "Italian")
+
+        self.assertIn("kind=cuisine", cuisine_suggestion["href"])
+
+        result_response = self.client.get(reverse("recipes:recipe_list"), {"q": "Italian", "kind": "cuisine"})
+        self.assertContains(result_response, recipe.title)
+
+    def test_tag_search_mode_is_exact_for_selected_suggestions(self):
+        recipe = self._create_recipe(
+            "Herb Pasta",
+            tag_names=["Dinner"],
+        )
+        misleading_recipe = self._create_recipe(
+            "Plain Salad",
+            tag_names=["Lunch"],
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"), {"q": "Dinner", "kind": "tag"})
+        self.assertContains(response, recipe.title)
+        self.assertNotContains(response, misleading_recipe.title)
+
+    def test_cuisine_search_mode_is_exact_for_selected_suggestions(self):
+        recipe = self._create_recipe(
+            "Herb Pasta",
+            cuisine_name="Italian",
+        )
+        misleading_recipe = self._create_recipe(
+            "Plain Salad",
+            cuisine_name="French",
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"), {"q": "Italian", "kind": "cuisine"})
+        self.assertContains(response, recipe.title)
+        self.assertNotContains(response, misleading_recipe.title)

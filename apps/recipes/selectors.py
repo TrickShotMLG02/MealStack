@@ -12,6 +12,7 @@ from apps.recipes.models import Recipe
 
 
 SEARCH_SCORE_THRESHOLD = 0.42
+INGREDIENT_MATCH_THRESHOLD = 0.75
 
 
 @dataclass(frozen=True)
@@ -117,19 +118,131 @@ def _recipe_search_candidates(recipe: Recipe) -> list[str]:
     return [candidate for candidate in candidates if candidate]
 
 
+def _recipe_ingredient_candidates(recipe: Recipe) -> list[str]:
+    candidates: list[str] = []
+    for ingredient_group in recipe.recipeingredientgroup_set.all():
+        for recipe_ingredient in ingredient_group.recipeingredient_set.all():
+            ingredient = recipe_ingredient.ingredient
+            candidates.extend(
+                [
+                    ingredient.name,
+                    ingredient.generic_name or "",
+                    ingredient.brand or "",
+                ]
+            )
+
+    return [candidate for candidate in candidates if candidate]
+
+
 def _candidate_fields_match(query: str, recipe: Recipe) -> float:
     return max((_candidate_score(query, candidate) for candidate in _recipe_search_candidates(recipe)), default=0.0)
 
 
-def search_recipes(queryset: QuerySet[Recipe], query: str):
+def _ingredient_fields_match(query: str, recipe: Recipe) -> float:
+    normalized_query = _normalize_search_text(query)
+    if not normalized_query:
+        return 0.0
+
+    best = 0.0
+    for candidate in _recipe_ingredient_candidates(recipe):
+        normalized_candidate = _normalize_search_text(candidate)
+        if not normalized_candidate:
+            continue
+
+        candidate_tokens = normalized_candidate.split()
+        for token in normalized_query.split():
+            if len(token) < 3:
+                continue
+
+            if token == normalized_candidate:
+                best = max(best, 1.0)
+            elif token == normalized_candidate[: len(token)]:
+                best = max(best, 0.98)
+            elif token in candidate_tokens:
+                best = max(best, 0.95)
+            elif token in normalized_candidate:
+                best = max(best, 0.9)
+
+    return best
+
+
+def _query_has_ingredient_signal(queryset: QuerySet[Recipe], tokens: list[str]) -> bool:
+    if len(tokens) != 1:
+        return False
+
+    token = tokens[0]
+    if len(token) < 3:
+        return False
+
+    ingredient_hit = queryset.filter(
+        recipeingredientgroup__recipeingredient__ingredient__name__icontains=token
+    ).exists()
+    if ingredient_hit:
+        return True
+
+    ingredient_hit = queryset.filter(
+        recipeingredientgroup__recipeingredient__ingredient__generic_name__icontains=token
+    ).exists()
+    if ingredient_hit:
+        return True
+
+    return queryset.filter(
+        recipeingredientgroup__recipeingredient__ingredient__brand__icontains=token
+    ).exists()
+
+
+def _recipe_has_exact_ingredient_match(recipe: Recipe, query: str) -> bool:
+    normalized_query = _normalize_search_text(query)
+    if not normalized_query:
+        return False
+
+    for candidate in _recipe_ingredient_candidates(recipe):
+        if _normalize_search_text(candidate) == normalized_query:
+            return True
+
+    return False
+
+
+def _recipe_has_exact_tag_match(recipe: Recipe, query: str) -> bool:
+    normalized_query = _normalize_search_text(query)
+    if not normalized_query:
+        return False
+
+    return any(_normalize_search_text(tag.name) == normalized_query for tag in recipe.tags.all())
+
+
+def _recipe_has_exact_cuisine_match(recipe: Recipe, query: str) -> bool:
+    if not recipe.cuisine:
+        return False
+
+    return _normalize_search_text(recipe.cuisine.name) == _normalize_search_text(query)
+
+
+def search_recipes(queryset: QuerySet[Recipe], query: str, kind: str | None = None):
     tokens = _tokenize_search_query(query)
     if not tokens:
         return queryset
 
+    ingredient_focused = kind == "ingredient" or _query_has_ingredient_signal(queryset, tokens)
     ranked: list[tuple[float, Recipe]] = []
     for recipe in queryset:
-        score = min(_candidate_fields_match(token, recipe) for token in tokens)
-        if score >= SEARCH_SCORE_THRESHOLD:
+        if kind == "ingredient":
+            score = 1.0 if _recipe_has_exact_ingredient_match(recipe, query) else 0.0
+        elif kind == "tag":
+            score = 1.0 if _recipe_has_exact_tag_match(recipe, query) else 0.0
+        elif kind == "cuisine":
+            score = 1.0 if _recipe_has_exact_cuisine_match(recipe, query) else 0.0
+        elif ingredient_focused:
+            score = min(_ingredient_fields_match(token, recipe) for token in tokens)
+        else:
+            score = min(_candidate_fields_match(token, recipe) for token in tokens)
+
+        threshold = (
+            1.0
+            if kind in {"ingredient", "tag", "cuisine"}
+            else INGREDIENT_MATCH_THRESHOLD if ingredient_focused else SEARCH_SCORE_THRESHOLD
+        )
+        if score >= threshold:
             ranked.append((score, recipe))
 
     ranked.sort(key=lambda item: (-item[0], _normalize_search_text(item[1].title), item[1].pk or 0))

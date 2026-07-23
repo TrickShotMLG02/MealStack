@@ -11,6 +11,7 @@ from apps.recipes.selectors import search_recipes, search_suggestions
 
 def recipe_list(request):
     search_query = (request.GET.get("q") or "").strip()
+    search_kind = (request.GET.get("kind") or "").strip().lower() or None
     prefetches = [
         Prefetch(
             'recipeimage_set',
@@ -36,7 +37,7 @@ def recipe_list(request):
         .order_by('-created_at')
     )
 
-    recipes = search_recipes(recipes, search_query)
+    recipes = search_recipes(recipes, search_query, kind=search_kind)
 
     for recipe in recipes:
         primary_image = next(
@@ -63,7 +64,11 @@ def recipe_search_suggestions(request):
         if suggestion.kind == "recipe" and suggestion.recipe_slug:
             href = reverse("recipes:recipe_detail", args=[suggestion.recipe_slug])
         else:
-            href = f"{reverse('recipes:recipe_list')}?{urlencode({'q': suggestion.value})}"
+            query_params = {"q": suggestion.value}
+            if suggestion.kind in {"ingredient", "tag", "cuisine"}:
+                query_params["kind"] = suggestion.kind
+
+            href = f"{reverse('recipes:recipe_list')}?{urlencode(query_params)}"
 
         suggestions.append(
             {
