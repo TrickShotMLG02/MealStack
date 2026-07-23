@@ -129,6 +129,13 @@
         </div>
     </header>
 
+    <nav class="recipe-section-nav" aria-label="{% trans 'Recipe sections' %}">
+        <a href="#ingredients-panel">{% trans "Ingredients" %}</a>
+        <a href="#steps-panel">{% trans "Method" %}</a>
+        {% if notes %}<a href="#notes-panel">{% trans "Notes" %}</a>{% endif %}
+        {% if nutrition %}<a href="#nutrition-panel">{% trans "Nutrition" %}</a>{% endif %}
+    </nav>
+
     <div class="recipe-layout">
         <aside class="recipe-sidebar">
             <section class="recipe-panel" id="ingredients-panel" aria-labelledby="ingredients-title">
@@ -156,7 +163,7 @@
             </section>
 
             {% if notes %}
-            <section class="recipe-panel" aria-labelledby="notes-title">
+            <section class="recipe-panel" id="notes-panel" aria-labelledby="notes-title">
                 <div class="section-heading">
                     <h2 id="notes-title">{% trans "Notes" %}</h2>
                 </div>
@@ -171,7 +178,7 @@
             {% endif %}
 
             {% if nutrition %}
-            <section class="recipe-panel" aria-labelledby="nutrition-title">
+            <section class="recipe-panel" id="nutrition-panel" aria-labelledby="nutrition-title">
                 <div class="section-heading">
                     <h2 id="nutrition-title">{% trans "Nutrition" %}</h2>
                 </div>
@@ -190,7 +197,7 @@
         </aside>
 
         <main class="recipe-main">
-            <section class="recipe-panel" aria-labelledby="steps-title">
+            <section class="recipe-panel" id="steps-panel" aria-labelledby="steps-title">
                 <div class="section-heading">
                     <h2 id="steps-title">{% trans "Method" %}</h2>
                 </div>

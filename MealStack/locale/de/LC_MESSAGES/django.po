@@ -59,6 +59,10 @@ msgid "Next image"
 msgstr "Nächstes Bild"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:25
+msgid "Recipe sections"
+msgstr "Rezeptabschnitte"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:25
 msgid "At a glance"
 msgstr "Auf einen Blick"
 
