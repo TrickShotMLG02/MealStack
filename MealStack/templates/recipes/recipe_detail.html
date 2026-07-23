@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load i18n time_tags static %}
 
-
 {% block title %}{{ recipe.title }} - MealStack{% endblock %}
 
 {% block extra_css %}
@@ -14,92 +13,207 @@
 {% endblock %}
 
 {% block content %}
-<div class="recipe-container">
+<article class="recipe-detail">
+    <header class="recipe-hero">
+        <div class="recipe-hero__media-stack">
+            <div class="recipe-hero__media">
+                {% include "recipes/components/carousel.html" with images=images %}
+            </div>
 
-    <div class="card">
+            <section class="recipe-glance" aria-labelledby="glance-title">
+                <div class="section-heading">
+                    <h2 id="glance-title">{% trans "At a glance" %}</h2>
+                </div>
 
-        <!-- Title -->
-        <h1 class="recipe-title">{{ recipe.title }}</h1>
+                <div class="recipe-glance__grid">
+                    <div>
+                        <span class="nutrition-label">{% trans "Servings" %}</span>
+                        <strong>{{ recipe.servings }}</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Ingredients" %}</span>
+                        <strong>{{ ingredient_count }}</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Steps" %}</span>
+                        <strong>{{ step_count }}</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Total time" %}</span>
+                        <strong>{{ recipe.total_time|pretty_duration }}</strong>
+                    </div>
+                </div>
 
-        <!-- Carousel -->
-        {% include "recipes/components/carousel.html" with images=recipe.images_or_placeholder width=600 height=400 %}
-
-
-        <!-- Metadata -->
-        <div class="tag-container horizontal-tags">
-            <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
-            {% if recipe.preparation_time %}<span class="tag">{% trans "Prep:" %} {{ recipe.preparation_time|pretty_duration }}</span>{% endif %}
-            {% if recipe.cooking_time %}<span class="tag">{% trans "Cook:" %} {{ recipe.cooking_time|pretty_duration }}</span>{% endif %}
-            {% if recipe.resting_time %}<span class="tag">{% trans "Rest:" %} {{ recipe.resting_time|pretty_duration }}</span>{% endif %}
+                <a class="recipe-glance__link" href="#ingredients-title">{% trans "Jump to ingredients" %}</a>
+            </section>
         </div>
+        <div class="recipe-hero__summary">
+            <div class="recipe-eyebrow">
+                {% if recipe.cuisine %}<span class="tag">{{ recipe.cuisine.name }}</span>{% endif %}
+                <span class="tag">{% trans "Recipe" %}</span>
+                {% if recipe.status %}<span class="tag">{{ recipe.get_status_display }}</span>{% endif %}
+            </div>
 
-        <!-- Tags -->
-        {% if recipe.tags.exists %}
-        <div class="tag-container horizontal-tags">
-            {% for tag in recipe.tags.all %}
-                <span class="tag">{{ tag.name }}</span>
-            {% endfor %}
-            {% if recipe.cuisine %}<span class="tag">{{ recipe.cuisine.name }}</span>{% endif %}
+            <h1 class="recipe-title">{{ recipe.title }}</h1>
+
+            <p class="recipe-subtitle">
+                {% if recipe.author or recipe.source %}
+                    {% if recipe.author and recipe.source %}
+                        {% blocktrans with author=recipe.author %}By {{ author }}{% endblocktrans %}
+                        <span aria-hidden="true">·</span>
+                        <a href="{{ recipe.source }}" target="_blank" rel="noopener noreferrer">{% trans "Source" %}</a>
+                    {% elif recipe.author %}
+                        {% blocktrans with author=recipe.author %}By {{ author }}{% endblocktrans %}
+                    {% elif recipe.source %}
+                        <a href="{{ recipe.source }}" target="_blank" rel="noopener noreferrer">{% trans "Source" %}</a>
+                    {% endif %}
+                {% endif %}
+            </p>
+
+            <dl class="recipe-facts" aria-label="{% trans 'Recipe facts' %}">
+                <div>
+                    <dt>{% trans "Servings" %}</dt>
+                    <dd>{{ recipe.servings }}</dd>
+                </div>
+                <div>
+                    <dt>{% trans "Prep" %}</dt>
+                    <dd>{{ recipe.preparation_time|pretty_duration }}</dd>
+                </div>
+                <div>
+                    <dt>{% trans "Cook" %}</dt>
+                    <dd>{{ recipe.cooking_time|pretty_duration }}</dd>
+                </div>
+                <div>
+                    <dt>{% trans "Rest" %}</dt>
+                    <dd>{{ recipe.resting_time|pretty_duration }}</dd>
+                </div>
+                <div>
+                    <dt>{% trans "Total" %}</dt>
+                    <dd>{{ recipe.total_time|pretty_duration }}</dd>
+                </div>
+            </dl>
+
+            {% if recipe.tags.exists %}
+            <div class="tag-container horizontal-tags recipe-hero__tags">
+                {% for tag in recipe.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if nutrition %}
+            <section class="recipe-summary-panel" aria-labelledby="nutrition-summary-title">
+                <div class="section-heading">
+                    <h2 id="nutrition-summary-title">{% trans "Per Serving" %}</h2>
+                </div>
+                <div class="nutrition-pills">
+                    <div>
+                        <span class="nutrition-label">{% trans "Calories" %}</span>
+                        <strong>{{ nutrition.per_serving_kcal|floatformat:0 }}</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Protein" %}</span>
+                        <strong>{{ nutrition.per_serving_protein|floatformat:0 }} g</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Carbs" %}</span>
+                        <strong>{{ nutrition.per_serving_carbs|floatformat:0 }} g</strong>
+                    </div>
+                    <div>
+                        <span class="nutrition-label">{% trans "Fat" %}</span>
+                        <strong>{{ nutrition.per_serving_fat|floatformat:0 }} g</strong>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
         </div>
-        {% endif %}
+    </header>
 
-        <!-- Ingredients -->
-        <section class="recipe-section">
-            <h2>{% trans "Ingredients" %}</h2>
-            {% for group in recipe.recipeingredientgroup_set.all %}
-                {% if recipe.recipeingredientgroup_set.all|length > 1 %}
-                    <h3>{{ group.name }}</h3>
-                {% endif %}
-                <ul class="ingredients-list">
-                    {% for ri in group.recipeingredient_set.all %}
-                        <li>{{ ri.quantity }} {{ ri.unit.name }} {{ ri.ingredient.name }}</li>
+    <div class="recipe-layout">
+        <aside class="recipe-sidebar">
+            <section class="recipe-panel" id="ingredients-panel" aria-labelledby="ingredients-title">
+                <div class="section-heading">
+                    <h2 id="ingredients-title">{% trans "Ingredients" %}</h2>
+                </div>
+
+                {% for group in ingredient_groups %}
+                    {% if ingredient_groups|length > 1 %}
+                        <h3 class="group-title">{{ group.name }}</h3>
+                    {% endif %}
+                    <ul class="ingredient-list">
+                        {% for ri in group.recipeingredient_set.all %}
+                            <li>
+                                <span class="ingredient-amount">{{ ri.quantity }} {{ ri.unit.name }}</span>
+                                <span class="ingredient-name">{{ ri.ingredient.name }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="empty-state">{% trans "No ingredients added yet." %}</li>
+                        {% endfor %}
+                    </ul>
+                {% empty %}
+                    <p class="empty-state">{% trans "No ingredients added yet." %}</p>
+                {% endfor %}
+            </section>
+
+            {% if notes %}
+            <section class="recipe-panel" aria-labelledby="notes-title">
+                <div class="section-heading">
+                    <h2 id="notes-title">{% trans "Notes" %}</h2>
+                </div>
+                <div class="note-list">
+                    {% for note in notes %}
+                        {% if note.content %}
+                            <p>{{ note.content }}</p>
+                        {% endif %}
                     {% endfor %}
-                </ul>
-            {% endfor %}
-        </section>
+                </div>
+            </section>
+            {% endif %}
 
-        <!-- Steps -->
-        <section class="recipe-section">
-            <h2>{% trans "Steps" %}</h2>
-            {% for group in recipe.recipestepgroup_set.all %}
-                {% if recipe.recipestepgroup_set.all|length > 1 %}
-                    <h3>{{ group.name }}</h3>
-                {% endif %}
-                <ol class="steps-list">
-                    {% for step in group.recipestep_set.all %}
-                        <li>{{ step.description }}</li>
-                    {% endfor %}
-                </ol>
-            {% endfor %}
-        </section>
+            {% if nutrition %}
+            <section class="recipe-panel" aria-labelledby="nutrition-title">
+                <div class="section-heading">
+                    <h2 id="nutrition-title">{% trans "Nutrition" %}</h2>
+                </div>
+                <table class="nutrition-table">
+                    <tbody>
+                        <tr><th>{% trans "Calories" %}</th><td>{{ nutrition.per_serving_kcal|floatformat:0 }} kcal</td></tr>
+                        <tr><th>{% trans "Protein" %}</th><td>{{ nutrition.per_serving_protein|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Fat" %}</th><td>{{ nutrition.per_serving_fat|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Carbs" %}</th><td>{{ nutrition.per_serving_carbs|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Sugar" %}</th><td>{{ nutrition.per_serving_sugar|floatformat:0 }} g</td></tr>
+                        <tr><th>{% trans "Salt" %}</th><td>{{ nutrition.per_serving_salt|floatformat:0 }} g</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            {% endif %}
+        </aside>
 
-        <!-- Notes -->
-        {% if recipe.notes %}
-        <section class="recipe-section">
-            <h2>{% trans "Notes" %}</h2>
-            <p>{{ recipe.notes }}</p>
-        </section>
-        {% endif %}
+        <main class="recipe-main">
+            <section class="recipe-panel" aria-labelledby="steps-title">
+                <div class="section-heading">
+                    <h2 id="steps-title">{% trans "Method" %}</h2>
+                </div>
 
-        <!-- Nutrition -->
-        {% if recipe.recipe_nutrition %}
-        <section class="recipe-section">
-            <h2>{% trans "Nutrition (per serving)" %}</h2>
-            <ul class="nutrition-list">
-                <li>{% trans "Calories" %}: {{ recipe.recipe_nutrition.per_serving_kcal|floatformat:0 }} kcal</li>
-                <li>{% trans "Fat" %}: {{ recipe.recipe_nutrition.per_serving_fat|floatformat:0 }} g</li>
-                <li>{% trans "Saturates" %}: {{ recipe.recipe_nutrition.per_serving_saturates|floatformat:0 }} g</li>
-                <li>{% trans "Carbs" %}: {{ recipe.recipe_nutrition.per_serving_carbs|floatformat:0 }} g</li>
-                <li>{% trans "Sugar" %}: {{ recipe.recipe_nutrition.per_serving_sugar|floatformat:0 }} g</li>
-                <li>{% trans "Protein" %}: {{ recipe.recipe_nutrition.per_serving_protein|floatformat:0 }} g</li>
-                <li>{% trans "Salt" %}: {{ recipe.recipe_nutrition.per_serving_salt|floatformat:0 }} g</li>
-            </ul>
-        </section>
-        {% endif %}
-
+                {% for group in step_groups %}
+                    {% if step_groups|length > 1 %}
+                        <h3 class="group-title">{{ group.name }}</h3>
+                    {% endif %}
+                    <ol class="steps-list">
+                        {% for step in group.recipestep_set.all %}
+                            <li>
+                                <span class="step-index">{{ forloop.counter }}</span>
+                                <p>{{ step.description }}</p>
+                            </li>
+                        {% empty %}
+                            <li class="empty-state">{% trans "No steps added yet." %}</li>
+                        {% endfor %}
+                    </ol>
+                {% empty %}
+                    <p class="empty-state">{% trans "No steps added yet." %}</p>
+                {% endfor %}
+            </section>
+        </main>
     </div>
-</div>
-
-
-
+</article>
 {% endblock %}

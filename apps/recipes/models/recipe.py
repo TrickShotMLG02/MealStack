@@ -4,14 +4,15 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import models
 from django.templatetags.static import static
+from django.utils.translation import gettext_lazy as _
 
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
 from apps.common.text_formatting import slugify
 from apps.common.time import format_timedelta
 
 STATUS_CHOICES = [
-    ('draft', 'Draft'),
-    ('published', 'Published'),
+    ('draft', _('Draft')),
+    ('published', _('Published')),
 ]
 
 class Recipe(models.Model):
