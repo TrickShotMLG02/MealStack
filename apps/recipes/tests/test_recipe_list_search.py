@@ -113,6 +113,20 @@ class RecipeListSearchTests(TestCase):
         self.assertContains(response, recipe.title)
         self.assertNotContains(response, misleading_recipe.title)
 
+    def test_partial_ingredient_queries_use_ingredient_results(self):
+        recipe = self._create_recipe(
+            "Lingon Sauce",
+            ingredient_names=["Preiselbeeren Ekologisk Sylt Lingon"],
+        )
+        misleading_recipe = self._create_recipe(
+            "Preiselbeeren Cake",
+            ingredient_names=["Flour"],
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"), {"q": "Preiselbeeren"})
+        self.assertContains(response, recipe.title)
+        self.assertNotContains(response, misleading_recipe.title)
+
     def test_ingredient_search_mode_is_exact_for_selected_suggestions(self):
         recipe = self._create_recipe(
             "Garden Soup",
@@ -155,11 +169,35 @@ class RecipeListSearchTests(TestCase):
         payload = response.json()["suggestions"]
         labels = [item["label"] for item in payload]
 
-        self.assertIn(recipe.title, labels)
         self.assertIn("Basil", labels)
+        self.assertNotIn(recipe.title, labels)
 
         ingredient_suggestion = next(item for item in payload if item["label"] == "Basil")
         self.assertIn("kind=ingredient", ingredient_suggestion["href"])
+
+    def test_ingredient_suggestions_do_not_include_weak_matches(self):
+        self._create_recipe(
+            "Lingon Sauce",
+            ingredient_names=["Preiselbeeren Ekologisk Sylt Lingon"],
+        )
+        self._create_recipe(
+            "Pizza",
+            ingredient_names=["Pizzakaese gerieben"],
+        )
+        self._create_recipe(
+            "Pepper Side",
+            ingredient_names=["Pfefferonen"],
+        )
+        self._create_recipe("Test Cake")
+
+        response = self.client.get(reverse("recipes:recipe_search_suggestions"), {"q": "Preiselbeeren"})
+        payload = response.json()["suggestions"]
+        labels = [item["label"] for item in payload]
+
+        self.assertIn("Preiselbeeren Ekologisk Sylt Lingon", labels)
+        self.assertNotIn("Pizzakaese gerieben", labels)
+        self.assertNotIn("Pfefferonen", labels)
+        self.assertNotIn("Test Cake", labels)
 
     def test_tag_suggestions_use_tag_search_mode(self):
         recipe = self._create_recipe(

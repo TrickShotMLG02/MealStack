@@ -14,6 +14,55 @@ function initHeaderSearch() {
     let debounceTimer = null;
     let activeRequest = null;
     let hideTimer = null;
+    let activeSuggestionIndex = -1;
+
+    function getSuggestions() {
+        return Array.from(panel.querySelectorAll('.header-search__suggestion'));
+    }
+
+    function clearActiveSuggestion() {
+        activeSuggestionIndex = -1;
+        input.removeAttribute('aria-activedescendant');
+
+        getSuggestions().forEach((suggestion) => {
+            suggestion.classList.remove('is-active');
+            suggestion.removeAttribute('aria-selected');
+        });
+    }
+
+    function setActiveSuggestion(index) {
+        const suggestions = getSuggestions();
+        if (!suggestions.length) {
+            clearActiveSuggestion();
+            return null;
+        }
+
+        const normalizedIndex = ((index % suggestions.length) + suggestions.length) % suggestions.length;
+        activeSuggestionIndex = normalizedIndex;
+
+        suggestions.forEach((suggestion, suggestionIndex) => {
+            const isActive = suggestionIndex === normalizedIndex;
+            suggestion.classList.toggle('is-active', isActive);
+            suggestion.setAttribute('aria-selected', String(isActive));
+
+            if (!suggestion.id) {
+                suggestion.id = `header-search-suggestion-${suggestionIndex}`;
+            }
+        });
+
+        input.setAttribute('aria-activedescendant', suggestions[normalizedIndex].id);
+        return suggestions[normalizedIndex];
+    }
+
+    function openActiveSuggestion() {
+        const activeSuggestion = activeSuggestionIndex >= 0 ? getSuggestions()[activeSuggestionIndex] : null;
+        if (!activeSuggestion) {
+            return false;
+        }
+
+        activeSuggestion.click();
+        return true;
+    }
 
     function setExpanded(expanded) {
         form.setAttribute('aria-expanded', String(expanded));
@@ -32,6 +81,7 @@ function initHeaderSearch() {
 
         panel.replaceChildren();
         panel.hidden = true;
+        clearActiveSuggestion();
         setExpanded(false);
     }
 
@@ -48,6 +98,7 @@ function initHeaderSearch() {
             link.className = 'header-search__suggestion';
             link.href = item.href;
             link.setAttribute('role', 'option');
+            link.setAttribute('tabindex', '-1');
             link.setAttribute('aria-label', `${item.kind_label}: ${item.label}`);
 
             const kind = document.createElement('span');
@@ -63,6 +114,7 @@ function initHeaderSearch() {
         });
 
         panel.hidden = false;
+        clearActiveSuggestion();
         setExpanded(true);
     }
 
@@ -124,7 +176,63 @@ function initHeaderSearch() {
     input.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             hideSuggestions();
+            return;
         }
+
+        if (panel.hidden) {
+            return;
+        }
+
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            const nextIndex = activeSuggestionIndex < 0 ? 0 : activeSuggestionIndex + 1;
+            setActiveSuggestion(nextIndex);
+            return;
+        }
+
+        if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            const nextIndex = activeSuggestionIndex < 0 ? getSuggestions().length - 1 : activeSuggestionIndex - 1;
+            setActiveSuggestion(nextIndex);
+            return;
+        }
+
+        if (event.key === 'Home') {
+            event.preventDefault();
+            setActiveSuggestion(0);
+            return;
+        }
+
+        if (event.key === 'End') {
+            event.preventDefault();
+            setActiveSuggestion(getSuggestions().length - 1);
+            return;
+        }
+
+        if (event.key === 'Enter' && activeSuggestionIndex >= 0) {
+            event.preventDefault();
+            openActiveSuggestion();
+        }
+    });
+
+    panel.addEventListener('mousemove', (event) => {
+        const suggestion = event.target.closest('.header-search__suggestion');
+        if (!suggestion || !panel.contains(suggestion)) {
+            return;
+        }
+
+        const suggestions = getSuggestions();
+        setActiveSuggestion(suggestions.indexOf(suggestion));
+    });
+
+    panel.addEventListener('mousedown', (event) => {
+        const suggestion = event.target.closest('.header-search__suggestion');
+        if (!suggestion || !panel.contains(suggestion)) {
+            return;
+        }
+
+        event.preventDefault();
+        window.location.href = suggestion.href;
     });
 
     form.addEventListener('focusout', (event) => {

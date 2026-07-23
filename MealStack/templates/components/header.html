@@ -32,6 +32,8 @@
                     placeholder="{% trans 'Search recipes...' %}"
                     value="{{ request.GET.q }}"
                     autocomplete="off"
+                    aria-autocomplete="list"
+                    aria-controls="header-search-suggestions"
                     class="header-search__input"
                 >
                 <button type="submit" class="header-search__submit">
@@ -43,6 +45,7 @@
                 </button>
             </div>
             <div
+                id="header-search-suggestions"
                 class="header-search__suggestions"
                 data-search-suggestions
                 role="listbox"

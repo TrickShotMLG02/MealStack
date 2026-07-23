@@ -177,6 +177,10 @@
     text-decoration: none;
 }
 
+.header-search__suggestion.is-active {
+    background: color-mix(in srgb, var(--primary-color) 12%, white);
+}
+
 .header-search__suggestion-kind {
     font-size: 0.66rem;
     font-weight: 800;
