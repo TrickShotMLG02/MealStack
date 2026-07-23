@@ -14,10 +14,10 @@ Settings for header
     padding: 0.65rem 1rem;
     border-radius: 999px;
     background: var(--heading-color);
-    color: #fff;
+    color: var(--skip-link-text-color);
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 24px var(--skip-link-shadow-color);
     transition: transform 160ms ease;
     z-index: 100;
 }
@@ -34,7 +34,7 @@ Settings for body
 
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background: var(--background-color);
+    background: var(--theme-page-background);
     color: var(--text-color);
     margin: 0;
     padding: 0;
@@ -62,19 +62,19 @@ Settings for Links
 
 a:link,
 a:visited {
-    color: #007bff;       /* same color for visited and unvisited */
+    color: var(--link-color);       /* same color for visited and unvisited */
     text-decoration: none; /* optional */
 }
 
 /* On hover */
 a:hover {
-    color: #0056b3;
+    color: var(--link-hover-color);
     text-decoration: underline;
 }
 
 /* On active (clicking) */
 a:active {
-    color: #004080;
+    color: var(--link-active-color);
 }
 
 

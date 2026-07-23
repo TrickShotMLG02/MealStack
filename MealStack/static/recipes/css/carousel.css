@@ -13,7 +13,7 @@
     aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(246, 238, 229, 0.9));
+    background: linear-gradient(180deg, var(--carousel-frame-bg-start), var(--carousel-frame-bg-end));
     border: 1px solid var(--border-color);
 }
 
@@ -52,8 +52,8 @@
     margin: 0;
     padding: 0.55rem 0.7rem;
     border-radius: 999px;
-    background: rgba(30, 23, 19, 0.72);
-    color: #fff;
+    background: var(--carousel-caption-bg-color);
+    color: var(--carousel-caption-text-color);
     font-size: 0.85rem;
 }
 
@@ -65,14 +65,14 @@
     z-index: 2;
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--carousel-button-border-color);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.78);
+    background: var(--carousel-button-bg-color);
     color: var(--heading-color);
     font-size: 1.25rem;
     line-height: 1;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 10px 30px var(--carousel-button-shadow-color);
 }
 
 .carousel-prev {
@@ -94,7 +94,7 @@
     width: 0.65rem;
     height: 0.65rem;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--text-muted-color) 35%, transparent);
+    background: var(--carousel-dot-bg-color);
     transition: transform 0.2s ease, background-color 0.2s ease, width 0.2s ease;
 }
 

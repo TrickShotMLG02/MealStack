@@ -48,7 +48,7 @@
     padding: 0 1rem;
     border: 1px solid var(--border-color);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.78);
+    background: var(--recipe-surface-overlay-bg-color);
     color: var(--heading-color);
     font-weight: 700;
     text-decoration: none;
@@ -58,7 +58,7 @@
 .recipe-list-header__clear:hover {
     transform: translateY(-1px);
     border-color: color-mix(in srgb, var(--primary-color) 28%, var(--border-color));
-    box-shadow: 0 8px 16px rgba(34, 26, 19, 0.06);
+    box-shadow: 0 8px 16px var(--recipe-list-clear-shadow-color);
     text-decoration: none;
 }
 

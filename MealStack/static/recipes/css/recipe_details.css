@@ -58,7 +58,7 @@
 .recipe-glance__grid div {
     padding: 0.7rem 0.75rem;
     border-radius: 12px;
-    background: color-mix(in srgb, var(--background-color) 65%, white);
+    background: var(--recipe-surface-soft-bg-color);
     border: 1px solid var(--border-color);
 }
 
@@ -115,7 +115,7 @@
 .recipe-facts div {
     padding: 0.8rem 0.85rem;
     border-radius: 12px;
-    background: color-mix(in srgb, var(--background-color) 65%, white);
+    background: var(--recipe-surface-soft-bg-color);
     border: 1px solid var(--border-color);
 }
 
@@ -326,7 +326,7 @@ a.recipe-action--primary:hover,
 a.recipe-action--primary:focus {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    color: #fff;
+    color: var(--recipe-contrast-text-color);
 }
 
 .recipe-action:hover,
@@ -338,7 +338,7 @@ a.recipe-action--primary:focus {
 .recipe-action--primary:hover,
 .recipe-action--primary:focus {
     border-color: var(--button-hover-bg);
-    color: #fff;
+    color: var(--recipe-contrast-text-color);
 }
 
 .recipe-section-nav {
@@ -347,7 +347,7 @@ a.recipe-action--primary:focus {
     gap: 0.5rem;
     margin: 0 0 1.25rem;
     padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.78);
+    background: var(--recipe-surface-overlay-bg-color);
     border: 1px solid var(--border-color);
     border-radius: 14px;
     box-shadow: 0 10px 24px var(--card-shadow-color);
@@ -417,7 +417,7 @@ a.recipe-action--primary:focus {
     align-items: baseline;
     padding: 0.65rem 0.8rem;
     border-radius: 12px;
-    background: color-mix(in srgb, var(--background-color) 80%, white);
+    background: var(--recipe-surface-muted-bg-color);
     border: 1px solid var(--border-color);
 }
 
@@ -461,7 +461,7 @@ a.recipe-action--primary:focus {
     height: 2.25rem;
     border-radius: 999px;
     background: var(--primary-color);
-    color: #fff;
+    color: var(--recipe-contrast-text-color);
     font-weight: 700;
 }
 
