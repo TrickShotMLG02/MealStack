@@ -179,6 +179,54 @@
     align-items: start;
 }
 
+.recipe-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0 0 1rem;
+}
+
+.recipe-action,
+a.recipe-action:link,
+a.recipe-action:visited,
+a.recipe-action:hover,
+a.recipe-action:focus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.68rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg-color);
+    color: var(--heading-color);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+}
+
+.recipe-action--primary,
+a.recipe-action--primary:link,
+a.recipe-action--primary:visited,
+a.recipe-action--primary:hover,
+a.recipe-action--primary:focus {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.recipe-action:hover,
+.recipe-action:focus {
+    text-decoration: none;
+    border-color: var(--heading-accent-color);
+}
+
+.recipe-action--primary:hover,
+.recipe-action--primary:focus {
+    border-color: var(--button-hover-bg);
+    color: #fff;
+}
+
 .recipe-section-nav {
     display: flex;
     flex-wrap: wrap;
@@ -345,6 +393,75 @@
     white-space: nowrap;
 }
 
+.recipe-detail--cook-mode .recipe-hero__summary,
+.recipe-detail--cook-mode .recipe-glance,
+.recipe-detail--cook-mode .recipe-summary-panel,
+.recipe-detail--cook-mode #notes-panel,
+.recipe-detail--cook-mode #nutrition-panel,
+.recipe-detail--cook-mode .recipe-section-nav {
+    display: none;
+}
+
+.recipe-cook-header {
+    display: none;
+    margin: 0 0 0.85rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg-color);
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+}
+
+.recipe-cook-title {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    border: 0;
+    padding: 0;
+}
+
+.recipe-cook-meta {
+    margin: 0.35rem 0 0;
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+}
+
+.recipe-detail--cook-mode .recipe-cook-header {
+    display: block;
+}
+
+.recipe-detail--cook-mode .recipe-hero {
+    display: none;
+}
+
+.recipe-detail--cook-mode .recipe-panel {
+    padding: 0.85rem;
+    border-radius: 12px;
+}
+
+.recipe-detail--cook-mode .recipe-layout {
+    grid-template-columns: minmax(300px, 0.95fr) minmax(0, 1.4fr);
+    gap: 1rem;
+}
+
+.recipe-detail--cook-mode .recipe-sidebar,
+.recipe-detail--cook-mode .recipe-main {
+    gap: 1rem;
+}
+
+.recipe-detail--cook-mode .group-title {
+    margin-top: 0.9rem;
+}
+
+.recipe-detail--cook-mode .ingredient-list li,
+.recipe-detail--cook-mode .steps-list li {
+    padding: 0.72rem 0.8rem;
+}
+
+.recipe-detail--cook-mode .steps-list li {
+    gap: 0.7rem;
+}
+
 @media (max-width: 980px) {
     .recipe-hero,
     .recipe-layout {
@@ -357,6 +474,10 @@
 
     .recipe-section-nav {
         position: static;
+    }
+
+    .recipe-detail--cook-mode .recipe-layout {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -388,5 +509,17 @@
 
     .ingredient-name {
         text-align: left;
+    }
+
+    .recipe-toolbar {
+        gap: 0.45rem;
+    }
+
+    .recipe-action {
+        width: 100%;
+    }
+
+    .recipe-cook-title {
+        font-size: 1.05rem;
     }
 }

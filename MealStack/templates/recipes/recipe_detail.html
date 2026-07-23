@@ -10,6 +10,7 @@
 
 {% block extra_js %}
 <script src="{% static 'recipes/js/carousel.js' %}"></script>
+<script src="{% static 'recipes/js/recipe_detail.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -128,6 +129,34 @@
             {% endif %}
         </div>
     </header>
+
+    <section class="recipe-cook-header">
+        <h1 class="recipe-cook-title">{{ recipe.title }}</h1>
+        <p class="recipe-cook-meta">
+            {% trans "Servings" %}: {{ recipe.servings }} · {% trans "Total time" %}: {{ recipe.total_time|pretty_duration }}
+        </p>
+    </section>
+
+    <div class="recipe-toolbar" role="toolbar" aria-label="{% trans 'Recipe actions' %}">
+        <button
+            type="button"
+            class="recipe-action"
+            data-cook-toggle
+            aria-pressed="false"
+            data-label-on="{% trans 'Exit cook mode' %}"
+            data-label-off="{% trans 'Cook mode' %}"
+        >
+            {% trans "Cook mode" %}
+        </button>
+        <a
+            class="recipe-action recipe-action--primary"
+            href="{% url 'recipes:recipe_export_pdf' recipe.slug %}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {% trans "Print PDF" %}
+        </a>
+    </div>
 
     <nav class="recipe-section-nav" aria-label="{% trans 'Recipe sections' %}">
         <a href="#ingredients-panel">{% trans "Ingredients" %}</a>

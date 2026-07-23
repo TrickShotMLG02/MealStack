@@ -66,6 +66,22 @@ msgstr "Rezeptabschnitte"
 msgid "At a glance"
 msgstr "Auf einen Blick"
 
+#: .\MealStack\templates\recipes\recipe_detail.html:52
+msgid "Recipe actions"
+msgstr "Rezeptaktionen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:57
+msgid "Cook mode"
+msgstr "Kochmodus"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:57
+msgid "Exit cook mode"
+msgstr "Kochmodus beenden"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:63
+msgid "Print PDF"
+msgstr "PDF drucken"
+
 #: .\MealStack\templates\recipes\recipe_detail.html:30
 #: .\MealStack\templates\recipes\recipe_detail.html:75
 msgid "Servings"
@@ -170,7 +186,7 @@ msgstr "Salz"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:195
 msgid "Method"
-msgstr "Zubereitung"
+msgstr "Anleitung"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:209
 #: .\MealStack\templates\recipes\recipe_detail.html:213
@@ -201,6 +217,17 @@ msgstr "Entwurf"
 #: .\apps\recipes\models\recipe.py:15
 msgid "Published"
 msgstr "Veröffentlicht"
+#: .\apps\recipes\services\pdf.py:120
+msgid "Exported at"
+msgstr "Exportiert um"
+
+#: .\apps\recipes\services\pdf.py:121
+msgid "Recipe URL"
+msgstr "Rezept-URL"
+
+#: .\apps\recipes\services\pdf.py:133
+msgid "Tags"
+msgstr "Tags"
 
 #~ msgid "Nutrition (per serving)"
 #~ msgstr "Nährwerte (pro Portion)"

@@ -1,45 +1,49 @@
 from django.db.models import Prefetch
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 
 from apps.recipes.models import Recipe, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
+from apps.recipes.services.pdf import build_recipe_pdf
+
+
+def _recipe_detail_queryset():
+    return Recipe.objects.select_related("cuisine", "recipe_nutrition").prefetch_related(
+        "tags",
+        Prefetch(
+            "recipeimage_set",
+            queryset=RecipeImage.objects.all().order_by("-is_primary", "ordering"),
+            to_attr="prefetched_images",
+        ),
+        Prefetch(
+            "recipeingredientgroup_set",
+            queryset=RecipeIngredientGroup.objects.prefetch_related(
+                Prefetch(
+                    "recipeingredient_set",
+                    queryset=RecipeIngredient.objects.select_related("ingredient", "unit").order_by("order"),
+                )
+            ).order_by("order"),
+            to_attr="prefetched_ingredient_groups",
+        ),
+        Prefetch(
+            "recipestepgroup_set",
+            queryset=RecipeStepGroup.objects.prefetch_related(
+                Prefetch(
+                    "recipestep_set",
+                    queryset=RecipeStep.objects.order_by("order"),
+                )
+            ).order_by("order"),
+            to_attr="prefetched_step_groups",
+        ),
+        Prefetch(
+            "recipenote_set",
+            queryset=RecipeNote.objects.order_by("ordering", "id"),
+            to_attr="prefetched_notes",
+        ),
+    )
 
 def recipe_detail(request, slug):
-    recipe = get_object_or_404(
-        Recipe.objects.select_related("cuisine", "recipe_nutrition").prefetch_related(
-            "tags",
-            Prefetch(
-                "recipeimage_set",
-                queryset=RecipeImage.objects.all().order_by("-is_primary", "ordering"),
-                to_attr="prefetched_images",
-            ),
-            Prefetch(
-                "recipeingredientgroup_set",
-                queryset=RecipeIngredientGroup.objects.prefetch_related(
-                    Prefetch(
-                        "recipeingredient_set",
-                        queryset=RecipeIngredient.objects.select_related("ingredient", "unit").order_by("order"),
-                    )
-                ).order_by("order"),
-                to_attr="prefetched_ingredient_groups",
-            ),
-            Prefetch(
-                "recipestepgroup_set",
-                queryset=RecipeStepGroup.objects.prefetch_related(
-                    Prefetch(
-                        "recipestep_set",
-                        queryset=RecipeStep.objects.order_by("order"),
-                    )
-                ).order_by("order"),
-                to_attr="prefetched_step_groups",
-            ),
-            Prefetch(
-                "recipenote_set",
-                queryset=RecipeNote.objects.order_by("ordering", "id"),
-                to_attr="prefetched_notes",
-            ),
-        ),
-        slug=slug,
-    )
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
 
     images = getattr(recipe, "prefetched_images", None) or recipe.images_or_placeholder
     ingredient_count = sum(
@@ -61,3 +65,14 @@ def recipe_detail(request, slug):
         "ingredient_count": ingredient_count,
         "step_count": step_count,
     })
+
+
+def recipe_export_pdf(request, slug):
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
+    recipe_url = request.build_absolute_uri(reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug}))
+    pdf_bytes = build_recipe_pdf(recipe, recipe_url)
+
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'inline; filename="{recipe.slug or "recipe"}.pdf"'
+    response["Cache-Control"] = "no-store"
+    return response
