@@ -15,11 +15,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare Docker Hub README
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          import re
+
+          readme = Path("README.md").read_text(encoding="utf-8")
+          base_url = f"https://raw.githubusercontent.com/{os.environ['GITHUB_REPOSITORY']}/{os.environ['GITHUB_SHA']}"
+          readme = re.sub(
+              r'src="(docs/screenshots/[^"]+)"',
+              lambda match: f'src="{base_url}/{match.group(1)}"',
+              readme,
+          )
+          Path("README.dockerhub.md").write_text(readme, encoding="utf-8")
+          PY
+
       - name: Update Docker Hub repository description
         uses: peter-evans/dockerhub-description@v5
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ env.IMAGE_NAME }}
-          readme-filepath: README.md
+          readme-filepath: README.dockerhub.md
           enable-url-completion: true
