@@ -248,6 +248,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
             spaceBefore=10,
             spaceAfter=6,
             textColor=PALETTE["ink"],
+            keepWithNext=1,
         )
     )
     styles.add(
@@ -260,6 +261,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
             textColor=PALETTE["accent"],
             spaceBefore=4,
             spaceAfter=4,
+            keepWithNext=1,
         )
     )
     styles.add(
@@ -543,10 +545,16 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
     story.append(Paragraph(_("Ingredients"), styles["SectionHeading"]))
     ingredient_groups = _recipe_ingredient_groups(recipe)
     for group in ingredient_groups:
-        if len(ingredient_groups) > 1:
-            story.append(Paragraph(escape(group.name or _("Ingredients")), styles["SectionSubheading"]))
-
         ingredient_rows = []
+        has_group_title = len(ingredient_groups) > 1
+        if has_group_title:
+            ingredient_rows.append(
+                [
+                    Paragraph(escape(group.name or _("Ingredients")), styles["SectionSubheading"]),
+                    "",
+                ]
+            )
+
         for ri in group.recipeingredient_set.all():
             quantity = scale_quantity(ri.quantity, recipe.servings, target_servings)
             ingredient_rows.append(
@@ -563,8 +571,17 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
                 PALETTE["panel"],
                 PALETTE["line"],
                 extra_styles=[
-                    ("BACKGROUND", (0, 0), (0, -1), PALETTE["accent_soft"]),
-                    ("TEXTCOLOR", (0, 0), (0, -1), PALETTE["accent"]),
+                    ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent_soft"]),
+                    ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
+                    *(
+                        [
+                            ("SPAN", (0, 0), (-1, 0)),
+                            ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
+                            ("NOSPLIT", (0, 0), (-1, 1)),
+                        ]
+                        if has_group_title and len(ingredient_rows) > 1
+                        else []
+                    ),
                 ],
             )
             story.append(ingredient_table)
@@ -576,10 +593,16 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
     story.append(Paragraph(_("Method"), styles["SectionHeading"]))
     step_groups = _recipe_step_groups(recipe)
     for group in step_groups:
-        if len(step_groups) > 1:
-            story.append(Paragraph(escape(group.name or _("Method")), styles["SectionSubheading"]))
-
         step_rows = []
+        has_group_title = len(step_groups) > 1
+        if has_group_title:
+            step_rows.append(
+                [
+                    Paragraph(escape(group.name or _("Method")), styles["SectionSubheading"]),
+                    "",
+                ]
+            )
+
         for index, step in enumerate(group.recipestep_set.all(), start=1):
             step_rows.append(
                 [
@@ -595,8 +618,17 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
                 PALETTE["panel"],
                 PALETTE["line"],
                 extra_styles=[
-                    ("BACKGROUND", (0, 0), (0, -1), PALETTE["accent"]),
-                    ("TEXTCOLOR", (0, 0), (0, -1), colors.white),
+                    ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
+                    ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), colors.white),
+                    *(
+                        [
+                            ("SPAN", (0, 0), (-1, 0)),
+                            ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
+                            ("NOSPLIT", (0, 0), (-1, 1)),
+                        ]
+                        if has_group_title and len(step_rows) > 1
+                        else []
+                    ),
                 ],
             )
             story.append(step_table)
