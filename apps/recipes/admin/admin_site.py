@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path
-from django.views.generic import RedirectView
 
 from apps.recipes.views import admin_importers_view
 
@@ -9,10 +8,10 @@ class MyAdminSite(admin.AdminSite):
     def get_app_list(self, request, context=None):
         app_list = super().get_app_list(request, context)
 
-        importers_section = {
+        ingredient_importers_section = {
             "name": "Ingredient Importers",
             "app_label": "ingredient_importers",
-            "url_path": "/admin/importers/",
+            "url_path": "/admin/importers/ingredient/",
             "models": [
                 {
                     "name": importer["name"],
@@ -20,10 +19,24 @@ class MyAdminSite(admin.AdminSite):
                     "admin_url": f"/admin/importers/{importer['url_path']}",
                     "view_only": True,
                 }
-                for importer in admin_importers_view.IMPORTERS
+                for importer in admin_importers_view.INGREDIENT_IMPORTERS
             ],
         }
-        app_list.append(importers_section)
+        recipe_importers_section = {
+            "name": "Recipe Importers",
+            "app_label": "recipe_importers",
+            "url_path": "/admin/importers/recipe/",
+            "models": [
+                {
+                    "name": importer["name"],
+                    "object_name": importer["name"].lower().replace(" ", "_"),
+                    "admin_url": f"/admin/importers/{importer['url_path']}",
+                    "view_only": True,
+                }
+                for importer in admin_importers_view.RECIPE_IMPORTERS
+            ],
+        }
+        app_list.extend([ingredient_importers_section, recipe_importers_section])
         return app_list
 
     def get_urls(self):
@@ -31,19 +44,16 @@ class MyAdminSite(admin.AdminSite):
 
         custom_urls = [
             path("importers/", self.admin_view(admin_importers_view.importers_home), name="importers_home"),
-            path(
-                "importers/ingredient/",
-                self.admin_view(
-                    RedirectView.as_view(url="/admin/importers/ingredient/openfoodfacts/", permanent=False)
-                ),
-                name="importers_ingredient_redirect",
-            ),
+            path("importers/ingredient/", self.admin_view(admin_importers_view.ingredient_importers_home), name="ingredient_importers_home"),
+            path("importers/recipe/", self.admin_view(admin_importers_view.recipe_importers_home), name="recipe_importers_home"),
         ]
 
         custom_importer_urls = [
             path(f"importers/{importer['url_path']}", self.admin_view(importer["view"]),
                  name=importer["name"].lower().replace(" ", "_"))
-            for importer in admin_importers_view.IMPORTERS
+            for importer in (
+                admin_importers_view.INGREDIENT_IMPORTERS + admin_importers_view.RECIPE_IMPORTERS
+            )
         ]
 
         return custom_importer_urls + urls + custom_urls
