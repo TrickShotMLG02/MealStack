@@ -31,6 +31,20 @@ function initRecipeDetailPage() {
     const ingredientAmounts = document.querySelectorAll('[data-ingredient-quantity]');
     const nutritionValues = document.querySelectorAll('[data-nutrition-value]');
 
+    function parseNumeric(value) {
+        if (typeof value === 'number') {
+            return value;
+        }
+
+        if (typeof value !== 'string') {
+            return 0;
+        }
+
+        const normalized = value.trim().replace(/\s+/g, '').replace(',', '.');
+        const parsed = Number(normalized);
+        return Number.isFinite(parsed) ? parsed : 0;
+    }
+
     function clampServings(value) {
         const parsed = Number(value);
         if (!Number.isFinite(parsed)) {
@@ -52,7 +66,7 @@ function initRecipeDetailPage() {
 
     function updateNutrition(servings) {
         nutritionValues.forEach((element) => {
-            const perServing = Number(element.dataset.perServing || 0);
+            const perServing = parseNumeric(element.dataset.perServing);
             const total = perServing * servings;
             const suffix = element.dataset.unit || '';
             element.textContent = `${nutritionFormatter.format(total)}${suffix}`;
@@ -61,7 +75,7 @@ function initRecipeDetailPage() {
 
     function updateIngredients(servings) {
         ingredientAmounts.forEach((element) => {
-            const baseQuantity = Number(element.dataset.baseQuantity || 0);
+            const baseQuantity = parseNumeric(element.dataset.baseQuantity);
             const unit = element.dataset.unit || '';
             const scaled = (baseQuantity * servings) / baseServings;
             element.textContent = `${quantityFormatter.format(scaled)}${unit ? ` ${unit}` : ''}`;

@@ -277,6 +277,7 @@ a.recipe-action:focus {
     border: 1px solid var(--border-color);
     background: var(--card-bg-color);
     color: var(--heading-color);
+    font: inherit;
     font-weight: 600;
     line-height: 1;
     white-space: nowrap;
@@ -284,6 +285,7 @@ a.recipe-action:focus {
     cursor: pointer;
     box-shadow: 0 8px 20px var(--card-shadow-color);
     flex: 0 0 auto;
+    appearance: none;
 }
 
 .recipe-action--primary,
