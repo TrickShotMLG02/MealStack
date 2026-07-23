@@ -264,6 +264,9 @@ msgstr "Zum Inhalt springen"
 msgid "Admin"
 msgstr "Admin"
 
+msgid "Language selection"
+msgstr "Sprachauswahl"
+
 msgid "Metric"
 msgstr "Wert"
 
