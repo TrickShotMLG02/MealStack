@@ -12,7 +12,8 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.lib.utils import ImageReader
+from reportlab.platypus import Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -130,6 +131,38 @@ def _boxed_paragraph(text: str, styles, style_name: str, width: float, backgroun
         )
     )
     return box
+
+
+class CroppedImageBox(Flowable):
+    def __init__(self, path: str, width: float, height: float):
+        super().__init__()
+        self.path = path
+        self.width = width
+        self.height = height
+
+    def draw(self):
+        image = ImageReader(self.path)
+        image_width, image_height = image.getSize()
+        scale = max(self.width / image_width, self.height / image_height)
+        draw_width = image_width * scale
+        draw_height = image_height * scale
+        offset_x = (self.width - draw_width) / 2
+        offset_y = (self.height - draw_height) / 2
+
+        self.canv.saveState()
+        clip_path = self.canv.beginPath()
+        clip_path.rect(0, 0, self.width, self.height)
+        self.canv.clipPath(clip_path, stroke=0, fill=0)
+        self.canv.drawImage(
+            image,
+            offset_x,
+            offset_y,
+            width=draw_width,
+            height=draw_height,
+            preserveAspectRatio=True,
+            mask="auto",
+        )
+        self.canv.restoreState()
 
 
 def _section_table(rows, col_widths, background, border_color, extra_styles=None):
@@ -338,7 +371,14 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
     image_path = _recipe_image_path(recipe)
     tags = list(recipe.tags.all())
     has_hero_image = image_path is not None
-    hero_left_width = doc.width - (66 * mm if has_hero_image else 0)
+    hero_padding = 8 * mm
+    hero_gap = 8 * mm
+    image_column_width = 60 * mm
+    image_column_height = 76 * mm
+    image_padding = 4 * mm
+    image_outer_right_padding = 4 * mm
+    hero_left_width = doc.width - image_column_width - hero_gap - image_outer_right_padding if has_hero_image else doc.width
+    hero_left_content_width = hero_left_width - (hero_padding * 2 if has_hero_image else 0)
 
     intro_flowables = [
         Paragraph(escape(recipe.title), styles["RecipeTitle"]),
@@ -347,42 +387,47 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
 
     if tags:
         tag_text = ", ".join(escape(tag.name) for tag in tags)
-        intro_flowables.append(_boxed_paragraph(tag_text, styles, "TagLine", hero_left_width, PALETTE["accent_soft"], PALETTE["accent"]))
+        intro_flowables.append(_boxed_paragraph(tag_text, styles, "TagLine", hero_left_content_width, PALETTE["accent_soft"], PALETTE["accent"]))
+
+    metric_card_width = (hero_left_content_width - 9 * mm) / 4
 
     intro_flowables.append(
         Table(
             [[
-                _metric_card(_("Servings"), str(target_servings), styles, (hero_left_width - 9 * mm) / 4, PALETTE["accent_soft"], PALETTE["accent"]),
-                _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, (hero_left_width - 9 * mm) / 4, PALETTE["panel_soft"], PALETTE["line"]),
-                _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, (hero_left_width - 9 * mm) / 4, PALETTE["panel_soft"], PALETTE["line"]),
-                _metric_card(_("Total"), _duration_display(recipe.total_time), styles, (hero_left_width - 9 * mm) / 4, PALETTE["accent_warm"], PALETTE["accent"]),
+                _metric_card(_("Servings"), str(target_servings), styles, metric_card_width, PALETTE["accent_soft"], PALETTE["accent"]),
+                _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+                _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+                _metric_card(_("Total"), _duration_display(recipe.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
             ]],
-            colWidths=[(hero_left_width - 9 * mm) / 4] * 4,
+            colWidths=[metric_card_width] * 4,
             hAlign="LEFT",
         )
     )
 
     if has_hero_image:
         try:
-            image = Image(str(image_path))
-            image._restrictSize(62 * mm, 78 * mm)
-            image_box = Table([[image]], colWidths=[64 * mm], hAlign="RIGHT")
+            image_box = Table(
+                [[CroppedImageBox(str(image_path), image_column_width - 2 * image_padding, image_column_height - 2 * image_padding)]],
+                colWidths=[image_column_width],
+                rowHeights=[image_column_height],
+                hAlign="RIGHT",
+            )
             image_box.setStyle(
                 TableStyle(
                     [
                         ("BACKGROUND", (0, 0), (-1, -1), PALETTE["panel"]),
                         ("BOX", (0, 0), (-1, -1), 0.8, PALETTE["line"]),
-                        ("LEFTPADDING", (0, 0), (-1, -1), 5),
-                        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-                        ("TOPPADDING", (0, 0), (-1, -1), 5),
-                        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                        ("LEFTPADDING", (0, 0), (-1, -1), image_padding),
+                        ("RIGHTPADDING", (0, 0), (-1, -1), image_padding),
+                        ("TOPPADDING", (0, 0), (-1, -1), image_padding),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), image_padding),
                         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                     ]
                 )
             )
             hero_table = Table(
-                [[intro_flowables, image_box]],
-                colWidths=[hero_left_width, 64 * mm],
+                [[intro_flowables, "", image_box]],
+                colWidths=[hero_left_width, hero_gap, image_column_width + image_outer_right_padding],
                 hAlign="LEFT",
             )
             hero_table.setStyle(
@@ -390,10 +435,16 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
                     [
                         ("BACKGROUND", (0, 0), (-1, -1), PALETTE["panel"]),
                         ("BOX", (0, 0), (-1, -1), 0.8, PALETTE["line"]),
-                        ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-                        ("TOPPADDING", (0, 0), (-1, -1), 8),
-                        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                        ("LEFTPADDING", (0, 0), (0, 0), hero_padding),
+                        ("RIGHTPADDING", (0, 0), (0, 0), hero_padding),
+                        ("TOPPADDING", (0, 0), (0, 0), hero_padding),
+                        ("BOTTOMPADDING", (0, 0), (0, 0), hero_padding),
+                        ("LEFTPADDING", (1, 0), (1, 0), 0),
+                        ("RIGHTPADDING", (1, 0), (1, 0), 0),
+                        ("LEFTPADDING", (2, 0), (2, 0), 0),
+                        ("RIGHTPADDING", (2, 0), (2, 0), image_outer_right_padding),
+                        ("TOPPADDING", (2, 0), (2, 0), hero_padding),
+                        ("BOTTOMPADDING", (2, 0), (2, 0), hero_padding),
                         ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     ]
                 )
