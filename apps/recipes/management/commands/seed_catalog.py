@@ -279,54 +279,74 @@ def parse_ingredient_line(raw_line: str) -> tuple[float, str, str]:
     line = re.sub(r"^[Nn]/[Aa]\s+", "", line)
     line = re.sub(r"\s+", " ", line).strip(" ,;:.")
 
-    special_match = re.match(
-        r"^(?P<quantity>\d+(?:\.\d+)?)\s*-\s*(?P<unit>oz|lb|g|kg|ml|l)\.?\s*(?P<rest>.+)$",
+    count_prefix_match = re.match(
+        r"^(?P<count>\d+(?:\.\d+)?)\s*(?:pcs?|pieces?|piece)\s+(?P<quantity>\d+(?:\.\d+)?)\s*(?P<unit>oz|lb|g|kg|ml|l|tsp|tbsp|cup|cups)\b\.?\s*(?P<rest>.+)$",
         line,
         flags=re.IGNORECASE,
     )
-    if special_match:
-        quantity = float(special_match.group("quantity"))
-        unit = UNIT_ALIASES[special_match.group("unit").lower()]
-        name = special_match.group("rest")
-        if " plus " in name.lower():
-            name = re.split(r"\bplus\b", name, maxsplit=1, flags=re.IGNORECASE)[1]
-            name = re.sub(
-                r"^\d+(?:\.\d+)?\s*(?:cup|cups|tbsp|tablespoon|tablespoons|tsp|teaspoon|teaspoons|ml|l|g|kg|oz|lb)\s+",
-                "",
-                name,
-                flags=re.IGNORECASE,
-            )
-        else:
-            name = re.sub(
-                r"^(?:can|container|containers|package|packages|pack|packs)\s+",
-                "",
-                name,
-                flags=re.IGNORECASE,
-            )
+    if count_prefix_match:
+        quantity = float(count_prefix_match.group("quantity"))
+        unit = UNIT_ALIASES[count_prefix_match.group("unit").lower()]
+        name = count_prefix_match.group("rest")
     else:
-        quantity_match = re.match(
-            r"^(?P<quantity>\d+(?:\.\d+)?(?:\s+\d+/\d+)?|\d+/\d+)\s+(?P<rest>.+)$",
+        compact_match = re.match(
+            r"^(?P<quantity>\d+(?:\.\d+)?)(?P<unit>oz|lb|g|kg|ml|l|tsp|tbsp|cup|cups)\b\.?\s*(?P<rest>.+)$",
             line,
+            flags=re.IGNORECASE,
         )
-        if quantity_match:
-            quantity = parse_quantity(quantity_match.group("quantity"))
-            rest = quantity_match.group("rest")
+        if compact_match:
+            quantity = float(compact_match.group("quantity"))
+            unit = UNIT_ALIASES[compact_match.group("unit").lower()]
+            name = compact_match.group("rest")
         else:
-            quantity = 1.0
-            rest = line
+            special_match = re.match(
+                r"^(?P<quantity>\d+(?:\.\d+)?)\s*-\s*(?P<unit>oz|lb|g|kg|ml|l)\.?\s*(?P<rest>.+)$",
+                line,
+                flags=re.IGNORECASE,
+            )
+            if special_match:
+                quantity = float(special_match.group("quantity"))
+                unit = UNIT_ALIASES[special_match.group("unit").lower()]
+                name = special_match.group("rest")
+                if " plus " in name.lower():
+                    name = re.split(r"\bplus\b", name, maxsplit=1, flags=re.IGNORECASE)[1]
+                    name = re.sub(
+                        r"^\d+(?:\.\d+)?\s*(?:cup|cups|tbsp|tablespoon|tablespoons|tsp|teaspoon|teaspoons|ml|l|g|kg|oz|lb)\s+",
+                        "",
+                        name,
+                        flags=re.IGNORECASE,
+                    )
+                else:
+                    name = re.sub(
+                        r"^(?:can|container|containers|package|packages|pack|packs)\s+",
+                        "",
+                        name,
+                        flags=re.IGNORECASE,
+                    )
+            else:
+                quantity_match = re.match(
+                    r"^(?P<quantity>\d+(?:\.\d+)?(?:\s+\d+/\d+)?|\d+/\d+)\s+(?P<rest>.+)$",
+                    line,
+                )
+                if quantity_match:
+                    quantity = parse_quantity(quantity_match.group("quantity"))
+                    rest = quantity_match.group("rest")
+                else:
+                    quantity = 1.0
+                    rest = line
 
-        rest_tokens = rest.split()
-        unit = ""
-        if rest_tokens:
-            first = rest_tokens[0].lower().strip(".,;:!?")
-            if first in UNIT_ALIASES:
-                unit = UNIT_ALIASES[first]
-                rest_tokens = rest_tokens[1:]
-            elif first in COUNT_WORDS:
-                unit = "pcs"
-                rest_tokens = rest_tokens[1:]
+                rest_tokens = rest.split()
+                unit = ""
+                if rest_tokens:
+                    first = rest_tokens[0].lower().strip(".,;:!?")
+                    if first in UNIT_ALIASES:
+                        unit = UNIT_ALIASES[first]
+                        rest_tokens = rest_tokens[1:]
+                    elif first in COUNT_WORDS:
+                        unit = "pcs"
+                        rest_tokens = rest_tokens[1:]
 
-        name = " ".join(rest_tokens) if rest_tokens else rest
+                name = " ".join(rest_tokens) if rest_tokens else rest
 
     name = re.split(
         r"\bplus\b|\bto serve\b|\bfor serving\b|\bfor frying\b",

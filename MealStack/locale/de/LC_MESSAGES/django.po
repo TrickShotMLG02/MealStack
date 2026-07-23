@@ -219,6 +219,38 @@ msgstr "Nährwerte"
 msgid "Sugar"
 msgstr "Zucker"
 
+#: .\apps\recipes\views\admin_importers_view.py:16
+msgid "Ingredient '%(ingredient_name)s' imported successfully!"
+msgstr "Zutat '%(ingredient_name)s' erfolgreich importiert!"
+
+#: .\apps\recipes\views\admin_importers_view.py:19
+msgid "EAN %(ean)s not found in OpenFoodFacts."
+msgstr "EAN %(ean)s wurde in OpenFoodFacts nicht gefunden."
+
+#: .\apps\recipes\views\admin_importers_view.py:21
+msgid "Error: %(error)s"
+msgstr "Fehler: %(error)s"
+
+#: .\apps\recipes\views\admin_importers_view.py:23
+msgid "Please provide a valid EAN."
+msgstr "Bitte eine gültige EAN angeben."
+
+#: .\apps\recipes\views\admin_importers_view.py:32
+msgid "Invalid URL for %(site_name)s. Please use a matching recipe URL."
+msgstr "Ungültige URL für %(site_name)s. Bitte eine passende Rezept-URL verwenden."
+
+#: .\apps\recipes\views\admin_importers_view.py:38
+msgid "Recipe '%(recipe_title)s' imported successfully!"
+msgstr "Rezept '%(recipe_title)s' erfolgreich importiert!"
+
+#: .\apps\recipes\views\admin_importers_view.py:42
+msgid "Error importing recipe: %(error)s"
+msgstr "Fehler beim Importieren des Rezepts: %(error)s"
+
+#: .\apps\recipes\views\admin_importers_view.py:44
+msgid "Please provide a valid recipe URL."
+msgstr "Bitte eine gültige Rezept-URL angeben."
+
 #: .\MealStack\templates\recipes\recipe_detail.html:185
 msgid "Salt"
 msgstr "Salz"

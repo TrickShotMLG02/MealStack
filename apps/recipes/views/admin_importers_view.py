@@ -1,10 +1,9 @@
+from django.utils.translation import gettext as _
 from django.shortcuts import render
 
-from apps.recipes.importers.recipes.bbcgoodfood import BBCGoodFoodImporter
-from apps.recipes.importers.recipes.chefkoch import ChefkochImporter
-from apps.recipes.importers.recipes.epicurious import EpicuriousImporter
 from apps.recipes.importers.ingredients.openfoodfacts import OpenFoodFactsImporter
 from apps.recipes.importers.ingredients.base import EANNotFound
+from apps.recipes.importers.recipes.registry import get_recipe_importers
 
 
 def ingredient_importer(request):
@@ -15,65 +14,55 @@ def ingredient_importer(request):
             try:
                 importer = OpenFoodFactsImporter(ean=ean)
                 ingredient = importer.import_ingredient()
-                message = f"Ingredient '{ingredient.name}' imported successfully!"
+                message = _("Ingredient '%(ingredient_name)s' imported successfully!") % {
+                    "ingredient_name": ingredient.name,
+                }
             except EANNotFound:
-                message = f"EAN {ean} not found in OpenFoodFacts."
+                message = _("EAN %(ean)s not found in OpenFoodFacts.") % {"ean": ean}
             except Exception as e:
-                message = f"Error: {str(e)}"
+                message = _("Error: %(error)s") % {"error": str(e)}
         else:
-            message = "Please provide a valid EAN."
+            message = _("Please provide a valid EAN.")
     return render(request, "admin/ingredient_importer.html", {"message": message})
 
 
-def _recipe_importer_view(request, importer_cls, site_name, url_placeholder):
+def _recipe_importer_view(request, importer_spec):
     message = None
     if request.method == "POST":
         url = request.POST.get("url")
         if url:
-            try:
-                importer = importer_cls(url=url)
-                recipe = importer.import_recipe()
-                message = f"Recipe '{recipe.title}' imported successfully!"
-            except Exception as e:
-                message = f"Error: {str(e)}"
+            if not importer_spec.matches_url(url):
+                message = _("Invalid URL for %(site_name)s. Please use a matching recipe URL.") % {
+                    "site_name": importer_spec.name,
+                }
+            else:
+                try:
+                    importer = importer_spec.importer_cls(url=url)
+                    recipe = importer.import_recipe()
+                    message = _("Recipe '%(recipe_title)s' imported successfully!") % {
+                        "recipe_title": recipe.title,
+                    }
+                except Exception as e:
+                    message = _("Error importing recipe: %(error)s") % {"error": str(e)}
         else:
-            message = "Please provide a valid recipe URL."
+            message = _("Please provide a valid recipe URL.")
     return render(
         request,
         "admin/recipe_importer.html",
         {
             "message": message,
-            "site_name": site_name,
-            "url_placeholder": url_placeholder,
+            "site_name": importer_spec.name,
+            "url_placeholder": importer_spec.url_placeholder,
         },
     )
 
 
-def chefkoch_importer(request):
-    return _recipe_importer_view(
-        request,
-        ChefkochImporter,
-        "Chefkoch",
-        "https://www.chefkoch.de/rezepte/...",
-    )
+def make_recipe_importer_view(importer_spec):
+    def view(request):
+        return _recipe_importer_view(request, importer_spec)
 
-
-def bbcgoodfood_importer(request):
-    return _recipe_importer_view(
-        request,
-        BBCGoodFoodImporter,
-        "BBC Good Food",
-        "https://www.bbcgoodfood.com/recipes/...",
-    )
-
-
-def epicurious_importer(request):
-    return _recipe_importer_view(
-        request,
-        EpicuriousImporter,
-        "Epicurious",
-        "https://www.epicurious.com/recipes/food/views/...",
-    )
+    view.__name__ = importer_spec.name.lower().replace(" ", "_")
+    return view
 
 
 INGREDIENT_IMPORTERS = [
@@ -84,25 +73,6 @@ INGREDIENT_IMPORTERS = [
     },
 ]
 
-RECIPE_IMPORTERS = [
-    {
-        "name": "Chefkoch",
-        "url_path": "recipe/chefkoch/",
-        "view": chefkoch_importer,
-    },
-    {
-        "name": "BBC Good Food",
-        "url_path": "recipe/bbc-good-food/",
-        "view": bbcgoodfood_importer,
-    },
-    {
-        "name": "Epicurious",
-        "url_path": "recipe/epicurious/",
-        "view": epicurious_importer,
-    },
-]
-
-
 def _build_importers_list(importers):
     return [
         {
@@ -110,6 +80,18 @@ def _build_importers_list(importers):
             "url": f"/admin/importers/{imp['url_path']}",
         }
         for imp in importers
+    ]
+
+
+def get_recipe_importer_entries():
+    recipe_importers = get_recipe_importers()
+    return [
+        {
+            "name": importer.name,
+            "url_path": importer.url_path,
+            "view": make_recipe_importer_view(importer),
+        }
+        for importer in recipe_importers
     ]
 
 
@@ -144,6 +126,6 @@ def recipe_importers_home(request):
         "admin/importers_home.html",
         {
             "section_title": "Recipe Scrapers",
-            "importers": _build_importers_list(RECIPE_IMPORTERS),
+            "importers": _build_importers_list(get_recipe_importer_entries()),
         },
     )

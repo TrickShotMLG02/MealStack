@@ -33,7 +33,7 @@ class MyAdminSite(admin.AdminSite):
                     "admin_url": f"/admin/importers/{importer['url_path']}",
                     "view_only": True,
                 }
-                for importer in admin_importers_view.RECIPE_IMPORTERS
+                for importer in admin_importers_view.get_recipe_importer_entries()
             ],
         }
         app_list.extend([ingredient_importers_section, recipe_importers_section])
@@ -52,7 +52,7 @@ class MyAdminSite(admin.AdminSite):
             path(f"importers/{importer['url_path']}", self.admin_view(importer["view"]),
                  name=importer["name"].lower().replace(" ", "_"))
             for importer in (
-                admin_importers_view.INGREDIENT_IMPORTERS + admin_importers_view.RECIPE_IMPORTERS
+                admin_importers_view.INGREDIENT_IMPORTERS + admin_importers_view.get_recipe_importer_entries()
             )
         ]
 

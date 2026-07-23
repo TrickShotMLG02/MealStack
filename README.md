@@ -8,7 +8,7 @@
 ## 📖 Description
 
 Meal Stack is a Django recipe web application for managing, organizing, and sharing cooking recipes.
-It supports recipe search, tagging, categories, localized UI text, recipe importers, and a refined recipe detail experience with cook mode, print export, and serving adjustments.
+It supports recipe search, tagging, categories, localized UI text, OIDC login, recipe scrapers, admin bulk actions, and a refined recipe detail experience with cook mode, print export, serving adjustments, and share links.
 
 ## 📌 Features
 
@@ -20,15 +20,20 @@ It supports recipe search, tagging, categories, localized UI text, recipe import
 - Export styled recipe PDFs for printing or saving
 - Share recipe URLs, including the current serving selection
 - Manage ingredients, units, tags, categories, and importers in the admin
+- Bulk update recipe status between draft and published in the admin
+- Sign in with OIDC or use the built-in login
 - Import ingredients from OpenFoodFacts
-- Import recipes from Chefkoch
+- Import recipes from Chefkoch, BBC Good Food, and Epicurious
+- Run ingredient imports from the CLI with `ingredient_importer`
+- Run recipe imports from the CLI with `recipe_importer`
 - Use light and dark themes
 
 ## 📷 Preview
 
 <p>
-  <img src="docs/screenshots/recipe-list.png" alt="Meal Stack recipe list view" width="49%">
-  <img src="docs/screenshots/recipe-detail.png" alt="Meal Stack recipe detail view" width="49%">
+  <img src="docs/screenshots/recipe-list.png" alt="Meal Stack recipe list view" width="100%">
+  <br><br>
+  <img src="docs/screenshots/recipe-detail.png" alt="Meal Stack recipe detail view" width="100%">
 </p>
 
 ## 🚀 Quick Start
