@@ -9,8 +9,25 @@
 
 {% block content %}
 <section class="recipe-list-page">
-    <header class="recipe-list-header">
-        <h1 class="text-centered">{% trans "All Recipes" %}</h1>
+    <header class="recipe-list-header{% if search_query %} recipe-list-header--search{% endif %}">
+        <div class="recipe-list-header__copy">
+            {% if search_query %}
+                <p class="recipe-list-header__eyebrow">{% trans "Search results" %}</p>
+            {% endif %}
+            <h1 class="{% if search_query %}recipe-list-header__title{% else %}text-centered{% endif %}">{% trans "All Recipes" %}</h1>
+            {% if search_query %}
+                <p class="recipe-list-header__meta">
+                    {% blocktrans with query=search_query count recipe_count=recipes|length %}
+                        Showing {{ recipe_count }} recipe for "{{ query }}"
+                    {% plural %}
+                        Showing {{ recipe_count }} recipes for "{{ query }}"
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
+        </div>
+        {% if search_query %}
+            <a class="recipe-list-header__clear" href="{% url 'recipes:recipe_list' %}">{% trans "Clear search" %}</a>
+        {% endif %}
     </header>
 
     <div class="recipe-grid">
@@ -30,7 +47,13 @@
             </div>
         </a>
         {% empty %}
-        <p class="recipe-list-empty">{% trans "No recipes available." %}</p>
+        <p class="recipe-list-empty">
+            {% if search_query %}
+                {% trans "No recipes matched your search." %}
+            {% else %}
+                {% trans "No recipes available." %}
+            {% endif %}
+        </p>
         {% endfor %}
     </div>
 </section>

@@ -11,7 +11,14 @@
             </span>
         </a>
 
-        <form method="get" action="{% url 'recipes:recipe_list' %}" class="header-search" role="search">
+        <form
+            method="get"
+            action="{% url 'recipes:recipe_list' %}"
+            class="header-search"
+            role="search"
+            data-search-form
+            data-suggestions-url="{% url 'recipes:recipe_search_suggestions' %}"
+        >
             <label class="sr-only" for="header-search-input">{% trans "Search recipes..." %}</label>
             <div class="header-search__field">
                 <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -35,6 +42,13 @@
                     </svg>
                 </button>
             </div>
+            <div
+                class="header-search__suggestions"
+                data-search-suggestions
+                role="listbox"
+                aria-label="{% trans 'Search suggestions' %}"
+                hidden
+            ></div>
         </form>
 
         <nav class="header-actions" aria-label="{% trans 'Header actions' %}">
@@ -59,3 +73,4 @@
         </nav>
     </div>
 </header>
+<script src="{% static 'js/header_search.js' %}" defer></script>

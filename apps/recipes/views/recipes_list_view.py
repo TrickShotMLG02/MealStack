@@ -1,20 +1,42 @@
+from django.http import JsonResponse
 from django.db.models import Prefetch
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.templatetags.static import static
+from django.urls import reverse
+from django.utils.translation import gettext as _
+from urllib.parse import urlencode
+
 from apps.recipes.models import Recipe, RecipeImage
+from apps.recipes.selectors import search_recipes, search_suggestions
 
 def recipe_list(request):
-    # Only show published recipes
-    # TODO: Filter by status='published'
-    recipes = Recipe.objects.filter(status='draft').order_by('-created_at')
+    search_query = (request.GET.get("q") or "").strip()
+    prefetches = [
+        Prefetch(
+            'recipeimage_set',
+            queryset=RecipeImage.objects.all().order_by('-is_primary', 'ordering'),
+            to_attr='images',
+        ),
+    ]
 
-    # Prefetch images ordered by primary first
-    images_prefetch = Prefetch(
-        'recipeimage_set',
-        queryset=RecipeImage.objects.all().order_by('-is_primary', 'ordering'),
-        to_attr='images'  # will be available as `recipe.images` instead of `recipe.recipeimage_set.all()`
+    if search_query:
+        prefetches.extend(
+            [
+                'tags',
+                'recipeingredientgroup_set__recipeingredient_set__ingredient',
+                'recipestepgroup_set__recipestep_set',
+                'recipenote_set',
+            ]
+        )
+
+    recipes = (
+        Recipe.objects.filter(status='draft')
+        .select_related("cuisine")
+        .prefetch_related(*prefetches)
+        .order_by('-created_at')
     )
-    recipes = recipes.prefetch_related(images_prefetch)
+
+    recipes = search_recipes(recipes, search_query)
 
     for recipe in recipes:
         primary_image = next(
@@ -27,4 +49,34 @@ def recipe_list(request):
         )
         recipe.list_image_url = primary_image.image.url if primary_image else static("recipes/images/placeholder.jpg")
 
-    return render(request, 'recipes/recipe_list.html', {'recipes': recipes})
+    return render(request, 'recipes/recipe_list.html', {
+        'recipes': recipes,
+        'search_query': search_query,
+    })
+
+
+def recipe_search_suggestions(request):
+    query = (request.GET.get("q") or "").strip()
+    suggestions = []
+
+    for suggestion in search_suggestions(query):
+        if suggestion.kind == "recipe" and suggestion.recipe_slug:
+            href = reverse("recipes:recipe_detail", args=[suggestion.recipe_slug])
+        else:
+            href = f"{reverse('recipes:recipe_list')}?{urlencode({'q': suggestion.value})}"
+
+        suggestions.append(
+            {
+                "kind": suggestion.kind,
+                "kind_label": {
+                    "recipe": _("Recipe"),
+                    "tag": _("Tag"),
+                    "cuisine": _("Cuisine"),
+                    "ingredient": _("Ingredient"),
+                }.get(suggestion.kind, suggestion.kind.title()),
+                "label": suggestion.label,
+                "href": href,
+            }
+        )
+
+    return JsonResponse({"suggestions": suggestions})

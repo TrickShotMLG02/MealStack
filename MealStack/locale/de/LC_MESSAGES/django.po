@@ -267,6 +267,33 @@ msgstr "Admin"
 msgid "Language selection"
 msgstr "Sprachauswahl"
 
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+msgid "Search suggestions"
+msgstr "Suchvorschläge"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Cuisine"
+msgstr "Küche"
+
+msgid "Ingredient"
+msgstr "Zutat"
+
+msgid "Clear search"
+msgstr "Suche löschen"
+
+msgid "No recipes matched your search."
+msgstr "Keine Rezepte entsprechen deiner Suche."
+
+msgid "Showing %(recipe_count)s recipe for \"%(query)s\""
+msgstr "Es wird %(recipe_count)s Rezept für \"%(query)s\" angezeigt"
+
+msgid "Showing %(recipe_count)s recipes for \"%(query)s\""
+msgstr "Es werden %(recipe_count)s Rezepte für \"%(query)s\" angezeigt"
+
 msgid "Metric"
 msgstr "Wert"
 
