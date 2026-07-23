@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from apps.recipes.importers.ingredients.openfoodfacts import OpenFoodFactsImporter
 from apps.recipes.importers.ingredients.base import EANNotFound
 
@@ -23,28 +24,20 @@ def ingredient_importer(request):
 
 IMPORTERS = [
     {
-        "name": "Ingredient Importer",
-        "url_path": "ingredient/",
+        "name": "OpenFoodFacts",
+        "url_path": "ingredient/openfoodfacts/",
         "view": ingredient_importer,
     },
 ]
 
 
 def importers_home(request):
-    """
-    Landing page for all admin importers.
-    """
-    # Build context with links to all importers
     importers_list = [
         {
             "name": imp["name"],
-            "url": f"/admin/importers/{imp['url_path']}"
+            "url": f"/admin/importers/{imp['url_path']}",
         }
         for imp in IMPORTERS
     ]
 
-    context = {
-        "importers": importers_list,
-    }
-
-    return render(request, "admin/importers_home.html", context)
+    return render(request, "admin/importers_home.html", {"importers": importers_list})

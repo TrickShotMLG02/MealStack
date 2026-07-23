@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 
 from apps.recipes.views import admin_importers_view
 
@@ -9,8 +10,8 @@ class MyAdminSite(admin.AdminSite):
         app_list = super().get_app_list(request, context)
 
         importers_section = {
-            "name": "Importers",
-            "app_label": "importers",
+            "name": "Ingredient Importers",
+            "app_label": "ingredient_importers",
             "url_path": "/admin/importers/",
             "models": [
                 {
@@ -30,6 +31,13 @@ class MyAdminSite(admin.AdminSite):
 
         custom_urls = [
             path("importers/", self.admin_view(admin_importers_view.importers_home), name="importers_home"),
+            path(
+                "importers/ingredient/",
+                self.admin_view(
+                    RedirectView.as_view(url="/admin/importers/ingredient/openfoodfacts/", permanent=False)
+                ),
+                name="importers_ingredient_redirect",
+            ),
         ]
 
         custom_importer_urls = [
