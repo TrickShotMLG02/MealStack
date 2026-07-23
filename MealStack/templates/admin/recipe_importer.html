@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>{{ site_name }}</h1>
+{% if message %}<p>{{ message }}</p>{% endif %}
+<form method="post">
+    {% csrf_token %}
+    <label>Recipe URL:</label>
+    <input type="url" name="url" style="min-width: 32rem; max-width: 100%;" placeholder="{{ url_placeholder }}">
+    <button type="submit">Import</button>
+</form>
+{% endblock %}

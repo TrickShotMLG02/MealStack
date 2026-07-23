@@ -1,17 +1,25 @@
+import os
 from datetime import timedelta
 
+from django.conf import settings
 from django.db import models
 from django.templatetags.static import static
+from django.utils.translation import gettext_lazy as _
 
 from apps.recipes.models.recipe_nutrition import RecipeNutrition
 from apps.common.text_formatting import slugify
+from apps.common.time import format_timedelta
 
 STATUS_CHOICES = [
-    ('draft', 'Draft'),
-    ('published', 'Published'),
+    ('draft', _('Draft')),
+    ('published', _('Published')),
 ]
 
 class Recipe(models.Model):
+    class Meta:
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
+
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
 
@@ -63,10 +71,7 @@ class Recipe(models.Model):
         Optional: format for admin display
         """
         total = self.total_time
-        # return as HH:MM
-        hours = total.total_seconds() // 3600
-        minutes = (total.total_seconds() % 3600) // 60
-        return f"{int(hours)}h {int(minutes)}m" if hours else f"{int(minutes)}m"
+        return format_timedelta(total)
 
     total_time_display.short_description = "Total Time"
 
@@ -74,26 +79,23 @@ class Recipe(models.Model):
     @property
     def primary_or_placeholder(self):
         """
-        Returns the primary image if it exists.
-        Otherwise, it returns the placeholder image.
+        Returns the primary image if it exists on disk.
+        Otherwise, returns the placeholder image.
         """
         primary = self.recipeimage_set.filter(is_primary=True).first()
         if primary and primary.image:
-            return primary.image.url
+            image_path = os.path.join(settings.MEDIA_ROOT, primary.image.name)
+            if os.path.exists(image_path):
+                return primary.image.url
         return static('recipes/images/placeholder.jpg')
 
     @property
     def images_or_placeholder(self):
         """
-        Returns a list of RecipeImage objects if they exist.
-        If no images exist, returns a list with a single dummy object
-        containing a placeholder image URL.
+        Returns a list of RecipeImage objects.
+        If an image is missing or the file doesn't exist, its URL is replaced with a placeholder.
+        If no images exist, returns a single placeholder.
         """
-        images = list(self.recipeimage_set.all().order_by('-is_primary', 'ordering'))
-        if images:
-            return images
-
-        # Create a dummy object with .image.url so carousel still works
         class DummyImage:
             @property
             def image(self):
@@ -102,7 +104,17 @@ class Recipe(models.Model):
 
                 return ImageAttr()
 
-        return [DummyImage()]
+        images = list(self.recipeimage_set.all().order_by('-is_primary', 'ordering'))
+        if not images:
+            return [DummyImage()]
+
+        result = []
+        for img in images:
+            # Check if ImageField exists and file is on disk
+            path_exists = img.image and os.path.exists(os.path.join(settings.MEDIA_ROOT, img.image.name))
+            result.append(img if path_exists else DummyImage())
+
+        return result
 
 
     def save(self, *args, **kwargs):
@@ -117,9 +129,6 @@ class Recipe(models.Model):
             self.resting_time = timedelta(seconds=0)
 
         super().save(*args, **kwargs)
-
-        from apps.recipes.services.nutrition import update_recipe_nutrition
-        update_recipe_nutrition(self)
 
     def __str__(self):
         return self.title

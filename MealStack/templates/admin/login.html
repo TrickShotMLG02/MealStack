@@ -1,0 +1,30 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<div style="text-align: center">
+
+  {% if OIDC_ENABLED %}
+    <form action="{% url 'oidc_authentication_init' %}" method="get">
+      <input type="submit" class="default" value="{% trans 'Login with OAuth' %}">
+    </form>
+  {% endif %}
+
+  {% if OIDC_ENABLED and OIDC_ALLOW_LOCAL_LOGIN %}
+    <hr style="margin: 1rem auto; width: 50%;">
+
+    <form onsubmit="document.getElementById('internal-login-form').style.display='block'; this.style.display='none'; return false;">
+      <input type="submit" class="default" value="{% trans 'Use internal authentication' %}">
+    </form>
+  {% endif %}
+
+</div>
+
+{% if not OIDC_ENABLED or OIDC_ALLOW_LOCAL_LOGIN %}
+  <div id="internal-login-form" {% if OIDC_ENABLED and OIDC_ALLOW_LOCAL_LOGIN %}style="display:none;"{% endif %}>
+    {{ block.super }}
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -73,11 +73,68 @@ def apply_env_overrides():
         else:
             raise ValueError(f"Unknown DB_ENGINE: {db_engine_env}")
 
+    # OIDC override
+    oidc_enabled_env = os.getenv("OIDC_ENABLED")
+    if oidc_enabled_env:
+        settings.OIDC_ENABLED = oidc_enabled_env.lower() in ("true", "1", "yes")
+
+    # Default auth override
+    oidc_allow_local_login_env = os.getenv("OIDC_ALLOW_LOCAL_LOGIN")
+    if oidc_allow_local_login_env:
+        settings.OIDC_ALLOW_LOCAL_LOGIN = oidc_allow_local_login_env.lower() in ("true", "1", "yes")
+
+    if not settings.OIDC_ENABLED or settings.OIDC_ALLOW_LOCAL_LOGIN:
+        settings.AUTHENTICATION_BACKENDS.append(
+            "django.contrib.auth.backends.ModelBackend"
+        )
+
+    if settings.OIDC_ENABLED:
+        settings.AUTHENTICATION_BACKENDS.append(
+            "apps.common.backend.auth_backends.OIDCAuthBackend"
+        )
+
+        settings.OIDC_RP_CLIENT_ID = os.getenv("OIDC_CLIENT_ID")
+        settings.OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_CLIENT_SECRET")
+
+        settings.OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv("OIDC_AUTHORIZATION_ENDPOINT")
+        settings.OIDC_OP_TOKEN_ENDPOINT = os.getenv("OIDC_TOKEN_ENDPOINT")
+        settings.OIDC_OP_USER_ENDPOINT = os.getenv("OIDC_USERINFO_ENDPOINT")
+        settings.OIDC_OP_JWKS_ENDPOINT = os.getenv("OIDC_JWKS_ENDPOINT")
+
+        settings.OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO")
+        settings.OIDC_OP_ISSUER = os.getenv("OIDC_ISSUER")
+
+        settings.OIDC_RP_SCOPES = os.getenv(
+            "OIDC_SCOPES", "openid email profile"
+        )
+
+        settings.LOGIN_REDIRECT_URL = "/admin/"
 
     # Timezone Override
     tz_env = os.getenv("TIME_ZONE")
     if tz_env:
         settings.TIME_ZONE = tz_env
+
+    # Default Language
+    lang_env = os.getenv("DEFAULT_LANGUAGE")
+    if lang_env:
+        settings.LANGUAGE_CODE = lang_env
+
+    # Reverse Proxy https -> http fixes
+    secure_proxy_ssl_header_env = os.getenv("SECURE_PROXY_SSL_HEADER")
+    if secure_proxy_ssl_header_env:
+        try:
+            header, value = secure_proxy_ssl_header_env.split(",", 1)
+            settings.SECURE_PROXY_SSL_HEADER = (header.strip(), value.strip())
+        except ValueError:
+            raise ValueError(
+                "SECURE_PROXY_SSL_HEADER must be in format 'HEADER,VALUE' "
+                "e.g. 'HTTP_X_FORWARDED_PROTO,https'"
+            )
+
+    use_x_forwarded_host_env = os.getenv("USE_X_FORWARDED_HOST")
+    if use_x_forwarded_host_env:
+        settings.USE_X_FORWARDED_HOST = use_x_forwarded_host_env.lower() in ("true", "1", "yes")
 
 
 # Call it immediately to apply overrides

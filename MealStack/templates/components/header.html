@@ -1,28 +1,95 @@
-{% load static %}
+{% load static i18n %}
 <link rel="stylesheet" href="{% static 'css/header.css' %}">
 
 <header class="site-header">
-    <div class="header-container">
-        <!-- App title / logo -->
-        <div class="header-left">
-            <h1 class="app-title">MealStack</h1>
-        </div>
+    <div class="site-header__shell">
+        <a href="{% url 'recipes:recipe_list' %}" class="site-brand" aria-label="MealStack">
+            <span class="site-brand__mark" aria-hidden="true">MS</span>
+            <span class="site-brand__text">
+                <span class="site-brand__name">MealStack</span>
+                <span class="site-brand__label">{% trans "Recipe library" %}</span>
+            </span>
+        </a>
 
-        <!-- Search bar -->
-        <div class="header-center">
-            <form method="get" action="{% url 'recipes:recipe_list' %}" class="search-form">
-                <input type="text" name="q" placeholder="Search recipes..." class="search-input">
-                <button type="submit" class="search-button">🔍</button>
-            </form>
-        </div>
+        <button
+            type="button"
+            class="header-menu-toggle"
+            aria-label="{% trans 'Open menu' %}"
+            aria-expanded="false"
+            aria-controls="header-actions"
+            data-header-menu-toggle
+        >
+            <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 7.25h16v1.5H4z"></path>
+                <path d="M4 11.25h16v1.5H4z"></path>
+                <path d="M4 15.25h16v1.5H4z"></path>
+            </svg>
+        </button>
 
-        <!-- Buttons / actions -->
-        <div class="header-right">
+        <form
+            method="get"
+            action="{% url 'recipes:recipe_list' %}"
+            class="header-search"
+            role="search"
+            data-search-form
+            data-suggestions-url="{% url 'recipes:recipe_search_suggestions' %}"
+        >
+            <label class="sr-only" for="header-search-input">{% trans "Search recipes..." %}</label>
+            <div class="header-search__field">
+                <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8 7.5 7.5 0 0 1-5.3 12.8Zm0-13.5a6 6 0 1 0 4.24 10.24A6 6 0 0 0 10.5 4.5Z"></path>
+                    <path d="M16.85 15.78 21 19.93l-1.06 1.06-4.15-4.15z"></path>
+                </svg>
+                <input
+                    id="header-search-input"
+                    type="search"
+                    name="q"
+                    placeholder="{% trans 'Search recipes...' %}"
+                    value="{{ request.GET.q }}"
+                    autocomplete="off"
+                    aria-autocomplete="list"
+                    aria-controls="header-search-suggestions"
+                    class="header-search__input"
+                >
+                <button type="submit" class="header-search__submit">
+                    <span class="sr-only">{% trans "Search recipes..." %}</span>
+                    <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8 7.5 7.5 0 0 1-5.3 12.8Zm0-13.5a6 6 0 1 0 4.24 10.24A6 6 0 0 0 10.5 4.5Z"></path>
+                        <path d="M16.85 15.78 21 19.93l-1.06 1.06-4.15-4.15z"></path>
+                    </svg>
+                </button>
+            </div>
+            <div
+                id="header-search-suggestions"
+                class="header-search__suggestions"
+                data-search-suggestions
+                role="listbox"
+                aria-label="{% trans 'Search suggestions' %}"
+                hidden
+            ></div>
+        </form>
+
+        <nav class="header-actions" id="header-actions" aria-label="{% trans 'Header actions' %}" data-header-menu>
             {% block header_buttons %}
-                <a href="#" class="btn">Login</a>
-                <a href="#" class="btn">Sign Up</a>
-                <button id="theme-toggle">🌞 / 🌙</button>
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="header-action header-action--link">{% trans "Admin" %}</a>
+                {% else %}
+                    <a href="{% url 'admin_login' %}" class="header-action header-action--link">{% trans "Login" %}</a>
+                {% endif %}
+                <button
+                    type="button"
+                    id="theme-toggle"
+                    class="header-action header-action--icon"
+                    aria-label="{% trans 'Toggle theme' %}"
+                    title="{% trans 'Toggle theme' %}"
+                >
+                    <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M12 3.75a8.25 8.25 0 1 0 8.25 8.25A8.26 8.26 0 0 0 12 3.75Zm0 14.5V5.75a6.75 6.75 0 1 1 0 12.5Z"></path>
+                    </svg>
+                </button>
             {% endblock %}
-        </div>
+        </nav>
     </div>
 </header>
+<script src="{% static 'js/header_search.js' %}" defer></script>
+<script src="{% static 'js/header_menu.js' %}" defer></script>

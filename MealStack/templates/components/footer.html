@@ -1,6 +1,41 @@
-{% load static %}
+{% load static i18n %}
+
 <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 
 <footer class="site-footer">
-    &copy; 2025 MealStack
+    <div class="site-footer__shell">
+        <div class="site-footer__copy">
+            <span class="site-footer__mark">MealStack</span>
+            <span class="site-footer__text">&copy; 2026</span>
+        </div>
+
+        <nav class="site-footer__locale" aria-label="{% trans 'Language selection' %}">
+            <svg class="site-footer__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="8.5"></circle>
+                <path d="M3.5 12h17"></path>
+                <path d="M12 3.5c2.25 2.25 3.35 5.08 3.35 8.5S14.25 18.25 12 20.5"></path>
+                <path d="M12 3.5C9.75 5.75 8.65 8.58 8.65 12s1.1 6.25 3.35 8.5"></path>
+                <path d="M5.8 6.2c1.55 1.05 3.62 1.68 6.2 1.68s4.65-.63 6.2-1.68"></path>
+                <path d="M5.8 17.8c1.55-1.05 3.62-1.68 6.2-1.68s4.65.63 6.2 1.68"></path>
+            </svg>
+
+            <div class="site-footer__languages" role="group" aria-label="{% trans 'Language selection' %}">
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                    <form action="{% url 'set_language' %}" method="post" class="site-footer__language-form">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                        <input name="language" type="hidden" value="{{ lang.0 }}">
+                        <button
+                            type="submit"
+                            class="site-footer__language{% if lang.0 == LANGUAGE_CODE %} site-footer__language--active{% endif %}"
+                            {% if lang.0 == LANGUAGE_CODE %}aria-current="true"{% endif %}
+                        >
+                            {{ lang.1 }}
+                        </button>
+                    </form>
+                {% endfor %}
+            </div>
+        </nav>
+    </div>
 </footer>

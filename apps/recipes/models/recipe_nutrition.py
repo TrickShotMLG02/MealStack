@@ -6,16 +6,20 @@ class RecipeNutrition(models.Model):
 
     # total values
     total_kcal = models.FloatField(default=0)
-    total_protein = models.FloatField(default=0)
     total_fat = models.FloatField(default=0)
+    total_saturates = models.FloatField(default=0)
     total_carbs = models.FloatField(default=0)
+    total_sugar = models.FloatField(default=0)
+    total_protein = models.FloatField(default=0)
     total_salt = models.FloatField(default=0)
 
     # per-serving
     per_serving_kcal = models.FloatField(default=0)
-    per_serving_protein = models.FloatField(default=0)
     per_serving_fat = models.FloatField(default=0)
+    per_serving_saturates = models.FloatField(default=0)
     per_serving_carbs = models.FloatField(default=0)
+    per_serving_sugar = models.FloatField(default=0)
+    per_serving_protein = models.FloatField(default=0)
     per_serving_salt = models.FloatField(default=0)
 
     def __str__(self):

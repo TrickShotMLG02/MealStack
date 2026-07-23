@@ -1,0 +1,9 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>{{ section_title }}</h1>
+<ul>
+  {% for importer in importers %}
+    <li><a href="{{ importer.url }}">{{ importer.name }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}

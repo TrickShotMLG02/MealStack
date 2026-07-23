@@ -1,31 +1,60 @@
 {% extends "base.html" %}
-{% load static %}
+{% load i18n time_tags static %}
 
-{% block title %}All Recipes - MealStack{% endblock %}
+{% block title %}{% trans "All Recipes" %} - MealStack{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'recipes/css/recipe_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1 class="text-centered">All Recipes</h1>
-
-<div class="recipe-grid">
-    {% for recipe in recipes %}
-    <div class="card hoverable">
-        <!-- Always show primary or placeholder -->
-        <img src="{{ recipe.primary_or_placeholder }}" alt="{{ recipe.title }}">
-
-        <h2 class="recipe-title"><a href="{% url 'recipes:recipe_detail' recipe.slug %}">{{ recipe.title }}</a></h2>
-
-        <!-- Tags -->
-        <div class="tag-container vertical-tags">
-            <span class="tag">Servings: {{ recipe.servings }}</span>
-            <span class="tag">Total time: {{ recipe.total_time_display }}</span>
+<section class="recipe-list-page">
+    <header class="recipe-list-header{% if search_query %} recipe-list-header--search{% endif %}">
+        <div class="recipe-list-header__copy">
+            {% if search_query %}
+                <p class="recipe-list-header__eyebrow">{% trans "Search results" %}</p>
+            {% endif %}
+            <h1 class="{% if search_query %}recipe-list-header__title{% else %}text-centered{% endif %}">{% trans "All Recipes" %}</h1>
+            {% if search_query %}
+                <p class="recipe-list-header__meta">
+                    {% blocktrans trimmed with query=search_query count recipe_count=recipes|length %}
+                        Showing {{ recipe_count }} search result for "{{ query }}"
+                    {% plural %}
+                        Showing {{ recipe_count }} search results for "{{ query }}"
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
         </div>
+        {% if search_query %}
+            <a class="recipe-list-header__clear" href="{% url 'recipes:recipe_list' %}">{% trans "Clear search" %}</a>
+        {% endif %}
+    </header>
+
+    <div class="recipe-grid">
+        {% for recipe in recipes %}
+        <a class="recipe-card card hoverable" href="{% url 'recipes:recipe_detail' recipe.slug %}" aria-label="{{ recipe.title }}">
+            <div class="recipe-card__media">
+                <img src="{{ recipe.list_image_url }}" alt="{{ recipe.title }}">
+            </div>
+
+            <div class="recipe-card__body">
+                <h3 class="recipe-title">{{ recipe.title }}</h3>
+
+                <div class="tag-container horizontal-tags recipe-card__meta">
+                    <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
+                    <span class="tag">{% trans "Total time:" %} {{ recipe.total_time|pretty_duration }}</span>
+                </div>
+            </div>
+        </a>
+        {% empty %}
+        <p class="recipe-list-empty">
+            {% if search_query %}
+                {% trans "No recipes matched your search." %}
+            {% else %}
+                {% trans "No recipes available." %}
+            {% endif %}
+        </p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p>No recipes available.</p>
-    {% endfor %}
-</div>
+</section>
 {% endblock %}

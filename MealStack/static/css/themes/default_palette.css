@@ -46,6 +46,7 @@
     --text-color: #3a3a3a;       /* Slightly warmer than pure gray for a cozy feel */
     --link-color: var(--primary-color);
     --link-hover-color: #b84419; /* Darker primary for hover */
+    --link-active-color: #004080;
     --text-muted-color: #7d6e64; /* Muted brownish gray */
 
 
@@ -91,6 +92,75 @@
     --button-text-color: #ffffff;
     --button-hover-bg: #b84419;
     --button-border-radius: 6px; /* slightly rounder for a friendly look */
+
+
+    /* ---------------------------
+       Cross-component theme tokens
+    --------------------------- */
+
+    --theme-page-background: var(--background-color);
+    --skip-link-text-color: #fff;
+    --skip-link-shadow-color: rgba(0, 0, 0, 0.18);
+
+    --header-shell-bg-start: rgba(250, 246, 240, 0.96);
+    --header-shell-bg-end: rgba(250, 246, 240, 0.88);
+    --header-shell-accent-primary: rgba(217, 85, 35, 0.08);
+    --header-shell-accent-secondary: rgba(244, 180, 0, 0.08);
+    --header-shell-shadow-color: rgba(30, 20, 14, 0.06);
+    --header-brand-mark-gradient-end: #b84419;
+    --header-brand-mark-text-color: #fff;
+    --header-brand-mark-shadow-color: rgba(185, 68, 25, 0.22);
+    --header-search-field-border-color: color-mix(in srgb, var(--border-color) 85%, #ffffff);
+    --header-search-field-bg-color: rgba(255, 255, 255, 0.82);
+    --header-search-field-shadow-color: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 8px 18px rgba(34, 26, 19, 0.06);
+    --header-search-field-focus-border-color: color-mix(in srgb, var(--primary-color) 40%, var(--border-color));
+    --header-search-field-focus-shadow-color: 0 0 0 4px rgba(217, 85, 35, 0.12), 0 10px 22px rgba(34, 26, 19, 0.08);
+    --header-search-placeholder-color: color-mix(in srgb, var(--text-muted-color) 82%, white);
+    --header-search-submit-gradient-end: #c04d22;
+    --header-search-submit-shadow-color: rgba(185, 68, 25, 0.18);
+    --header-suggestions-border-color: color-mix(in srgb, var(--border-color) 84%, white);
+    --header-suggestions-bg-color: rgba(255, 255, 255, 0.98);
+    --header-suggestions-shadow-color: rgba(34, 26, 19, 0.14);
+    --header-suggestion-border-color: color-mix(in srgb, var(--border-color) 72%, white);
+    --header-suggestion-hover-bg-color: color-mix(in srgb, var(--primary-color) 8%, white);
+    --header-suggestion-active-bg-color: color-mix(in srgb, var(--primary-color) 12%, white);
+    --header-action-border-color: color-mix(in srgb, var(--border-color) 80%, white);
+    --header-action-bg-color: rgba(255, 255, 255, 0.82);
+    --header-action-shadow-color: rgba(34, 26, 19, 0.05);
+    --header-action-hover-shadow-color: rgba(34, 26, 19, 0.08);
+    --header-mobile-actions-border-color: color-mix(in srgb, var(--border-color) 84%, white);
+    --header-mobile-actions-bg-color: rgba(255, 255, 255, 0.98);
+    --header-mobile-actions-shadow-color: rgba(34, 26, 19, 0.14);
+
+    --footer-border-color: color-mix(in srgb, var(--border-color) 82%, white);
+    --footer-bg-start: rgba(255, 248, 240, 0.94);
+    --footer-bg-end: rgba(255, 244, 232, 0.9);
+    --footer-accent-color: rgba(217, 85, 35, 0.05);
+    --footer-copy-color: var(--text-muted-color);
+    --footer-mark-color: var(--heading-color);
+    --footer-icon-color: var(--text-muted-color);
+    --footer-language-border-color: color-mix(in srgb, var(--border-color) 82%, white);
+    --footer-language-bg-color: rgba(255, 255, 255, 0.82);
+    --footer-language-shadow-color: rgba(34, 26, 19, 0.04);
+    --footer-language-hover-border-color: color-mix(in srgb, var(--primary-color) 28%, var(--border-color));
+    --footer-language-hover-shadow-color: rgba(34, 26, 19, 0.07);
+    --footer-language-active-gradient-end: #c04d22;
+    --footer-language-active-text-color: #fff;
+
+    --carousel-frame-bg-start: rgba(255, 255, 255, 0.65);
+    --carousel-frame-bg-end: rgba(246, 238, 229, 0.9);
+    --carousel-caption-bg-color: rgba(30, 23, 19, 0.72);
+    --carousel-caption-text-color: #fff;
+    --carousel-button-border-color: rgba(255, 255, 255, 0.55);
+    --carousel-button-bg-color: rgba(255, 255, 255, 0.78);
+    --carousel-button-shadow-color: rgba(0, 0, 0, 0.14);
+    --carousel-dot-bg-color: color-mix(in srgb, var(--text-muted-color) 35%, transparent);
+
+    --recipe-surface-soft-bg-color: color-mix(in srgb, var(--background-color) 65%, white);
+    --recipe-surface-muted-bg-color: color-mix(in srgb, var(--background-color) 80%, white);
+    --recipe-surface-overlay-bg-color: rgba(255, 255, 255, 0.78);
+    --recipe-contrast-text-color: #fff;
+    --recipe-list-clear-shadow-color: rgba(34, 26, 19, 0.06);
 
 
 
