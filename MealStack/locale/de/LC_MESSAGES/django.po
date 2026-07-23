@@ -38,6 +38,25 @@ msgstr "Interne Anmeldung verwenden"
 msgid "Search recipes..."
 msgstr "Rezepte suchen..."
 
+#: .\apps\recipes\admin\recipe.py:160
+msgid "Mark selected recipes as published"
+msgstr "Ausgewählte Rezepte als veröffentlicht markieren"
+
+#: .\apps\recipes\admin\recipe.py:163
+msgid "Published %(count)d recipe(s)."
+msgstr "%(count)d Rezept(e) veröffentlicht."
+
+#: .\apps\recipes\admin\recipe.py:165
+msgid "Mark selected recipes as draft"
+msgstr "Ausgewählte Rezepte als Entwurf markieren"
+
+#: .\apps\recipes\admin\recipe.py:168
+msgid "Moved %(count)d recipe(s) to draft."
+msgstr "%(count)d Rezept(e) in den Entwurf verschoben."
+
+msgid "Recipes"
+msgstr "Rezepte"
+
 #: .\MealStack\templates\components\header.html:24
 msgid "Login"
 msgstr "Anmelden"

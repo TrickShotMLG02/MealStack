@@ -16,6 +16,10 @@ STATUS_CHOICES = [
 ]
 
 class Recipe(models.Model):
+    class Meta:
+        verbose_name = _("Recipe")
+        verbose_name_plural = _("Recipes")
+
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
 

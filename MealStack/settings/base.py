@@ -82,6 +82,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MealStack.wsgi.application'
 
+LOGIN_REDIRECT_URL = "/admin/"
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases

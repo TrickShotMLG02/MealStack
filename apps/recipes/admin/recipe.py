@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 from nested_admin.nested import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
 from apps.recipes.models import (
@@ -87,6 +88,7 @@ class RecipeImageInline(NestedTabularInline):
 class RecipeAdmin(NestedModelAdmin):
     save_on_top = True
     autocomplete_fields = ["cuisine"]
+    actions = ["mark_as_published", "mark_as_draft"]
     list_display = [
         'title',
         'primary_image_preview',
@@ -154,3 +156,13 @@ class RecipeAdmin(NestedModelAdmin):
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
         update_recipe_nutrition(form.instance)
+
+    @admin.action(description=_("Mark selected recipes as published"))
+    def mark_as_published(self, request, queryset):
+        updated = queryset.update(status="published")
+        self.message_user(request, _("Published %(count)d recipe(s).") % {"count": updated})
+
+    @admin.action(description=_("Mark selected recipes as draft"))
+    def mark_as_draft(self, request, queryset):
+        updated = queryset.update(status="draft")
+        self.message_user(request, _("Moved %(count)d recipe(s) to draft.") % {"count": updated})

@@ -8,6 +8,12 @@ class CustomAdminLoginView(LoginView):
     """
     template_name = "admin/login.html"
 
+    def get_success_url(self):
+        next_url = self.get_redirect_url()
+        if next_url:
+            return next_url
+        return "/admin/"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['OIDC_ENABLED'] = getattr(settings, "OIDC_ENABLED")
