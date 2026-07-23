@@ -128,6 +128,21 @@ Contributions are welcome.
 - Check the [Contribution Issue](https://github.com/TrickShotMLG02/MealStack/issues/1) to get started.
 - Fork the repo, make your changes, and submit a pull request.
 
+## 🤖 AI Usage
+
+This repository was founded and built by hand without AI tools.
+
+AI was used selectively for:
+
+- refactoring support
+- idea generation
+- complex implementation work such as fuzzy search
+- web design and UI refinement
+- debugging help
+- README generation and rewording
+
+AI-assisted changes were always reviewed, adapted where needed, and integrated deliberately. Nothing was copied blindly into the codebase.
+
 ## 📄 License
 
 This project is licensed under the [GNU General Public License v3 (GPL-3.0)](LICENSE).
