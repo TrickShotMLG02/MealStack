@@ -75,8 +75,9 @@ def recipe_detail(request, slug):
 
 def recipe_export_pdf(request, slug):
     recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
-    recipe_url = request.build_absolute_uri(reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug}))
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
+    recipe_path = reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug})
+    recipe_url = request.build_absolute_uri(f"{recipe_path}?servings={selected_servings}")
     pdf_bytes = build_recipe_pdf(recipe, recipe_url, selected_servings)
 
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
