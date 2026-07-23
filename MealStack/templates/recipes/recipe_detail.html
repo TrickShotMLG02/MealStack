@@ -113,7 +113,7 @@
                 <div class="nutrition-pills">
                     <div>
                         <span class="nutrition-label">{% trans "Calories" %}</span>
-                        <strong class="nutrition-value" data-nutrition-metric="kcal" data-unit=" kcal">
+                        <strong class="nutrition-value" data-nutrition-metric="kcal" data-per-serving="{{ nutrition.per_serving_kcal }}">
                             <span class="nutrition-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_kcal|floatformat:0 }}</span>
                             <span class="nutrition-value__separator"> / </span>
                             <span class="nutrition-value__total" data-nutrition-total>{{ nutrition_totals.kcal|floatformat:0 }}</span>
@@ -122,7 +122,7 @@
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Protein" %}</span>
-                        <strong class="nutrition-value" data-nutrition-metric="protein" data-unit=" g">
+                        <strong class="nutrition-value" data-nutrition-metric="protein" data-per-serving="{{ nutrition.per_serving_protein }}">
                             <span class="nutrition-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_protein|floatformat:0 }}</span>
                             <span class="nutrition-value__separator"> / </span>
                             <span class="nutrition-value__total" data-nutrition-total>{{ nutrition_totals.protein|floatformat:0 }}</span>
@@ -131,7 +131,7 @@
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Carbs" %}</span>
-                        <strong class="nutrition-value" data-nutrition-metric="carbs" data-unit=" g">
+                        <strong class="nutrition-value" data-nutrition-metric="carbs" data-per-serving="{{ nutrition.per_serving_carbs }}">
                             <span class="nutrition-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_carbs|floatformat:0 }}</span>
                             <span class="nutrition-value__separator"> / </span>
                             <span class="nutrition-value__total" data-nutrition-total>{{ nutrition_totals.carbs|floatformat:0 }}</span>
@@ -140,7 +140,7 @@
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Fat" %}</span>
-                        <strong class="nutrition-value" data-nutrition-metric="fat" data-unit=" g">
+                        <strong class="nutrition-value" data-nutrition-metric="fat" data-per-serving="{{ nutrition.per_serving_fat }}">
                             <span class="nutrition-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_fat|floatformat:0 }}</span>
                             <span class="nutrition-value__separator"> / </span>
                             <span class="nutrition-value__total" data-nutrition-total>{{ nutrition_totals.fat|floatformat:0 }}</span>
@@ -198,6 +198,15 @@
         >
             {% trans "Print PDF" %}
         </a>
+        <button
+            type="button"
+            class="recipe-action"
+            data-share-button
+            data-label-default="{% trans 'Share' %}"
+            data-label-copied="{% trans 'Link copied' %}"
+        >
+            {% trans "Share" %}
+        </button>
     </div>
 
     <nav class="recipe-section-nav" aria-label="{% trans 'Recipe sections' %}">
@@ -267,7 +276,7 @@
                     <tbody>
                         <tr>
                             <th>{% trans "Calories" %}</th>
-                            <td data-nutrition-metric="kcal" data-unit=" kcal">
+                            <td data-nutrition-metric="kcal" data-per-serving="{{ nutrition.per_serving_kcal }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_kcal|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.kcal|floatformat:0 }}</span>
@@ -276,7 +285,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "Protein" %}</th>
-                            <td data-nutrition-metric="protein" data-unit=" g">
+                            <td data-nutrition-metric="protein" data-per-serving="{{ nutrition.per_serving_protein }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_protein|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.protein|floatformat:0 }}</span>
@@ -285,7 +294,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "Fat" %}</th>
-                            <td data-nutrition-metric="fat" data-unit=" g">
+                            <td data-nutrition-metric="fat" data-per-serving="{{ nutrition.per_serving_fat }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_fat|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.fat|floatformat:0 }}</span>
@@ -294,7 +303,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "Carbs" %}</th>
-                            <td data-nutrition-metric="carbs" data-unit=" g">
+                            <td data-nutrition-metric="carbs" data-per-serving="{{ nutrition.per_serving_carbs }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_carbs|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.carbs|floatformat:0 }}</span>
@@ -303,7 +312,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "Sugar" %}</th>
-                            <td data-nutrition-metric="sugar" data-unit=" g">
+                            <td data-nutrition-metric="sugar" data-per-serving="{{ nutrition.per_serving_sugar }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_sugar|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.sugar|floatformat:0 }}</span>
@@ -312,7 +321,7 @@
                         </tr>
                         <tr>
                             <th>{% trans "Salt" %}</th>
-                            <td data-nutrition-metric="salt" data-unit=" g">
+                            <td data-nutrition-metric="salt" data-per-serving="{{ nutrition.per_serving_salt }}">
                                 <span class="nutrition-table-value__per" data-nutrition-per-serving>{{ nutrition.per_serving_salt|floatformat:0 }}</span>
                                 <span class="nutrition-value__separator"> / </span>
                                 <span class="nutrition-table-value__total" data-nutrition-total>{{ nutrition_totals.salt|floatformat:0 }}</span>

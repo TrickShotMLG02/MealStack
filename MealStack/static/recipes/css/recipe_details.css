@@ -417,6 +417,8 @@ a.recipe-action--primary:focus {
 .ingredient-amount {
     color: var(--text-muted-color);
     font-size: 0.9rem;
+    font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+    font-variant-numeric: diagonal-fractions;
     white-space: nowrap;
 }
 

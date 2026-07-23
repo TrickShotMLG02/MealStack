@@ -90,6 +90,14 @@ msgstr "Portionen erhöhen"
 msgid "Print PDF"
 msgstr "PDF drucken"
 
+#: .\MealStack\templates\recipes\recipe_detail.html:63
+msgid "Share"
+msgstr "Teilen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:63
+msgid "Link copied"
+msgstr "Link kopiert"
+
 #: .\MealStack\templates\recipes\recipe_detail.html:30
 #: .\MealStack\templates\recipes\recipe_detail.html:75
 msgid "Servings"
