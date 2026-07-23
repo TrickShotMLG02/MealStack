@@ -78,11 +78,8 @@ jobs:
           tags: ${{ steps.meta.outputs.docker_tags }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
-      - name: Update Docker Hub repository description
-        uses: peter-evans/dockerhub-description@v5
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAME }}
-          readme-filepath: README.md
-          enable-url-completion: true
+  update-description:
+    needs: docker
+    if: ${{ needs.docker.result == 'success' }}
+    uses: ./.github/workflows/dockerhub-description.yml
+    secrets: inherit
