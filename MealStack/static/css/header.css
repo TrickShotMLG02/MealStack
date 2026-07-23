@@ -120,14 +120,19 @@
 .header-search__submit {
     display: inline-grid;
     place-items: center;
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 2.6rem;
+    height: 2.6rem;
     border: 0;
     border-radius: 999px;
     background: linear-gradient(135deg, var(--primary-color), #c04d22);
     color: #fff;
     cursor: pointer;
     transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.header-search__submit .header-icon {
+    width: 1.08rem;
+    height: 1.08rem;
 }
 
 .header-search__submit:hover {
