@@ -167,9 +167,33 @@
     font-size: 0.8rem;
 }
 
-.nutrition-pills strong {
+.nutrition-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.2rem;
     color: var(--heading-color);
     font-size: 1.1rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.nutrition-table td[data-nutrition-metric] {
+    white-space: nowrap;
+}
+
+.nutrition-value__per,
+.nutrition-table-value__per {
+    color: var(--text-muted-color);
+    font-weight: 600;
+}
+
+.nutrition-value__separator {
+    color: var(--text-muted-color);
+}
+
+.nutrition-value__unit {
+    color: var(--text-muted-color);
+    font-size: 0.9em;
 }
 
 .recipe-panel-note {

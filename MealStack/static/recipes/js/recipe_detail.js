@@ -25,11 +25,12 @@ function initRecipeDetailPage() {
         minimumFractionDigits: 0,
         useGrouping: false,
     });
+    const url = new URL(window.location.href);
     const servingsDisplays = document.querySelectorAll('[data-servings-display]');
     const selectedServingsSummary = document.querySelector('[data-selected-servings-summary]');
     const selectedServingsNote = document.querySelector('[data-selected-servings-note]');
     const ingredientAmounts = document.querySelectorAll('[data-ingredient-quantity]');
-    const nutritionValues = document.querySelectorAll('[data-nutrition-value]');
+    const nutritionValues = document.querySelectorAll('[data-nutrition-metric]');
 
     function parseNumeric(value) {
         if (typeof value === 'number') {
@@ -59,17 +60,24 @@ function initRecipeDetailPage() {
             return;
         }
 
-        const url = new URL(pdfLink.getAttribute('href'), window.location.href);
-        url.searchParams.set('servings', String(servings));
-        pdfLink.href = url.toString();
+        const pdfUrl = new URL(pdfLink.getAttribute('href'), window.location.href);
+        pdfUrl.searchParams.set('servings', String(servings));
+        pdfLink.href = pdfUrl.toString();
     }
 
     function updateNutrition(servings) {
         nutritionValues.forEach((element) => {
-            const perServing = parseNumeric(element.dataset.perServing);
+            const perServingElement = element.querySelector('[data-nutrition-per-serving]');
+            const totalElement = element.querySelector('[data-nutrition-total]');
+            const perServing = parseNumeric(perServingElement?.textContent || '0');
             const total = perServing * servings;
-            const suffix = element.dataset.unit || '';
-            element.textContent = `${nutritionFormatter.format(total)}${suffix}`;
+            if (perServingElement) {
+                perServingElement.textContent = nutritionFormatter.format(perServing);
+            }
+
+            if (totalElement) {
+                totalElement.textContent = nutritionFormatter.format(total);
+            }
         });
     }
 
@@ -102,6 +110,8 @@ function initRecipeDetailPage() {
             servingsInput.value = String(servings);
         }
 
+        url.searchParams.set('servings', String(servings));
+        history.replaceState({}, '', url.toString());
         updateServingsDisplays(servings);
         updateIngredients(servings);
         updateNutrition(servings);
