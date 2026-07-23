@@ -255,6 +255,9 @@ msgstr "Rezeptbibliothek"
 msgid "Header actions"
 msgstr "Header-Aktionen"
 
+msgid "Open menu"
+msgstr "Menü öffnen"
+
 msgid "Toggle theme"
 msgstr "Design wechseln"
 

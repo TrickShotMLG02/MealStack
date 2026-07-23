@@ -11,6 +11,21 @@
             </span>
         </a>
 
+        <button
+            type="button"
+            class="header-menu-toggle"
+            aria-label="{% trans 'Open menu' %}"
+            aria-expanded="false"
+            aria-controls="header-actions"
+            data-header-menu-toggle
+        >
+            <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 7.25h16v1.5H4z"></path>
+                <path d="M4 11.25h16v1.5H4z"></path>
+                <path d="M4 15.25h16v1.5H4z"></path>
+            </svg>
+        </button>
+
         <form
             method="get"
             action="{% url 'recipes:recipe_list' %}"
@@ -54,7 +69,7 @@
             ></div>
         </form>
 
-        <nav class="header-actions" aria-label="{% trans 'Header actions' %}">
+        <nav class="header-actions" id="header-actions" aria-label="{% trans 'Header actions' %}" data-header-menu>
             {% block header_buttons %}
                 {% if user.is_staff %}
                     <a href="{% url 'admin:index' %}" class="header-action header-action--link">{% trans "Admin" %}</a>
@@ -77,3 +92,4 @@
     </div>
 </header>
 <script src="{% static 'js/header_search.js' %}" defer></script>
+<script src="{% static 'js/header_menu.js' %}" defer></script>

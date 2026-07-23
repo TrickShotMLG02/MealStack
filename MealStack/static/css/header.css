@@ -14,12 +14,13 @@
 
 .site-header__shell {
     display: grid;
-    grid-template-columns: auto minmax(18rem, 1fr) auto;
-    grid-template-areas: "brand search actions";
+    grid-template-columns: auto minmax(18rem, 1fr) auto auto;
+    grid-template-areas: "brand search actions menu";
     gap: 1rem;
     align-items: center;
     max-width: 1360px;
     margin: 0 auto;
+    position: relative;
 }
 
 .site-brand {
@@ -205,6 +206,27 @@
     flex-wrap: wrap;
 }
 
+.header-menu-toggle {
+    grid-area: menu;
+    box-sizing: border-box;
+    width: 2.9rem;
+    height: 2.9rem;
+    display: none;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--border-color) 80%, white);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--heading-color);
+    box-shadow: 0 8px 16px rgba(34, 26, 19, 0.05);
+    cursor: pointer;
+}
+
+.header-menu-toggle:hover,
+.header-menu-toggle:focus-visible {
+    border-color: color-mix(in srgb, var(--primary-color) 30%, var(--border-color));
+    box-shadow: 0 12px 20px rgba(34, 26, 19, 0.08);
+}
+
 .header-action {
     box-sizing: border-box;
     height: 2.9rem;
@@ -259,15 +281,59 @@
     }
 
     .site-header__shell {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) auto;
         grid-template-areas:
-            "brand"
-            "search"
-            "actions";
+            "brand menu"
+            "search search";
+        gap: 0.75rem;
+    }
+
+    .header-menu-toggle {
+        display: inline-grid;
     }
 
     .header-actions {
+        position: absolute;
+        top: calc(100% + 0.55rem);
+        right: 0;
+        z-index: 70;
+        min-width: min(18rem, calc(100vw - 1.5rem));
+        display: grid;
+        gap: 0.55rem;
+        padding: 0.65rem;
+        border: 1px solid color-mix(in srgb, var(--border-color) 84%, white);
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 18px 34px rgba(34, 26, 19, 0.14);
+        transform-origin: top right;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-0.35rem) scale(0.98);
+        pointer-events: none;
+        transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+    }
+
+    .header-actions.is-open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    .header-action,
+    .header-action--icon,
+    .header-action--link {
+        width: 100%;
         justify-content: flex-start;
+        padding-inline: 1rem;
+    }
+
+    .header-action--icon {
+        justify-content: center;
+    }
+
+    .header-search__suggestions {
+        z-index: 80;
     }
 }
 

@@ -238,7 +238,8 @@
 
 .recipe-servings-control__stepper {
     display: grid;
-    grid-template-columns: 2.25rem minmax(4.5rem, 1fr) 2.25rem;
+    grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+    min-width: 0;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
@@ -249,6 +250,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.5rem;
     padding: 0;
     border: 0;
     background: transparent;
@@ -264,8 +268,10 @@
 }
 
 .recipe-servings-control__input {
+    box-sizing: border-box;
     width: 100%;
     min-width: 0;
+    max-width: 100%;
     border: 0;
     border-inline: 1px solid var(--border-color);
     background: transparent;
@@ -274,6 +280,7 @@
     font-weight: 700;
     text-align: center;
     appearance: textfield;
+    padding: 0 0.35rem;
 }
 
 .recipe-servings-control__input:focus {
@@ -597,7 +604,27 @@ a.recipe-action--primary:focus {
 
 @media (max-width: 640px) {
     .recipe-detail {
-        padding: 1.25rem 1rem 2rem;
+        padding: 0.9rem 0.85rem 2rem;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .recipe-hero {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .recipe-hero__media {
+        padding: 0.5rem;
+    }
+
+    .recipe-hero__summary {
+        padding: 1rem;
+    }
+
+    .recipe-title {
+        font-size: 1.8rem;
+        line-height: 1.12;
     }
 
     .recipe-hero__media,
@@ -606,10 +633,32 @@ a.recipe-action--primary:focus {
         border-radius: 12px;
     }
 
+    .recipe-glance {
+        padding: 0.95rem;
+    }
+
     .recipe-facts,
     .nutrition-pills,
     .recipe-glance__grid {
         grid-template-columns: 1fr;
+    }
+
+    .recipe-facts div,
+    .recipe-glance__grid div,
+    .nutrition-pills div {
+        padding: 0.85rem;
+    }
+
+    .recipe-facts dt,
+    .nutrition-label,
+    .recipe-servings-control__label {
+        font-size: 0.82rem;
+    }
+
+    .recipe-facts dd,
+    .recipe-glance__grid strong,
+    .nutrition-value {
+        font-size: 1.08rem;
     }
 
     .recipe-section-nav {
@@ -629,12 +678,41 @@ a.recipe-action--primary:focus {
         gap: 0.45rem;
     }
 
-    .recipe-servings-control,
-    .recipe-action {
+    .recipe-servings-control {
         width: 100%;
+    }
+
+    .recipe-servings-control__stepper {
+        grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+    }
+
+    .recipe-servings-control__button {
+        min-height: 2.75rem;
+        font-size: 1.1rem;
+    }
+
+    .recipe-action {
+        flex: 1 1 calc(33.333% - 0.45rem);
+        min-width: 6rem;
+        padding-inline: 0.7rem;
+    }
+
+    .recipe-panel {
+        padding: 1rem;
+    }
+
+    .ingredient-list li,
+    .steps-list li {
+        font-size: 1rem;
     }
 
     .recipe-cook-title {
         font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .recipe-action {
+        flex-basis: 100%;
     }
 }

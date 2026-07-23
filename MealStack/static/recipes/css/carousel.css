@@ -1,10 +1,15 @@
 .carousel-container {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .carousel-track-wrapper {
     position: relative;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: 14px;
@@ -15,14 +20,21 @@
 .carousel-track {
     display: flex;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     height: 100%;
     transition: transform 0.45s ease;
+    will-change: transform;
 }
 
 .carousel-slide {
     flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     height: 100%;
     position: relative;
+    overflow: hidden;
 }
 
 .carousel-slide img {
@@ -93,12 +105,26 @@
 
 @media (max-width: 720px) {
     .carousel-track-wrapper {
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
+        max-height: 42vh;
     }
 
     .carousel-prev,
     .carousel-next {
         width: 2.2rem;
         height: 2.2rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .carousel-track-wrapper {
+        max-height: 15rem;
+    }
+
+    .image-caption {
+        left: 0.6rem;
+        right: 0.6rem;
+        bottom: 0.6rem;
+        font-size: 0.78rem;
     }
 }
