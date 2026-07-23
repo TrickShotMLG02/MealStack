@@ -18,10 +18,21 @@ services:
       start_period: 20s
 
   web:
+    # Portainer stack deployments cannot use `build:` for remote environments.
+    # To use Portainer, build and push the image first, then replace the block below with:
+    # image: trickshotmlg/mealstack:latest
+    # for the stable release
+    # or:
+    # image: trickshotmlg/mealstack:dev
+    # for the development image
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    # For Portainer, comment out the env_file lines below and load stack.env instead:
+    # env_file:
+    #   - stack.env
+    # Put the stack-specific variables in stack.env.
     env_file:
       - .env
       - docker-compose.env
