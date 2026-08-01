@@ -40,7 +40,7 @@ class OpenFoodFactsImporter(BaseIngredientImporter):
         fat = nutriments.get('fat_100g', 0)
         saturated_fat = nutriments.get('saturated-fat_100g', 0)
         carbs = nutriments.get('carbohydrates_100g', 0)
-        sugar = nutriments.get('sugar_100g', 0)
+        sugar = nutriments.get('sugars_100g', 0)
         proteins = nutriments.get('proteins_100g', 0)
         salt = nutriments.get('salt_100g', 0)
 
