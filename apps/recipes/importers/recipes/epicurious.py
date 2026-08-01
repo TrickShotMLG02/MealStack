@@ -4,6 +4,7 @@ from apps.recipes.importers.recipes.registry import register_recipe_importer
 
 @register_recipe_importer(
     url_path="recipe/epicurious/",
+    base_domain="epicurious.com",
     url_patterns=(
         r"^https?://(?:www\.)?epicurious\.com/recipes/food/views/[^/?#]+/?(?:[?#].*)?$",
     ),
