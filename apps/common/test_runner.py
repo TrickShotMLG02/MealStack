@@ -4,6 +4,7 @@ import sys
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
+import os
 
 from django.core.management.color import color_style, no_style
 from django.test.runner import DiscoverRunner
@@ -25,16 +26,20 @@ class StyledProgressTestRunner(DiscoverRunner):
         self.no_color = no_color
         self.style = no_style() if no_color else color_style(force_color=True)
         self.progress_bar = None
+        self.emit_progress_events = os.getenv("MEALSTACK_TEST_PROGRESS_EVENTS") == "1"
 
     def get_resultclass(self):
         base_result_class = super().get_resultclass() or unittest.TextTestResult
         progress_bar = self.progress_bar
+        emit_progress_events = self.emit_progress_events
 
         class ProgressTextTestResult(base_result_class):
             def stopTest(self, test):
                 super().stopTest(test)
                 if progress_bar is not None:
                     progress_bar.update(1)
+                elif emit_progress_events:
+                    print("MEALSTACK_TEST_PROGRESS 1", flush=True)
 
         return ProgressTextTestResult
 
@@ -95,7 +100,7 @@ class StyledProgressTestRunner(DiscoverRunner):
         return self.suite_result(suite, result)
 
     def _use_progress_bar(self):
-        return not self.no_progress and self.parallel == 0
+        return not self.emit_progress_events and not self.no_progress and self.parallel == 0
 
     def _create_progress_bar(self, suite):
         if not self._use_progress_bar():

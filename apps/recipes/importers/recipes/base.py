@@ -284,7 +284,7 @@ class BaseRecipeScraperImporter(BaseRecipeImporter, ABC):
             source=self.url,
             defaults={
                 "title": title,
-                "servings": self._parse_servings(self.scraper.yields(), fallback=1),
+                "servings": self._parse_servings(self._safe_text("yields"), fallback=1),
                 "preparation_time": timedelta(minutes=self._safe_minutes("prep_time")),
                 "cooking_time": timedelta(minutes=self._safe_minutes("cook_time")),
                 "resting_time": timedelta(0),

@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import os
+import re
+import subprocess
 import sys
+import threading
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
+from fnmatch import fnmatch
 from io import StringIO
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from django.conf import settings
@@ -154,6 +159,7 @@ class Command(BaseCommand):
                 pattern=pattern,
                 keepdb=keepdb,
                 progress_bar=overall_progress,
+                configured_database=options["configured_database"],
             )
             if overall_progress is not None:
                 overall_progress.close()
@@ -270,7 +276,20 @@ class Command(BaseCommand):
         pattern,
         keepdb,
         progress_bar,
+        configured_database=False,
     ):
+        if coverage_scope == "app":
+            return self._run_overall_with_coverage_subprocess(
+                coverage_module,
+                test_labels,
+                result_label,
+                coverage_dir,
+                pattern=pattern,
+                keepdb=keepdb,
+                configured_database=configured_database,
+                progress_bar=progress_bar,
+            )
+
         data_file = os.path.join(coverage_dir, ".coverage")
         cov = coverage_module.Coverage(
             data_file=data_file,
@@ -347,10 +366,136 @@ class Command(BaseCommand):
             skipped,
         )
 
+    def _run_overall_with_coverage_subprocess(
+        self,
+        coverage_module,
+        test_labels,
+        result_label,
+        coverage_dir,
+        *,
+        pattern,
+        keepdb,
+        configured_database,
+        progress_bar,
+    ):
+        data_file = os.path.join(coverage_dir, ".coverage-overall")
+        command = [
+            sys.executable,
+            "-m",
+            "coverage",
+            "run",
+            "--data-file",
+            data_file,
+            "manage.py",
+            "test",
+            "--no-color",
+            "--pattern",
+            pattern,
+        ]
+        if progress_bar is None:
+            command.append("--no-progress")
+        if keepdb:
+            command.append("--keepdb")
+        command.extend(test_labels)
+
+        env = os.environ.copy()
+        if configured_database:
+            env["USE_CONFIGURED_TEST_DATABASE"] = "true"
+        else:
+            env.pop("USE_CONFIGURED_TEST_DATABASE", None)
+        if progress_bar is not None:
+            env["MEALSTACK_TEST_PROGRESS_EVENTS"] = "1"
+        else:
+            env.pop("MEALSTACK_TEST_PROGRESS_EVENTS", None)
+
+        completed_returncode, output = self._run_coverage_subprocess(command, env, progress_bar)
+        if completed_returncode:
+            self.stderr.write(output)
+
+        cov = coverage_module.Coverage(
+            data_file=data_file,
+            config_file=False,
+            source=APP_SOURCE,
+            omit=APP_OMIT,
+        )
+        cov.load()
+        statements, missing = self._coverage_counts(cov, "app")
+
+        executed = self._parse_tests_run(output)
+        skipped = self._parse_skipped(output)
+        failed = 1 if "FAILED" in output else 0
+        errors = 0
+        status = "failed" if completed_returncode else "passed"
+        succeeded = max(executed - failed - errors - skipped, 0)
+        covered = statements - missing
+        percent = (covered / statements * 100) if statements else 100.0
+
+        return CoverageResult(
+            result_label,
+            status,
+            "app",
+            statements,
+            missing,
+            covered,
+            percent,
+            executed,
+            succeeded,
+            failed,
+            errors,
+            skipped,
+        )
+
+    def _run_coverage_subprocess(self, command, env, progress_bar):
+        process = subprocess.Popen(
+            command,
+            cwd=Path.cwd(),
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=1,
+        )
+
+        output_parts = []
+        assert process.stdout is not None
+        assert process.stderr is not None
+
+        def read_stdout():
+            for line in process.stdout:
+                if line.startswith("MEALSTACK_TEST_PROGRESS"):
+                    if progress_bar is not None:
+                        progress_bar.update(1)
+                else:
+                    output_parts.append(line)
+
+        def read_stderr():
+            for line in process.stderr:
+                output_parts.append(line)
+
+        stdout_thread = threading.Thread(target=read_stdout)
+        stderr_thread = threading.Thread(target=read_stderr)
+        stdout_thread.start()
+        stderr_thread.start()
+
+        returncode = process.wait()
+        stdout_thread.join()
+        stderr_thread.join()
+        if progress_bar is not None and progress_bar.n < progress_bar.total:
+            progress_bar.update(progress_bar.total - progress_bar.n)
+        return returncode, "".join(output_parts)
+
+    def _parse_tests_run(self, output):
+        match = re.search(r"Ran (\d+) tests?", output)
+        return int(match.group(1)) if match else 0
+
+    def _parse_skipped(self, output):
+        match = re.search(r"skipped=(\d+)", output)
+        return int(match.group(1)) if match else 0
+
     def _coverage_counts(self, cov, coverage_scope):
         statements = 0
         missing = 0
-        for filename in cov.get_data().measured_files():
+        for filename in self._coverage_files(cov, coverage_scope):
             analysis = cov.analysis2(filename)
             executable_statements = analysis[1]
             missing_statements = analysis[3]
@@ -360,6 +505,21 @@ class Command(BaseCommand):
             statements += len(executable_statements)
             missing += len(missing_statements)
         return statements, missing
+
+    def _coverage_files(self, cov, coverage_scope):
+        if coverage_scope == "touched-files":
+            return cov.get_data().measured_files()
+
+        project_root = Path.cwd()
+        files = []
+        for source in APP_SOURCE:
+            source_root = project_root / source
+            for path in source_root.rglob("*.py"):
+                normalized = path.as_posix()
+                if any(fnmatch(normalized, pattern) for pattern in APP_OMIT):
+                    continue
+                files.append(str(path))
+        return files
 
     def _run_suite(self, runner, test_labels):
         runner.setup_test_environment()

@@ -139,7 +139,7 @@ Common flags:
 | --- | --- |
 | `--keepdb` | Reuse the test database between runs. Usually worth using locally. |
 | `--per-test` | Add the slower per-test touched-file coverage table. |
-| `--no-progress` | Hide progress bars. With `manage.py test`, this falls back to Django's dot output. |
+| `--no-progress` | Hide progress bars. With `manage.py test`, this falls back to Django's dot output. With `test_coverage --per-test`, this falls back to one line per measured test. |
 | `--no-color` | Disable colored output. |
 | `--configured-database` | For `test_coverage`, use the database from the active Django settings instead of isolated SQLite. |
 | `--pattern "test*.py"` | Use a different test discovery pattern. |

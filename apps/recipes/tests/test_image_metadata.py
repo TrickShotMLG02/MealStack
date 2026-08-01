@@ -38,6 +38,13 @@ def animated_gif() -> bytes:
     return output.getvalue()
 
 
+def plain_png() -> bytes:
+    image = Image.new("RGB", (12, 12), color="green")
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
 class RecipeImageMetadataTests(TestCase):
     def setUp(self):
         self.media_root = tempfile.mkdtemp()
@@ -84,3 +91,30 @@ class RecipeImageMetadataTests(TestCase):
 
         with self.assertRaises(ValidationError):
             RecipeImage.objects.create(recipe=recipe, image=upload)
+
+    def test_recipe_image_upload_allows_plain_png(self):
+        recipe = Recipe.objects.create(title="Cake")
+        upload = SimpleUploadedFile(
+            "cake.png",
+            plain_png(),
+            content_type="image/png",
+        )
+
+        recipe_image = RecipeImage.objects.create(recipe=recipe, image=upload)
+
+        with Image.open(recipe_image.image.path) as saved_image:
+            self.assertEqual(saved_image.format, "PNG")
+
+    def test_strip_upload_metadata_command_handles_missing_and_invalid_files(self):
+        recipe = Recipe.objects.create(title="Cake")
+        RecipeImage.objects.create(recipe=recipe, image="recipes/missing.jpg")
+
+        invalid_name = "recipes/invalid.jpg"
+        invalid_path = Path(self.media_root) / invalid_name
+        invalid_path.parent.mkdir(parents=True, exist_ok=True)
+        invalid_path.write_bytes(b"not an image")
+        RecipeImage.objects.create(recipe=recipe, image=invalid_name)
+
+        call_command("strip_upload_metadata", verbosity=0)
+
+        self.assertEqual(RecipeImage.objects.count(), 2)
