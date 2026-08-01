@@ -4,14 +4,32 @@ version = "0.1.0"
 description = "Web App for managing recipes"
 requires-python = "==3.12.4"
 dependencies = [
-    "django==6.0.1",
-    "python-dotenv==1.2.1",
+    "django==6.0.7",
+    "python-dotenv==1.2.2",
     "recipe-scrapers==15.11.0",
     "django-nested-admin==4.1.6",
     "django-cleanup==9.0.0",
-    "pillow==12.1.0",
+    "pillow==12.3.0",
     "mysqlclient==2.2.7",
     "openfoodfacts>=3.3.0",
     "mozilla-django-oidc>=5.0.2",
     "reportlab>=5.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.15.2",
+    "tqdm>=4.67.1",
+]
+
+[tool.coverage.run]
+source = ["apps"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/test_runner.py",
+    "*/management/commands/test_coverage.py",
+]
+
+[tool.coverage.report]
+show_missing = true

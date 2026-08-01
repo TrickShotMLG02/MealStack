@@ -1,20 +1,25 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from apps.recipes import UnitType
 
 
 class Unit(models.Model):
     TYPE_CHOICES = [
-        (UnitType.WEIGHT, 'Weight'),
-        (UnitType.VOLUME, 'Volume'),
-        (UnitType.COUNT, 'Count'),
+        (UnitType.WEIGHT.value, _('Weight')),
+        (UnitType.VOLUME.value, _('Volume')),
+        (UnitType.COUNT.value, _('Count')),
     ]
 
-    name = models.CharField(max_length=50, unique=True)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, verbose_name=_("Type"))
 
-    grams_per_unit = models.FloatField(null=True, blank=True)  # for weight/count
-    ml_per_unit = models.FloatField(null=True, blank=True)  # for volume
+    grams_per_unit = models.FloatField(null=True, blank=True, verbose_name=_("Grams per unit"))  # for weight/count
+    ml_per_unit = models.FloatField(null=True, blank=True, verbose_name=_("ML per unit"))  # for volume
+
+    class Meta:
+        verbose_name = _("Unit")
+        verbose_name_plural = _("Units")
 
     def to_grams(self, quantity: float, ingredient=None) -> float:
         """

@@ -6,6 +6,7 @@ from apps.recipes.importers.recipes.registry import register_recipe_importer
 
 @register_recipe_importer(
     url_path="recipe/chefkoch/",
+    base_domain="chefkoch.de",
     url_patterns=(
         r"^https?://(?:www\.)?chefkoch\.de/rezepte/\d+/.+$",
     ),

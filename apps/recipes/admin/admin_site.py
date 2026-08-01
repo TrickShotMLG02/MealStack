@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.utils.translation import gettext_lazy as _
 
 from apps.recipes.views import admin_importers_view
 
@@ -9,7 +10,7 @@ class MyAdminSite(admin.AdminSite):
         app_list = super().get_app_list(request, context)
 
         ingredient_importers_section = {
-            "name": "Ingredient Importers",
+            "name": _("Ingredient Importers"),
             "app_label": "ingredient_importers",
             "url_path": "/admin/importers/ingredient/",
             "models": [
@@ -23,7 +24,7 @@ class MyAdminSite(admin.AdminSite):
             ],
         }
         recipe_importers_section = {
-            "name": "Recipe Scrapers",
+            "name": _("Recipe Scrapers"),
             "app_label": "recipe_scrapers",
             "url_path": "/admin/importers/recipe/",
             "models": [
@@ -56,7 +57,7 @@ class MyAdminSite(admin.AdminSite):
             )
         ]
 
-        return custom_importer_urls + urls + custom_urls
+        return custom_importer_urls + custom_urls + urls
 
 my_admin_site = MyAdminSite(name="myadmin")
 

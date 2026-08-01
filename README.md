@@ -4,6 +4,8 @@
 ![Meal Stack stable](https://img.shields.io/docker/v/trickshotmlg/mealstack/latest?label=stable&sort=semver)
 ![Meal Stack unstable](https://img.shields.io/docker/v/trickshotmlg/mealstack/dev?label=unstable&sort=semver)
 ![Python](https://img.shields.io/badge/python-3.12.4-blue)
+[![Coverage stable](https://img.shields.io/codecov/c/github/TrickShotMLG02/MealStack/master?label=coverage%20stable)](https://codecov.io/gh/TrickShotMLG02/MealStack/tree/master)
+[![Coverage unstable](https://img.shields.io/codecov/c/github/TrickShotMLG02/MealStack/development?label=coverage%20unstable)](https://codecov.io/gh/TrickShotMLG02/MealStack/tree/development)
 
 ## 📖 Description
 
@@ -96,6 +98,69 @@ Default seed login:
 
 - User: `admin`
 - Password: `admin`
+
+## Tests and coverage
+
+Most of the time this is enough:
+
+```bash
+uv run python manage.py test --keepdb
+```
+
+The test runner uses a local SQLite test database by default, even if your `.env` points at MySQL.
+That keeps local test runs fast and avoids needing extra database permissions for `test_*`
+databases. It also shows a progress bar and a short summary at the end.
+
+For coverage reports, install the dev dependencies first:
+
+```bash
+uv sync --dev
+```
+
+Then run:
+
+```bash
+uv run python manage.py test_coverage --keepdb
+```
+
+This runs the suite once and reports app-only coverage for `apps/`. Tests, migrations, and test
+helpers are not counted.
+
+For a more detailed report, add `--per-test`:
+
+```bash
+uv run python manage.py test_coverage --keepdb --per-test
+```
+
+This is slower, but useful when checking what a single test actually covers. Each test is measured
+against the app files it touched, not against the whole project.
+
+Common flags:
+
+| Option | Description |
+| --- | --- |
+| `--keepdb` | Reuse the test database between runs. Usually worth using locally. |
+| `--per-test` | Add the slower per-test touched-file coverage table. |
+| `--no-progress` | Hide progress bars. With `manage.py test`, this falls back to Django's dot output. With `test_coverage --per-test`, this falls back to one line per measured test. |
+| `--no-color` | Disable colored output. |
+| `--configured-database` | For `test_coverage`, use the database from the active Django settings instead of isolated SQLite. |
+| `--pattern "test*.py"` | Use a different test discovery pattern. |
+
+You can limit coverage runs with normal Django test labels:
+
+```bash
+uv run python manage.py test_coverage apps.recipes.tests.test_recipe_list_search --keepdb
+uv run python manage.py test_coverage apps.recipes.tests.test_unit_model.UnitModelTests --keepdb --per-test
+```
+
+Failed and skipped tests are shown in the summary. In `--per-test` mode, one failed test does not
+stop the remaining tests from being measured.
+
+If you really want `manage.py test` to use the database from `.env`, set:
+
+```bash
+USE_CONFIGURED_TEST_DATABASE=true
+```
 
 ## 🐳 Docker Compose
 

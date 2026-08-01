@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,8 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-71khm7gr7ei44b6_#(+@)b)zr)mk8+$nhb%t@l8*)icm1))y(y'
+# SECURITY WARNING: keep the secret key used in production secret.
+# Set SECRET_KEY in the environment or in the project .env file.
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ImproperlyConfigured(
+        "SECRET_KEY must be set. Generate one with "
+        "`python -c \"from django.core.management.utils import get_random_secret_key; "
+        "print(get_random_secret_key())\"` and set it in your .env file."
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -73,6 +82,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -83,6 +93,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MealStack.wsgi.application'
 
 LOGIN_REDIRECT_URL = "/admin/"
+
+TEST_RUNNER = "apps.common.test_runner.StyledProgressTestRunner"
 
 
 # Database

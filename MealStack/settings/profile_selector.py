@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 
 # Load .env from project root
@@ -17,6 +18,14 @@ else:
 
 # Set Django settings module
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE)
+
+
+def env_flag(name):
+    return os.getenv(name, "").lower() in ("true", "1", "yes")
+
+
+def is_plain_test_command():
+    return len(sys.argv) > 1 and sys.argv[1] == "test"
 
 
 def apply_env_overrides():
@@ -47,7 +56,17 @@ def apply_env_overrides():
         settings.CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_trusted_origins_env.split(",") if origin.strip()]
 
     # DATABASE overrides
-    db_engine_env = os.getenv("DB_ENGINE")
+    if is_plain_test_command() and not env_flag("USE_CONFIGURED_TEST_DATABASE"):
+        settings.DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": os.getenv("TEST_DB_NAME", ":memory:"),
+            }
+        }
+        db_engine_env = None
+    else:
+        db_engine_env = os.getenv("DB_ENGINE")
+
     if db_engine_env:
         if db_engine_env == "sqlite":
             settings.DATABASES = {

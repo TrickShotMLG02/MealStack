@@ -1,13 +1,16 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 class RecipeIngredientGroup(models.Model):
-    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, blank=True, null=True)  # e.g., "Salad", "Sauce"
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE, verbose_name=_("Recipe"))
+    name = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Name"))
 
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0, verbose_name=_("Order"))
 
     class Meta:
         ordering = ['order']
+        verbose_name = _("Recipe Ingredient Group")
+        verbose_name_plural = _("Recipe Ingredient Groups")
 
     def save(self, *args, **kwargs):
         if not self.name:

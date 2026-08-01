@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import django.utils.text
 
+
 GERMAN_CHAR_MAP = {
     "ä": "ae",
     "ö": "oe",
@@ -21,13 +22,12 @@ def normalize_german(text: str) -> str:
 
 def slugify(text: str) -> str:
     """
-    Uses slugify to convert text to slug, while applying normalizations
+    Uses slugify to convert text to an ASCII URL slug.
     :param text: The text to slugify
-    :return: The slug with applied normalizations
+    :return: The generated slug
     """
-    normalized_text = normalize_german(text)
+    return django.utils.text.slugify(normalize_german(text))
 
-    return django.utils.text.slugify(normalized_text)
 
 def time_formatting(delta: timedelta) -> str:
     """

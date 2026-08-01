@@ -1,6 +1,7 @@
 import re
 from abc import ABC, abstractmethod
 from datetime import timedelta
+from urllib.parse import urlparse
 
 import requests
 from django.core.files.base import ContentFile
@@ -27,6 +28,31 @@ from apps.recipes.models import (
     Unit,
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
+
+
+class RecipeImageImportError(ValueError):
+    pass
+
+
+def _hostname_matches_base_domain(hostname: str | None, base_domain: str | None) -> bool:
+    if not base_domain:
+        return True
+    if not hostname:
+        return False
+
+    normalized_hostname = hostname.rstrip(".").casefold()
+    normalized_base_domain = base_domain.rstrip(".").casefold()
+    return normalized_hostname == normalized_base_domain or normalized_hostname.endswith(f".{normalized_base_domain}")
+
+
+def _validate_image_url(url: str, base_domain: str | None) -> None:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"}:
+        raise RecipeImageImportError("Recipe image URL must use HTTP or HTTPS.")
+
+    if not _hostname_matches_base_domain(parsed.hostname, base_domain):
+        raise RecipeImageImportError("Recipe image URL is outside the importer domain.")
+
 
 class BaseRecipeImporter(ABC):
     """
@@ -93,9 +119,15 @@ class BaseRecipeImporter(ABC):
         pass
 
     @staticmethod
-    def attach_image(recipe, image_url, *, primary=False, ordering=0):
+    def attach_image(recipe, image_url, *, primary=False, ordering=0, base_domain=None):
+        _validate_image_url(image_url, base_domain)
         response = requests.get(image_url, timeout=10)
         response.raise_for_status()
+        _validate_image_url(response.url, base_domain)
+
+        content_type = response.headers.get("Content-Type", "").split(";", 1)[0].strip().casefold()
+        if not content_type.startswith("image/"):
+            raise RecipeImageImportError("Recipe image response must have an image content type.")
 
         filename = image_url.split("/")[-1].split("?")[0]
 
@@ -112,6 +144,7 @@ class BaseRecipeScraperImporter(BaseRecipeImporter, ABC):
     default_ingredient_group_name = "Main"
     default_step_group_name = "Method"
     url_placeholder = "https://example.com/recipe"
+    base_domain = ""
 
     def __init__(self, url: str):
         self.url = url
@@ -235,7 +268,13 @@ class BaseRecipeScraperImporter(BaseRecipeImporter, ABC):
 
         if image_url:
             try:
-                BaseRecipeImporter.attach_image(recipe, image_url, primary=True, ordering=0)
+                BaseRecipeImporter.attach_image(
+                    recipe,
+                    image_url,
+                    primary=True,
+                    ordering=0,
+                    base_domain=self.base_domain,
+                )
             except Exception:
                 pass
 
@@ -245,7 +284,7 @@ class BaseRecipeScraperImporter(BaseRecipeImporter, ABC):
             source=self.url,
             defaults={
                 "title": title,
-                "servings": self._parse_servings(self.scraper.yields(), fallback=1),
+                "servings": self._parse_servings(self._safe_text("yields"), fallback=1),
                 "preparation_time": timedelta(minutes=self._safe_minutes("prep_time")),
                 "cooking_time": timedelta(minutes=self._safe_minutes("cook_time")),
                 "resting_time": timedelta(0),

@@ -14,6 +14,7 @@ class RecipeImporterSpec:
     importer_cls: type
     url_placeholder: str
     url_patterns: tuple[str, ...]
+    base_domain: str
 
     def matches_url(self, url: str) -> bool:
         normalized_url = (url or "").strip()
@@ -27,12 +28,14 @@ def register_recipe_importer(
     *,
     url_path: str,
     url_patterns: tuple[str, ...],
+    base_domain: str,
     name: str | None = None,
     url_placeholder: str | None = None,
 ):
     def decorator(importer_cls: type):
         importer_name = name or getattr(importer_cls, "site_name", importer_cls.__name__.removesuffix("Importer"))
         importer_placeholder = url_placeholder or getattr(importer_cls, "url_placeholder", "")
+        importer_cls.base_domain = base_domain
         _RECIPE_IMPORTERS.append(
             RecipeImporterSpec(
                 name=importer_name,
@@ -40,6 +43,7 @@ def register_recipe_importer(
                 importer_cls=importer_cls,
                 url_placeholder=importer_placeholder,
                 url_patterns=url_patterns,
+                base_domain=base_domain,
             )
         )
         return importer_cls

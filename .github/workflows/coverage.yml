@@ -1,0 +1,70 @@
+name: Tests & Coverage
+
+on:
+  push:
+    branches:
+      - development
+      - master
+  pull_request:
+    branches:
+      - development
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    env:
+      ENVIRONMENT: dev
+      DB_ENGINE: sqlite
+      DB_NAME: ":memory:"
+      SECRET_KEY: ci-test-secret-key-for-coverage-checks-not-for-production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-libmysqlclient-dev pkg-config
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.4"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install project dependencies
+        run: uv sync --dev
+
+      - name: Run tests with coverage
+        run: uv run coverage run manage.py test --keepdb --no-progress --no-color
+
+      - name: Print coverage summary
+        run: uv run coverage report --fail-under=80
+
+      - name: Write coverage XML
+        run: uv run coverage xml -o coverage.xml
+
+      - name: Check Codecov token
+        run: |
+          if [ -z "${{ secrets.CODECOV_TOKEN }}" ]; then
+            echo "CODECOV_TOKEN is required for coverage uploads."
+            echo "Add it under GitHub repository Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
+          flags: django
+          name: mealstack-django
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,18 +1,19 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 class RecipeIngredient(models.Model):
-    #recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
-    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE)
-    quantity = models.FloatField()
-    unit = models.ForeignKey('Unit', on_delete=models.PROTECT)
+    ingredient = models.ForeignKey('Ingredient', on_delete=models.CASCADE, verbose_name=_("Ingredient"))
+    quantity = models.FloatField(verbose_name=_("Quantity"))
+    unit = models.ForeignKey('Unit', on_delete=models.PROTECT, verbose_name=_("Unit"))
 
-    group = models.ForeignKey('RecipeIngredientGroup', on_delete=models.CASCADE, null=True, blank=True)
+    group = models.ForeignKey('RecipeIngredientGroup', on_delete=models.CASCADE, null=True, blank=True, verbose_name=_("Group"))
 
-    order = models.PositiveIntegerField(default=0)  # optional for display ordering
+    order = models.PositiveIntegerField(default=0, verbose_name=_("Order"))
 
     class Meta:
-        #unique_together = ('ingredient', 'unit', 'group',) #'recipe')
-        ordering = ['group__order', 'order'] # order by group first, then item
+        ordering = ['group__order', 'order']
+        verbose_name = _("Recipe Ingredient")
+        verbose_name_plural = _("Recipe Ingredients")
 
     def __str__(self):
         group_name = f" ({self.group.name})" if self.group else ""

@@ -9,17 +9,16 @@ class OIDCAuthBackend(OIDCAuthenticationBackend):
         # Use email as username if available
         user.username = claims.get("email", user.username)
 
-        # Give admin access
-        # TODO: sync roles/permissions from OIDC
-        user.is_staff = True
+        # TODO: sync roles/permissions from OIDC claims
         user.is_superuser = False
+        user.is_staff = False
 
         user.email = claims.get("email", "")
         user.save()
         return user
 
     def update_user(self, user, claims):
-        # Update email if it changes
         user.email = claims.get("email", user.email)
+        # TODO: sync roles/permissions from OIDC claims
         user.save()
         return user
