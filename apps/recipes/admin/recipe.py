@@ -55,7 +55,7 @@ class RecipeNutritionInline(NestedTabularInline):
     ]
     max_num = 1
     extra = 0
-    verbose_name_plural = "Nutrition"
+    verbose_name_plural = _("Nutrition")
     classes = ("collapse",)
 
 class RecipeTagsInline(NestedTabularInline):
@@ -106,7 +106,7 @@ class RecipeAdmin(NestedModelAdmin):
     search_fields = ['title', 'source', 'author']
     fieldsets = (
         (
-            "Recipe",
+            _("Recipe"),
             {
                 "fields": (
                     "title",
@@ -120,7 +120,7 @@ class RecipeAdmin(NestedModelAdmin):
             },
         ),
         (
-            "Timing",
+            _("Timing"),
             {
                 "fields": (
                     ("preparation_time", "cooking_time", "resting_time"),
@@ -142,7 +142,7 @@ class RecipeAdmin(NestedModelAdmin):
             )
         return "-"
 
-    primary_image_preview.short_description = "Primary Image"
+    primary_image_preview.short_description = _("Primary Image")
 
     inlines = [
         RecipeImageInline,

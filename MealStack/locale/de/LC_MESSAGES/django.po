@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 10:33+0200\n"
+"POT-Creation-Date: 2026-08-01 18:30+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -18,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\MealStack\settings\base.py:128
+#: .\MealStack\settings\base.py:130
 msgid "English"
 msgstr "Englisch"
 
-#: .\MealStack\settings\base.py:129
+#: .\MealStack\settings\base.py:131
 msgid "German"
 msgstr "Deutsch"
 
@@ -34,38 +33,52 @@ msgstr "Mit OAuth anmelden"
 msgid "Use internal authentication"
 msgstr "Interne Anmeldung verwenden"
 
-#: .\MealStack\templates\components\header.html:16
+#: .\MealStack\templates\base.html:17
+msgid "Skip to content"
+msgstr "Zum Inhalt springen"
+
+#: .\MealStack\templates\components\footer.html:12
+#: .\MealStack\templates\components\footer.html:22
+msgid "Language selection"
+msgstr "Sprachauswahl"
+
+#: .\MealStack\templates\components\header.html:10
+msgid "Recipe library"
+msgstr "Rezeptbibliothek"
+
+#: .\MealStack\templates\components\header.html:17
+msgid "Open menu"
+msgstr "Menü öffnen"
+
+#: .\MealStack\templates\components\header.html:37
+#: .\MealStack\templates\components\header.html:47
+#: .\MealStack\templates\components\header.html:55
 msgid "Search recipes..."
 msgstr "Rezepte suchen..."
 
-#: .\apps\recipes\admin\recipe.py:160
-msgid "Mark selected recipes as published"
-msgstr "Ausgewählte Rezepte als veröffentlicht markieren"
+#: .\MealStack\templates\components\header.html:67
+msgid "Search suggestions"
+msgstr "Suchvorschläge"
 
-#: .\apps\recipes\admin\recipe.py:163
-msgid "Published %(count)d recipe(s)."
-msgstr "%(count)d Rezept(e) veröffentlicht."
+#: .\MealStack\templates\components\header.html:72
+msgid "Header actions"
+msgstr "Header-Aktionen"
 
-#: .\apps\recipes\admin\recipe.py:165
-msgid "Mark selected recipes as draft"
-msgstr "Ausgewählte Rezepte als Entwurf markieren"
+#: .\MealStack\templates\components\header.html:75
+msgid "Admin"
+msgstr "Admin"
 
-#: .\apps\recipes\admin\recipe.py:168
-msgid "Moved %(count)d recipe(s) to draft."
-msgstr "%(count)d Rezept(e) in den Entwurf verschoben."
-
-msgid "Recipes"
-msgstr "Rezepte"
-
-#: .\MealStack\templates\components\header.html:24
+#: .\MealStack\templates\components\header.html:77
 msgid "Login"
 msgstr "Anmelden"
 
-#: .\MealStack\templates\components\header.html:25
-msgid "Sign Up"
-msgstr "Registrieren"
+#: .\MealStack\templates\components\header.html:83
+#: .\MealStack\templates\components\header.html:84
+msgid "Toggle theme"
+msgstr "Design wechseln"
 
 #: .\MealStack\templates\recipes\components\carousel.html:12
+#: .\apps\recipes\models\recipe_image.py:31
 msgid "Image"
 msgstr "Bild"
 
@@ -77,69 +90,48 @@ msgstr "Vorheriges Bild"
 msgid "Next image"
 msgstr "Nächstes Bild"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:25
-msgid "Recipe sections"
-msgstr "Rezeptabschnitte"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:25
+#: .\MealStack\templates\recipes\recipe_detail.html:26
 msgid "At a glance"
 msgstr "Auf einen Blick"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:52
-msgid "Recipe actions"
-msgstr "Rezeptaktionen"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:57
-msgid "Cook mode"
-msgstr "Kochmodus"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:57
-msgid "Exit cook mode"
-msgstr "Kochmodus beenden"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:57
-msgid "Decrease servings"
-msgstr "Portionen verringern"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:57
-msgid "Increase servings"
-msgstr "Portionen erhöhen"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:63
-msgid "Print PDF"
-msgstr "PDF drucken"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:63
-msgid "Share"
-msgstr "Teilen"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:63
-msgid "Link copied"
-msgstr "Link kopiert"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:30
+#: .\MealStack\templates\recipes\recipe_detail.html:31
 #: .\MealStack\templates\recipes\recipe_detail.html:75
+#: .\MealStack\templates\recipes\recipe_detail.html:158
+#: .\MealStack\templates\recipes\recipe_detail.html:164
+#: .\MealStack\templates\recipes\recipe_detail.html:176
+#: .\apps\recipes\models\recipe.py:26 .\apps\recipes\services\pdf.py:435
 msgid "Servings"
 msgstr "Portionen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:34
-#: .\MealStack\templates\recipes\recipe_detail.html:136
+#: .\MealStack\templates\recipes\recipe_detail.html:35
+#: .\MealStack\templates\recipes\recipe_detail.html:212
+#: .\MealStack\templates\recipes\recipe_detail.html:222
+#: .\apps\recipes\models\ingredient.py:32 .\apps\recipes\services\pdf.py:576
+#: .\apps\recipes\services\pdf.py:584
 msgid "Ingredients"
 msgstr "Zutaten"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:38
+#: .\MealStack\templates\recipes\recipe_detail.html:39
 msgid "Steps"
 msgstr "Schritte"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:42
+#: .\MealStack\templates\recipes\recipe_detail.html:43
+#: .\MealStack\templates\recipes\recipe_detail.html:158
 msgid "Total time"
 msgstr "Gesamtzeit"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:47
+#: .\MealStack\templates\recipes\recipe_detail.html:48
 msgid "Jump to ingredients"
 msgstr "Zu den Zutaten springen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:53
+#: .\MealStack\templates\recipes\recipe_detail.html:54
+#: .\apps\recipes\admin\recipe.py:109 .\apps\recipes\models\recipe.py:20
+#: .\apps\recipes\models\recipe_image.py:26
+#: .\apps\recipes\models\recipe_ingredient_group.py:5
+#: .\apps\recipes\models\recipe_note.py:8
+#: .\apps\recipes\models\recipe_step_group.py:5
+#: .\apps\recipes\models\recipe_tag.py:5
+#: .\apps\recipes\views\recipes_list_view.py:77
 msgid "Recipe"
 msgstr "Rezept"
 
@@ -151,6 +143,7 @@ msgstr "Von %(author)s"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:64
 #: .\MealStack\templates\recipes\recipe_detail.html:68
+#: .\apps\recipes\models\recipe.py:40
 msgid "Source"
 msgstr "Quelle"
 
@@ -159,10 +152,12 @@ msgid "Recipe facts"
 msgstr "Rezeptdetails"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:79
+#: .\apps\recipes\services\pdf.py:436
 msgid "Prep"
 msgstr "Vorbereitung"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:83
+#: .\apps\recipes\services\pdf.py:437
 msgid "Cook"
 msgstr "Kochen"
 
@@ -171,115 +166,257 @@ msgid "Rest"
 msgstr "Ruhezeit"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:91
+#: .\apps\recipes\services\pdf.py:438 .\apps\recipes\services\pdf.py:522
 msgid "Total"
 msgstr "Gesamt"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:107
-msgid "Per Serving"
-msgstr "Pro Portion"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:108
-msgid "Selected servings"
-msgstr "Gewählte Portionen"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:111
-#: .\MealStack\templates\recipes\recipe_detail.html:180
-msgid "Calories"
-msgstr "Kalorien"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:115
-#: .\MealStack\templates\recipes\recipe_detail.html:181
-msgid "Protein"
-msgstr "Eiweiß"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:119
-#: .\MealStack\templates\recipes\recipe_detail.html:183
-msgid "Carbs"
-msgstr "Kohlenhydrate"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:123
-#: .\MealStack\templates\recipes\recipe_detail.html:182
-msgid "Fat"
-msgstr "Fett"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:150
-#: .\MealStack\templates\recipes\recipe_detail.html:154
-msgid "No ingredients added yet."
-msgstr "Noch keine Zutaten hinzugefügt."
-
-#: .\MealStack\templates\recipes\recipe_detail.html:161
-msgid "Notes"
-msgstr "Notizen"
-
-#: .\MealStack\templates\recipes\recipe_detail.html:176
+#: .\MealStack\templates\recipes\recipe_detail.html:215
+#: .\MealStack\templates\recipes\recipe_detail.html:269
+#: .\apps\recipes\admin\recipe.py:58 .\apps\recipes\services\pdf.py:517
 msgid "Nutrition"
 msgstr "Nährwerte"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:184
-msgid "Sugar"
-msgstr "Zucker"
+#: .\MealStack\templates\recipes\recipe_detail.html:110
+#: .\MealStack\templates\recipes\recipe_detail.html:272
+msgid "Selected servings"
+msgstr "Gewählte Portionen"
 
-#: .\apps\recipes\views\admin_importers_view.py:16
-msgid "Ingredient '%(ingredient_name)s' imported successfully!"
-msgstr "Zutat '%(ingredient_name)s' erfolgreich importiert!"
+#: .\MealStack\templates\recipes\recipe_detail.html:114
+#: .\MealStack\templates\recipes\recipe_detail.html:277
+#: .\apps\recipes\services\pdf.py:525
+msgid "Calories"
+msgstr "Kalorien"
 
-#: .\apps\recipes\views\admin_importers_view.py:19
-msgid "EAN %(ean)s not found in OpenFoodFacts."
-msgstr "EAN %(ean)s wurde in OpenFoodFacts nicht gefunden."
+#: .\MealStack\templates\recipes\recipe_detail.html:123
+#: .\MealStack\templates\recipes\recipe_detail.html:286
+#: .\apps\recipes\models\ingredient.py:20 .\apps\recipes\services\pdf.py:530
+msgid "Protein"
+msgstr "Eiweiß"
 
-#: .\apps\recipes\views\admin_importers_view.py:21
-msgid "Error: %(error)s"
-msgstr "Fehler: %(error)s"
+#: .\MealStack\templates\recipes\recipe_detail.html:132
+#: .\MealStack\templates\recipes\recipe_detail.html:304
+#: .\apps\recipes\models\ingredient.py:18 .\apps\recipes\services\pdf.py:540
+msgid "Carbs"
+msgstr "Kohlenhydrate"
 
-#: .\apps\recipes\views\admin_importers_view.py:23
-msgid "Please provide a valid EAN."
-msgstr "Bitte eine gültige EAN angeben."
+#: .\MealStack\templates\recipes\recipe_detail.html:141
+#: .\MealStack\templates\recipes\recipe_detail.html:295
+#: .\apps\recipes\models\ingredient.py:16 .\apps\recipes\services\pdf.py:535
+msgid "Fat"
+msgstr "Fett"
 
-#: .\apps\recipes\views\admin_importers_view.py:32
-msgid "Invalid URL for %(site_name)s. Please use a matching recipe URL."
-msgstr "Ungültige URL für %(site_name)s. Bitte eine passende Rezept-URL verwenden."
+#: .\MealStack\templates\recipes\recipe_detail.html:162
+msgid "Recipe actions"
+msgstr "Rezeptaktionen"
 
-#: .\apps\recipes\views\admin_importers_view.py:38
-msgid "Recipe '%(recipe_title)s' imported successfully!"
-msgstr "Rezept '%(recipe_title)s' erfolgreich importiert!"
+#: .\MealStack\templates\recipes\recipe_detail.html:166
+msgid "Decrease servings"
+msgstr "Portionen verringern"
 
-#: .\apps\recipes\views\admin_importers_view.py:42
-msgid "Error importing recipe: %(error)s"
-msgstr "Fehler beim Importieren des Rezepts: %(error)s"
+#: .\MealStack\templates\recipes\recipe_detail.html:178
+msgid "Increase servings"
+msgstr "Portionen erhöhen"
 
-#: .\apps\recipes\views\admin_importers_view.py:44
-msgid "Please provide a valid recipe URL."
-msgstr "Bitte eine gültige Rezept-URL angeben."
+#: .\MealStack\templates\recipes\recipe_detail.html:186
+msgid "Exit cook mode"
+msgstr "Kochmodus beenden"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:185
-msgid "Salt"
-msgstr "Salz"
+#: .\MealStack\templates\recipes\recipe_detail.html:187
+#: .\MealStack\templates\recipes\recipe_detail.html:189
+msgid "Cook mode"
+msgstr "Kochmodus"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:195
+#: .\MealStack\templates\recipes\recipe_detail.html:198
+msgid "Print PDF"
+msgstr "PDF drucken"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:204
+#: .\MealStack\templates\recipes\recipe_detail.html:207
+msgid "Share"
+msgstr "Teilen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:205
+msgid "Link copied"
+msgstr "Link kopiert"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:211
+msgid "Recipe sections"
+msgstr "Rezeptabschnitte"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:213
+#: .\MealStack\templates\recipes\recipe_detail.html:339
+#: .\apps\recipes\services\pdf.py:625 .\apps\recipes\services\pdf.py:633
 msgid "Method"
 msgstr "Anleitung"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:209
-#: .\MealStack\templates\recipes\recipe_detail.html:213
+#: .\MealStack\templates\recipes\recipe_detail.html:214
+#: .\MealStack\templates\recipes\recipe_detail.html:254
+#: .\apps\recipes\services\pdf.py:675
+msgid "Notes"
+msgstr "Notizen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:243
+#: .\MealStack\templates\recipes\recipe_detail.html:247
+#: .\apps\recipes\services\pdf.py:622
+msgid "No ingredients added yet."
+msgstr "Noch keine Zutaten hinzugefügt."
+
+#: .\MealStack\templates\recipes\recipe_detail.html:313
+#: .\apps\recipes\models\ingredient.py:19 .\apps\recipes\services\pdf.py:545
+msgid "Sugar"
+msgstr "Zucker"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:322
+#: .\apps\recipes\models\ingredient.py:21 .\apps\recipes\services\pdf.py:550
+msgid "Salt"
+msgstr "Salz"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:353
+#: .\MealStack\templates\recipes\recipe_detail.html:357
+#: .\apps\recipes\services\pdf.py:670
 msgid "No steps added yet."
 msgstr "Noch keine Schritte hinzugefügt."
 
 #: .\MealStack\templates\recipes\recipe_list.html:4
-#: .\MealStack\templates\recipes\recipe_list.html:13
+#: .\MealStack\templates\recipes\recipe_list.html:17
 msgid "All Recipes"
 msgstr "Alle Rezepte"
 
-#: .\MealStack\templates\recipes\recipe_list.html:27
+#: .\MealStack\templates\recipes\recipe_list.html:15
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+#: .\MealStack\templates\recipes\recipe_list.html:20
+#, python-format
+msgid "Showing %(recipe_count)s search result for \"%(query)s\""
+msgid_plural "Showing %(recipe_count)s search results for \"%(query)s\""
+msgstr[0] "Es wird %(recipe_count)s Suchergebnis für \"%(query)s\" angezeigt"
+msgstr[1] ""
+"Es werden %(recipe_count)s Suchergebnisse für \"%(query)s\" angezeigt"
+
+#: .\MealStack\templates\recipes\recipe_list.html:29
+msgid "Clear search"
+msgstr "Suche löschen"
+
+#: .\MealStack\templates\recipes\recipe_list.html:44
 msgid "Servings:"
 msgstr "Portionen:"
 
-#: .\MealStack\templates\recipes\recipe_list.html:28
+#: .\MealStack\templates\recipes\recipe_list.html:45
 msgid "Total time:"
 msgstr "Gesamtzeit:"
 
-#: .\MealStack\templates\recipes\recipe_list.html:33
+#: .\MealStack\templates\recipes\recipe_list.html:52
+msgid "No recipes matched your search."
+msgstr "Keine Rezepte entsprechen deiner Suche."
+
+#: .\MealStack\templates\recipes\recipe_list.html:54
 msgid "No recipes available."
 msgstr "Keine Rezepte verfügbar."
+
+#: .\apps\recipes\admin\admin_site.py:13
+msgid "Ingredient Importers"
+msgstr "Zutat-Importer"
+
+#: .\apps\recipes\admin\admin_site.py:27
+msgid "Recipe Scrapers"
+msgstr "Rezept-Scraper"
+
+#: .\apps\recipes\admin\recipe.py:123
+msgid "Timing"
+msgstr "Zeitangaben"
+
+#: .\apps\recipes\admin\recipe.py:145
+msgid "Primary Image"
+msgstr "Primärbild"
+
+#: .\apps\recipes\admin\recipe.py:160
+msgid "Mark selected recipes as published"
+msgstr "Ausgewählte Rezepte als veröffentlicht markieren"
+
+#: .\apps\recipes\admin\recipe.py:163
+#, python-format
+msgid "Published %(count)d recipe(s)."
+msgstr "%(count)d Rezept(e) veröffentlicht."
+
+#: .\apps\recipes\admin\recipe.py:165
+msgid "Mark selected recipes as draft"
+msgstr "Ausgewählte Rezepte als Entwurf markieren"
+
+#: .\apps\recipes\admin\recipe.py:168
+#, python-format
+msgid "Moved %(count)d recipe(s) to draft."
+msgstr "%(count)d Rezept(e) in den Entwurf verschoben."
+
+#: .\apps\recipes\apps.py:7 .\apps\recipes\models\recipe.py:21
+msgid "Recipes"
+msgstr "Rezepte"
+
+#: .\apps\recipes\models\cuisine.py:7 .\apps\recipes\models\ingredient.py:8
+#: .\apps\recipes\models\recipe_ingredient_group.py:6
+#: .\apps\recipes\models\recipe_step_group.py:6 .\apps\recipes\models\tag.py:6
+#: .\apps\recipes\models\unit.py:14
+msgid "Name"
+msgstr "Name"
+
+#: .\apps\recipes\models\cuisine.py:8 .\apps\recipes\models\ingredient.py:12
+#: .\apps\recipes\models\recipe.py:24 .\apps\recipes\models\tag.py:7
+msgid "Slug"
+msgstr "Slug"
+
+#: .\apps\recipes\models\cuisine.py:11 .\apps\recipes\models\recipe.py:37
+#: .\apps\recipes\views\recipes_list_view.py:79
+msgid "Cuisine"
+msgstr "Küche"
+
+#: .\apps\recipes\models\cuisine.py:12
+msgid "Cuisines"
+msgstr "Küchen"
+
+#: .\apps\recipes\models\ingredient.py:7
+msgid "EAN"
+msgstr "EAN"
+
+#: .\apps\recipes\models\ingredient.py:9
+msgid "Generic name"
+msgstr "Allgemeiner Name"
+
+#: .\apps\recipes\models\ingredient.py:11
+msgid "Brand"
+msgstr "Marke"
+
+#: .\apps\recipes\models\ingredient.py:15
+msgid "kcal"
+msgstr "kcal"
+
+#: .\apps\recipes\models\ingredient.py:17 .\apps\recipes\services\pdf.py:558
+msgid "Saturates"
+msgstr "Gesättigte Fettsäuren"
+
+#: .\apps\recipes\models\ingredient.py:24
+msgid "Density"
+msgstr "Dichte"
+
+#: .\apps\recipes\models\ingredient.py:27 .\apps\recipes\models\recipe.py:43
+#: .\apps\recipes\models\recipe_note.py:15
+#, fuzzy
+#| msgid "Exported at"
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: .\apps\recipes\models\ingredient.py:28 .\apps\recipes\models\recipe.py:44
+#: .\apps\recipes\models\recipe_note.py:16
+#, fuzzy
+#| msgid "Exported at"
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: .\apps\recipes\models\ingredient.py:31
+#: .\apps\recipes\models\recipe_ingredient.py:5
+#: .\apps\recipes\views\recipes_list_view.py:80
+msgid "Ingredient"
+msgstr "Zutat"
 
 #: .\apps\recipes\models\recipe.py:14
 msgid "Draft"
@@ -288,76 +425,294 @@ msgstr "Entwurf"
 #: .\apps\recipes\models\recipe.py:15
 msgid "Published"
 msgstr "Veröffentlicht"
-#: .\apps\recipes\services\pdf.py:120
-msgid "Exported at"
-msgstr "Exportiert um"
 
-#: .\apps\recipes\services\pdf.py:121
-msgid "Recipe URL"
-msgstr "Rezept-URL"
+#: .\apps\recipes\models\recipe.py:23
+msgid "Title"
+msgstr "Titel"
 
-#: .\apps\recipes\services\pdf.py:133
-msgid "Tags"
-msgstr "Tags"
+#: .\apps\recipes\models\recipe.py:28
+msgid "Preparation time"
+msgstr "Vorbereitungszeit"
 
-msgid "Recipe library"
-msgstr "Rezeptbibliothek"
+#: .\apps\recipes\models\recipe.py:29
+msgid "Cooking time"
+msgstr "Kochzeit"
 
-msgid "Header actions"
-msgstr "Header-Aktionen"
+#: .\apps\recipes\models\recipe.py:30
+msgid "Resting time"
+msgstr "Ruhezeit"
 
-msgid "Open menu"
-msgstr "Menü öffnen"
+#: .\apps\recipes\models\recipe.py:41
+msgid "Author"
+msgstr "Autor"
 
-msgid "Toggle theme"
-msgstr "Design wechseln"
+#: .\apps\recipes\models\recipe.py:42
+msgid "Status"
+msgstr "Status"
 
-msgid "Skip to content"
-msgstr "Zum Inhalt springen"
+#: .\apps\recipes\models\recipe_image.py:34
+msgid "Caption"
+msgstr "Bildunterschrift"
 
-msgid "Admin"
-msgstr "Admin"
+#: .\apps\recipes\models\recipe_image.py:35
+msgid "Is primary"
+msgstr "Ist primär"
 
-msgid "Language selection"
-msgstr "Sprachauswahl"
+#: .\apps\recipes\models\recipe_image.py:36
+#: .\apps\recipes\models\recipe_note.py:13
+msgid "Ordering"
+msgstr "Sortierung"
 
-msgid "Search results"
-msgstr "Suchergebnisse"
+#: .\apps\recipes\models\recipe_image.py:39
+msgid "Recipe Image"
+msgstr "Rezeptbild"
 
-msgid "Search suggestions"
-msgstr "Suchvorschläge"
+#: .\apps\recipes\models\recipe_image.py:40
+msgid "Recipe Images"
+msgstr "Rezeptbilder"
 
+#: .\apps\recipes\models\recipe_ingredient.py:6
+msgid "Quantity"
+msgstr "Menge"
+
+#: .\apps\recipes\models\recipe_ingredient.py:7
+#: .\apps\recipes\models\unit.py:21
+msgid "Unit"
+msgstr "Einheit"
+
+#: .\apps\recipes\models\recipe_ingredient.py:9
+#: .\apps\recipes\models\recipe_step.py:8
+msgid "Group"
+msgstr "Gruppe"
+
+#: .\apps\recipes\models\recipe_ingredient.py:11
+#: .\apps\recipes\models\recipe_ingredient_group.py:8
+#: .\apps\recipes\models\recipe_step.py:5
+#: .\apps\recipes\models\recipe_step_group.py:8
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: .\apps\recipes\models\recipe_ingredient.py:15
+msgid "Recipe Ingredient"
+msgstr "Rezeptzutat"
+
+#: .\apps\recipes\models\recipe_ingredient.py:16
+msgid "Recipe Ingredients"
+msgstr "Rezeptzutaten"
+
+#: .\apps\recipes\models\recipe_ingredient_group.py:12
+msgid "Recipe Ingredient Group"
+msgstr "Rezeptzutaten-Gruppe"
+
+#: .\apps\recipes\models\recipe_ingredient_group.py:13
+msgid "Recipe Ingredient Groups"
+msgstr "Rezeptzutaten-Gruppen"
+
+#: .\apps\recipes\models\recipe_note.py:11
+msgid "Content"
+msgstr "Inhalt"
+
+#: .\apps\recipes\models\recipe_note.py:20
+msgid "Recipe Note"
+msgstr "Rezeptnotiz"
+
+#: .\apps\recipes\models\recipe_note.py:21
+msgid "Recipe Notes"
+msgstr "Rezeptnotizen"
+
+#: .\apps\recipes\models\recipe_nutrition.py:9
+msgid "Total kcal"
+msgstr "Gesamt kcal"
+
+#: .\apps\recipes\models\recipe_nutrition.py:10
+msgid "Total fat"
+msgstr "Gesamt Fett"
+
+#: .\apps\recipes\models\recipe_nutrition.py:11
+msgid "Total saturates"
+msgstr "Gesamt gesättigte Fettsäuren"
+
+#: .\apps\recipes\models\recipe_nutrition.py:12
+msgid "Total carbs"
+msgstr "Gesamt Kohlenhydrate"
+
+#: .\apps\recipes\models\recipe_nutrition.py:13
+msgid "Total sugar"
+msgstr "Gesamt Zucker"
+
+#: .\apps\recipes\models\recipe_nutrition.py:14
+#, fuzzy
+#| msgid "Total time"
+msgid "Total protein"
+msgstr "Gesamt Eiweiß"
+
+#: .\apps\recipes\models\recipe_nutrition.py:15
+#, fuzzy
+#| msgid "Total time"
+msgid "Total salt"
+msgstr "Gesamt Salz"
+
+#: .\apps\recipes\models\recipe_nutrition.py:18
+msgid "Per serving kcal"
+msgstr "Pro Portion kcal"
+
+#: .\apps\recipes\models\recipe_nutrition.py:19
+msgid "Per serving fat"
+msgstr "Pro Portion Fett"
+
+#: .\apps\recipes\models\recipe_nutrition.py:20
+msgid "Per serving saturates"
+msgstr "Pro Portion gesättigte Fettsäuren"
+
+#: .\apps\recipes\models\recipe_nutrition.py:21
+msgid "Per serving carbs"
+msgstr "Pro Portion Kohlenhydrate"
+
+#: .\apps\recipes\models\recipe_nutrition.py:22
+msgid "Per serving sugar"
+msgstr "Pro Portion Zucker"
+
+#: .\apps\recipes\models\recipe_nutrition.py:23
+msgid "Per serving protein"
+msgstr "Pro Portion Eiweiß"
+
+#: .\apps\recipes\models\recipe_nutrition.py:24
+msgid "Per serving salt"
+msgstr "Pro Portion Salz"
+
+#: .\apps\recipes\models\recipe_nutrition.py:27
+msgid "Recipe Nutrition"
+msgstr "Rezept-Nährwerte"
+
+#: .\apps\recipes\models\recipe_nutrition.py:28
+msgid "Recipe Nutritions"
+msgstr "Rezept-Nährwerte"
+
+#: .\apps\recipes\models\recipe_step.py:6
+msgid "Description"
+msgstr "Beschreibung"
+
+#: .\apps\recipes\models\recipe_step.py:12
+msgid "Recipe Step"
+msgstr "Rezeptschritt"
+
+#: .\apps\recipes\models\recipe_step.py:13
+msgid "Recipe Steps"
+msgstr "Rezeptschritte"
+
+#: .\apps\recipes\models\recipe_step_group.py:12
+msgid "Recipe Step Group"
+msgstr "Rezeptschritt-Gruppe"
+
+#: .\apps\recipes\models\recipe_step_group.py:13
+msgid "Recipe Step Groups"
+msgstr "Rezeptschritt-Gruppen"
+
+#: .\apps\recipes\models\recipe_tag.py:6 .\apps\recipes\models\tag.py:10
+#: .\apps\recipes\views\recipes_list_view.py:78
 msgid "Tag"
 msgstr "Tag"
 
-msgid "Cuisine"
-msgstr "Küche"
+#: .\apps\recipes\models\recipe_tag.py:10
+msgid "Recipe Tag"
+msgstr "Rezept-Tag"
 
-msgid "Ingredient"
-msgstr "Zutat"
+#: .\apps\recipes\models\recipe_tag.py:11
+msgid "Recipe Tags"
+msgstr "Rezept-Tags"
 
-msgid "Clear search"
-msgstr "Suche löschen"
+#: .\apps\recipes\models\tag.py:11
+msgid "Tags"
+msgstr "Tags"
 
-msgid "No recipes matched your search."
-msgstr "Keine Rezepte entsprechen deiner Suche."
+#: .\apps\recipes\models\unit.py:9
+msgid "Weight"
+msgstr "Gewicht"
 
-#: .\MealStack\templates\recipes\recipe_list.html:20
-#, python-format
-msgid "Showing %(recipe_count)s search result for \"%(query)s\""
-msgid_plural "Showing %(recipe_count)s search results for \"%(query)s\""
-msgstr[0] "Es wird %(recipe_count)s Suchergebnis für \"%(query)s\" angezeigt"
-msgstr[1] "Es werden %(recipe_count)s Suchergebnisse für \"%(query)s\" angezeigt"
+#: .\apps\recipes\models\unit.py:10
+msgid "Volume"
+msgstr "Volumen"
 
+#: .\apps\recipes\models\unit.py:11
+msgid "Count"
+msgstr "Anzahl"
+
+#: .\apps\recipes\models\unit.py:15
+msgid "Type"
+msgstr "Typ"
+
+#: .\apps\recipes\models\unit.py:17
+msgid "Grams per unit"
+msgstr "Gramm pro Einheit"
+
+#: .\apps\recipes\models\unit.py:18
+msgid "ML per unit"
+msgstr "ML pro Einheit"
+
+#: .\apps\recipes\models\unit.py:22
+msgid "Units"
+msgstr "Einheiten"
+
+#: .\apps\recipes\services\pdf.py:520
 msgid "Metric"
 msgstr "Wert"
 
+#: .\apps\recipes\services\pdf.py:521
 msgid "Per serving"
 msgstr "Pro Portion"
 
-msgid "Saturates"
-msgstr "Gesättigte Fettsäuren"
+#: .\apps\recipes\services\pdf.py:709
+msgid "Recipe URL"
+msgstr "Rezept-URL"
+
+#: .\apps\recipes\services\pdf.py:710
+msgid "Exported at"
+msgstr "Exportiert um"
+
+#: .\apps\recipes\views\admin_importers_view.py:17
+#, python-format
+msgid "Ingredient '%(ingredient_name)s' imported successfully!"
+msgstr "Zutat '%(ingredient_name)s' erfolgreich importiert!"
+
+#: .\apps\recipes\views\admin_importers_view.py:21
+#, python-format
+msgid "EAN %(ean)s not found in OpenFoodFacts."
+msgstr "EAN %(ean)s wurde in OpenFoodFacts nicht gefunden."
+
+#: .\apps\recipes\views\admin_importers_view.py:23
+#, python-format
+msgid "Error: %(error)s"
+msgstr "Fehler: %(error)s"
+
+#: .\apps\recipes\views\admin_importers_view.py:25
+msgid "Please provide a valid EAN."
+msgstr "Bitte eine gültige EAN angeben."
+
+#: .\apps\recipes\views\admin_importers_view.py:35
+#, python-format
+msgid "Invalid URL for %(site_name)s. Please use a matching recipe URL."
+msgstr ""
+"Ungültige URL für %(site_name)s. Bitte eine passende Rezept-URL verwenden."
+
+#: .\apps\recipes\views\admin_importers_view.py:42
+#, python-format
+msgid "Recipe '%(recipe_title)s' imported successfully!"
+msgstr "Rezept '%(recipe_title)s' erfolgreich importiert!"
+
+#: .\apps\recipes\views\admin_importers_view.py:46
+#, python-format
+msgid "Error importing recipe: %(error)s"
+msgstr "Fehler beim Importieren des Rezepts: %(error)s"
+
+#: .\apps\recipes\views\admin_importers_view.py:48
+msgid "Please provide a valid recipe URL."
+msgstr "Bitte eine gültige Rezept-URL angeben."
+
+#~ msgid "Sign Up"
+#~ msgstr "Registrieren"
+
+#~ msgid "Per Serving"
+#~ msgstr "Pro Portion"
 
 #~ msgid "Nutrition (per serving)"
 #~ msgstr "Nährwerte (pro Portion)"
-

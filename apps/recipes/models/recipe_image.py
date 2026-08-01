@@ -3,6 +3,7 @@ import uuid
 
 from django.db import models
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 
 
 def recipe_image_upload_to(instance, filename):
@@ -22,13 +23,18 @@ class RecipeImage(models.Model):
     recipe = models.ForeignKey(
         "Recipe",
         on_delete=models.CASCADE,
+        verbose_name=_("Recipe"),
     )
 
     image = models.ImageField(
-        #upload_to="recipes/%Y/%m/",
         upload_to=recipe_image_upload_to,
+        verbose_name=_("Image"),
     )
 
-    caption = models.CharField(max_length=255, blank=True)
-    is_primary = models.BooleanField(default=False)
-    ordering = models.PositiveIntegerField(default=0)
+    caption = models.CharField(max_length=255, blank=True, verbose_name=_("Caption"))
+    is_primary = models.BooleanField(default=False, verbose_name=_("Is primary"))
+    ordering = models.PositiveIntegerField(default=0, verbose_name=_("Ordering"))
+
+    class Meta:
+        verbose_name = _("Recipe Image")
+        verbose_name_plural = _("Recipe Images")

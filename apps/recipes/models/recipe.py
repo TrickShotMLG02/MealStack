@@ -20,27 +20,28 @@ class Recipe(models.Model):
         verbose_name = _("Recipe")
         verbose_name_plural = _("Recipes")
 
-    title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=250, unique=True, blank=True)
+    title = models.CharField(max_length=250, verbose_name=_("Title"))
+    slug = models.SlugField(max_length=250, unique=True, blank=True, verbose_name=_("Slug"))
 
-    servings = models.PositiveIntegerField(default=1)
+    servings = models.PositiveIntegerField(default=1, verbose_name=_("Servings"))
 
-    preparation_time = models.DurationField(null=True, blank=True)
-    cooking_time = models.DurationField(null=True, blank=True)
-    resting_time = models.DurationField(null=True, blank=True)
+    preparation_time = models.DurationField(null=True, blank=True, verbose_name=_("Preparation time"))
+    cooking_time = models.DurationField(null=True, blank=True, verbose_name=_("Cooking time"))
+    resting_time = models.DurationField(null=True, blank=True, verbose_name=_("Resting time"))
 
     cuisine = models.ForeignKey(
         'Cuisine',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        verbose_name=_("Cuisine"),
     )
 
-    source = models.URLField(blank=True, null=True)
-    author = models.CharField(max_length=40, blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    source = models.URLField(blank=True, null=True, verbose_name=_("Source"))
+    author = models.CharField(max_length=40, blank=True, null=True, verbose_name=_("Author"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', verbose_name=_("Status"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     """
     ingredients = models.ManyToManyField(
