@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 18:30+0200\n"
+"POT-Creation-Date: 2026-08-01 19:14+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -25,6 +25,16 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
+#: .\MealStack\templates\admin\ingredient_importer.html:8
+#: .\apps\recipes\models\ingredient.py:7
+msgid "EAN"
+msgstr "EAN"
+
+#: .\MealStack\templates\admin\ingredient_importer.html:10
+#: .\MealStack\templates\admin\recipe_importer.html:10
+msgid "Import"
+msgstr "Importieren"
+
 #: .\MealStack\templates\admin\login.html:10
 msgid "Login with OAuth"
 msgstr "Mit OAuth anmelden"
@@ -32,6 +42,11 @@ msgstr "Mit OAuth anmelden"
 #: .\MealStack\templates\admin\login.html:18
 msgid "Use internal authentication"
 msgstr "Interne Anmeldung verwenden"
+
+#: .\MealStack\templates\admin\recipe_importer.html:8
+#: .\apps\recipes\services\pdf.py:709
+msgid "Recipe URL"
+msgstr "Rezept-URL"
 
 #: .\MealStack\templates\base.html:17
 msgid "Skip to content"
@@ -374,10 +389,6 @@ msgstr "Küche"
 msgid "Cuisines"
 msgstr "Küchen"
 
-#: .\apps\recipes\models\ingredient.py:7
-msgid "EAN"
-msgstr "EAN"
-
 #: .\apps\recipes\models\ingredient.py:9
 msgid "Generic name"
 msgstr "Allgemeiner Name"
@@ -660,10 +671,6 @@ msgstr "Wert"
 #: .\apps\recipes\services\pdf.py:521
 msgid "Per serving"
 msgstr "Pro Portion"
-
-#: .\apps\recipes\services\pdf.py:709
-msgid "Recipe URL"
-msgstr "Rezept-URL"
 
 #: .\apps\recipes\services\pdf.py:710
 msgid "Exported at"
