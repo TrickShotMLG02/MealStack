@@ -1,4 +1,5 @@
 from io import BytesIO
+from io import StringIO
 from pathlib import Path
 import shutil
 import tempfile
@@ -76,7 +77,7 @@ class RecipeImageMetadataTests(TestCase):
         image_path.write_bytes(jpeg_with_exif())
         RecipeImage.objects.create(recipe=recipe, image=image_name)
 
-        call_command("strip_upload_metadata", verbosity=0)
+        call_command("strip_upload_metadata", stdout=StringIO(), stderr=StringIO(), verbosity=0)
 
         with Image.open(image_path) as saved_image:
             self.assertFalse(saved_image.getexif())
@@ -115,6 +116,11 @@ class RecipeImageMetadataTests(TestCase):
         invalid_path.write_bytes(b"not an image")
         RecipeImage.objects.create(recipe=recipe, image=invalid_name)
 
-        call_command("strip_upload_metadata", verbosity=0)
+        output = StringIO()
+        errors = StringIO()
+
+        call_command("strip_upload_metadata", stdout=output, stderr=errors, verbosity=0)
 
         self.assertEqual(RecipeImage.objects.count(), 2)
+        self.assertIn("Missing file: recipes/missing.jpg", errors.getvalue())
+        self.assertIn("Skipped unsupported image: recipes/invalid.jpg", errors.getvalue())
