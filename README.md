@@ -4,6 +4,8 @@
 ![Meal Stack stable](https://img.shields.io/docker/v/trickshotmlg/mealstack/latest?label=stable&sort=semver)
 ![Meal Stack unstable](https://img.shields.io/docker/v/trickshotmlg/mealstack/dev?label=unstable&sort=semver)
 ![Python](https://img.shields.io/badge/python-3.12.4-blue)
+[![Coverage stable](https://img.shields.io/codecov/c/github/TrickShotMLG02/MealStack/master?label=coverage%20stable)](https://codecov.io/gh/TrickShotMLG02/MealStack/tree/master)
+[![Coverage unstable](https://img.shields.io/codecov/c/github/TrickShotMLG02/MealStack/development?label=coverage%20unstable)](https://codecov.io/gh/TrickShotMLG02/MealStack/tree/development)
 
 ## 📖 Description
 
