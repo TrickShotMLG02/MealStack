@@ -94,6 +94,8 @@ WSGI_APPLICATION = 'MealStack.wsgi.application'
 
 LOGIN_REDIRECT_URL = "/admin/"
 
+TEST_RUNNER = "apps.common.test_runner.StyledProgressTestRunner"
+
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases

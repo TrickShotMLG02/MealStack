@@ -15,3 +15,21 @@ dependencies = [
     "mozilla-django-oidc>=5.0.2",
     "reportlab>=5.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.15.2",
+    "tqdm>=4.67.1",
+]
+
+[tool.coverage.run]
+source = ["apps"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/test_runner.py",
+    "*/management/commands/test_coverage.py",
+]
+
+[tool.coverage.report]
+show_missing = true
