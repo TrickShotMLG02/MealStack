@@ -6,9 +6,9 @@ from apps.recipes import UnitType
 
 class Unit(models.Model):
     TYPE_CHOICES = [
-        (UnitType.WEIGHT, _('Weight')),
-        (UnitType.VOLUME, _('Volume')),
-        (UnitType.COUNT, _('Count')),
+        (UnitType.WEIGHT.value, _('Weight')),
+        (UnitType.VOLUME.value, _('Volume')),
+        (UnitType.COUNT.value, _('Count')),
     ]
 
     name = models.CharField(max_length=50, unique=True, verbose_name=_("Name"))
