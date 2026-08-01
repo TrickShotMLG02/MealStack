@@ -4,6 +4,9 @@ import uuid
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from PIL import UnidentifiedImageError
+
+from apps.recipes.services.image_metadata import strip_image_metadata
 
 
 def recipe_image_upload_to(instance, filename):
@@ -38,3 +41,14 @@ class RecipeImage(models.Model):
     class Meta:
         verbose_name = _("Recipe Image")
         verbose_name_plural = _("Recipe Images")
+
+    def save(self, *args, **kwargs):
+        if self.image and not self.image._committed:
+            try:
+                stripped = strip_image_metadata(self.image.file, self.image.name)
+            except UnidentifiedImageError:
+                pass
+            else:
+                self.image.save(self.image.name, stripped.content, save=False)
+
+        super().save(*args, **kwargs)
