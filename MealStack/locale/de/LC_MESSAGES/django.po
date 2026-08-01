@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 19:14+0200\n"
+"POT-Creation-Date: 2026-08-01 19:30+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\MealStack\settings\base.py:130
+#: .\MealStack\settings\base.py:133
 msgid "English"
 msgstr "Englisch"
 
-#: .\MealStack\settings\base.py:131
+#: .\MealStack\settings\base.py:134
 msgid "German"
 msgstr "Deutsch"
 
@@ -93,7 +93,7 @@ msgid "Toggle theme"
 msgstr "Design wechseln"
 
 #: .\MealStack\templates\recipes\components\carousel.html:12
-#: .\apps\recipes\models\recipe_image.py:31
+#: .\apps\recipes\models\recipe_image.py:35
 msgid "Image"
 msgstr "Bild"
 
@@ -121,7 +121,7 @@ msgstr "Portionen"
 #: .\MealStack\templates\recipes\recipe_detail.html:35
 #: .\MealStack\templates\recipes\recipe_detail.html:212
 #: .\MealStack\templates\recipes\recipe_detail.html:222
-#: .\apps\recipes\models\ingredient.py:32 .\apps\recipes\services\pdf.py:576
+#: .\apps\recipes\models\ingredient.py:31 .\apps\recipes\services\pdf.py:576
 #: .\apps\recipes\services\pdf.py:584
 msgid "Ingredients"
 msgstr "Zutaten"
@@ -141,7 +141,7 @@ msgstr "Zu den Zutaten springen"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:54
 #: .\apps\recipes\admin\recipe.py:109 .\apps\recipes\models\recipe.py:20
-#: .\apps\recipes\models\recipe_image.py:26
+#: .\apps\recipes\models\recipe_image.py:30
 #: .\apps\recipes\models\recipe_ingredient_group.py:5
 #: .\apps\recipes\models\recipe_note.py:8
 #: .\apps\recipes\models\recipe_step_group.py:5
@@ -205,19 +205,19 @@ msgstr "Kalorien"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:123
 #: .\MealStack\templates\recipes\recipe_detail.html:286
-#: .\apps\recipes\models\ingredient.py:20 .\apps\recipes\services\pdf.py:530
+#: .\apps\recipes\models\ingredient.py:19 .\apps\recipes\services\pdf.py:530
 msgid "Protein"
 msgstr "Eiweiß"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:132
 #: .\MealStack\templates\recipes\recipe_detail.html:304
-#: .\apps\recipes\models\ingredient.py:18 .\apps\recipes\services\pdf.py:540
+#: .\apps\recipes\models\ingredient.py:17 .\apps\recipes\services\pdf.py:540
 msgid "Carbs"
 msgstr "Kohlenhydrate"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:141
 #: .\MealStack\templates\recipes\recipe_detail.html:295
-#: .\apps\recipes\models\ingredient.py:16 .\apps\recipes\services\pdf.py:535
+#: .\apps\recipes\models\ingredient.py:15 .\apps\recipes\services\pdf.py:535
 msgid "Fat"
 msgstr "Fett"
 
@@ -278,12 +278,12 @@ msgid "No ingredients added yet."
 msgstr "Noch keine Zutaten hinzugefügt."
 
 #: .\MealStack\templates\recipes\recipe_detail.html:313
-#: .\apps\recipes\models\ingredient.py:19 .\apps\recipes\services\pdf.py:545
+#: .\apps\recipes\models\ingredient.py:18 .\apps\recipes\services\pdf.py:545
 msgid "Sugar"
 msgstr "Zucker"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:322
-#: .\apps\recipes\models\ingredient.py:21 .\apps\recipes\services\pdf.py:550
+#: .\apps\recipes\models\ingredient.py:20 .\apps\recipes\services\pdf.py:550
 msgid "Salt"
 msgstr "Salz"
 
@@ -368,6 +368,26 @@ msgstr "%(count)d Rezept(e) in den Entwurf verschoben."
 msgid "Recipes"
 msgstr "Rezepte"
 
+#: .\apps\recipes\migrations\0005_alter_unit_type.py:29
+#: .\apps\recipes\models\unit.py:9
+msgid "Weight"
+msgstr "Gewicht"
+
+#: .\apps\recipes\migrations\0005_alter_unit_type.py:30
+#: .\apps\recipes\models\unit.py:10
+msgid "Volume"
+msgstr "Volumen"
+
+#: .\apps\recipes\migrations\0005_alter_unit_type.py:31
+#: .\apps\recipes\models\unit.py:11
+msgid "Count"
+msgstr "Anzahl"
+
+#: .\apps\recipes\migrations\0005_alter_unit_type.py:34
+#: .\apps\recipes\models\unit.py:15
+msgid "Type"
+msgstr "Typ"
+
 #: .\apps\recipes\models\cuisine.py:7 .\apps\recipes\models\ingredient.py:8
 #: .\apps\recipes\models\recipe_ingredient_group.py:6
 #: .\apps\recipes\models\recipe_step_group.py:6 .\apps\recipes\models\tag.py:6
@@ -375,7 +395,7 @@ msgstr "Rezepte"
 msgid "Name"
 msgstr "Name"
 
-#: .\apps\recipes\models\cuisine.py:8 .\apps\recipes\models\ingredient.py:12
+#: .\apps\recipes\models\cuisine.py:8 .\apps\recipes\models\ingredient.py:11
 #: .\apps\recipes\models\recipe.py:24 .\apps\recipes\models\tag.py:7
 msgid "Slug"
 msgstr "Slug"
@@ -393,37 +413,37 @@ msgstr "Küchen"
 msgid "Generic name"
 msgstr "Allgemeiner Name"
 
-#: .\apps\recipes\models\ingredient.py:11
+#: .\apps\recipes\models\ingredient.py:10
 msgid "Brand"
 msgstr "Marke"
 
-#: .\apps\recipes\models\ingredient.py:15
+#: .\apps\recipes\models\ingredient.py:14
 msgid "kcal"
 msgstr "kcal"
 
-#: .\apps\recipes\models\ingredient.py:17 .\apps\recipes\services\pdf.py:558
+#: .\apps\recipes\models\ingredient.py:16 .\apps\recipes\services\pdf.py:558
 msgid "Saturates"
 msgstr "Gesättigte Fettsäuren"
 
-#: .\apps\recipes\models\ingredient.py:24
+#: .\apps\recipes\models\ingredient.py:23
 msgid "Density"
 msgstr "Dichte"
 
-#: .\apps\recipes\models\ingredient.py:27 .\apps\recipes\models\recipe.py:43
+#: .\apps\recipes\models\ingredient.py:26 .\apps\recipes\models\recipe.py:43
 #: .\apps\recipes\models\recipe_note.py:15
 #, fuzzy
 #| msgid "Exported at"
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: .\apps\recipes\models\ingredient.py:28 .\apps\recipes\models\recipe.py:44
+#: .\apps\recipes\models\ingredient.py:27 .\apps\recipes\models\recipe.py:44
 #: .\apps\recipes\models\recipe_note.py:16
 #, fuzzy
 #| msgid "Exported at"
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: .\apps\recipes\models\ingredient.py:31
+#: .\apps\recipes\models\ingredient.py:30
 #: .\apps\recipes\models\recipe_ingredient.py:5
 #: .\apps\recipes\views\recipes_list_view.py:80
 msgid "Ingredient"
@@ -461,26 +481,30 @@ msgstr "Autor"
 msgid "Status"
 msgstr "Status"
 
-#: .\apps\recipes\models\recipe_image.py:34
+#: .\apps\recipes\models\recipe_image.py:38
 msgid "Caption"
 msgstr "Bildunterschrift"
 
-#: .\apps\recipes\models\recipe_image.py:35
+#: .\apps\recipes\models\recipe_image.py:39
 msgid "Is primary"
 msgstr "Ist primär"
 
-#: .\apps\recipes\models\recipe_image.py:36
+#: .\apps\recipes\models\recipe_image.py:40
 #: .\apps\recipes\models\recipe_note.py:13
 msgid "Ordering"
 msgstr "Sortierung"
 
-#: .\apps\recipes\models\recipe_image.py:39
+#: .\apps\recipes\models\recipe_image.py:43
 msgid "Recipe Image"
 msgstr "Rezeptbild"
 
-#: .\apps\recipes\models\recipe_image.py:40
+#: .\apps\recipes\models\recipe_image.py:44
 msgid "Recipe Images"
 msgstr "Rezeptbilder"
+
+#: .\apps\recipes\models\recipe_image.py:51
+msgid "Animated recipe images are not supported."
+msgstr "Animierte Rezeptbilder werden nicht unterstützt."
 
 #: .\apps\recipes\models\recipe_ingredient.py:6
 msgid "Quantity"
@@ -635,22 +659,6 @@ msgstr "Rezept-Tags"
 #: .\apps\recipes\models\tag.py:11
 msgid "Tags"
 msgstr "Tags"
-
-#: .\apps\recipes\models\unit.py:9
-msgid "Weight"
-msgstr "Gewicht"
-
-#: .\apps\recipes\models\unit.py:10
-msgid "Volume"
-msgstr "Volumen"
-
-#: .\apps\recipes\models\unit.py:11
-msgid "Count"
-msgstr "Anzahl"
-
-#: .\apps\recipes\models\unit.py:15
-msgid "Type"
-msgstr "Typ"
 
 #: .\apps\recipes\models\unit.py:17
 msgid "Grams per unit"

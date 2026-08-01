@@ -57,7 +57,7 @@ class MyAdminSite(admin.AdminSite):
             )
         ]
 
-        return custom_importer_urls + urls + custom_urls
+        return custom_importer_urls + custom_urls + urls
 
 my_admin_site = MyAdminSite(name="myadmin")
 

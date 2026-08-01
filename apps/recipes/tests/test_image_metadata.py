@@ -5,6 +5,7 @@ import tempfile
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
+from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 from PIL import Image
 
@@ -18,6 +19,22 @@ def jpeg_with_exif() -> bytes:
 
     output = BytesIO()
     image.save(output, format="JPEG", exif=exif)
+    return output.getvalue()
+
+
+def animated_gif() -> bytes:
+    first = Image.new("RGB", (12, 12), color="red")
+    second = Image.new("RGB", (12, 12), color="blue")
+
+    output = BytesIO()
+    first.save(
+        output,
+        format="GIF",
+        save_all=True,
+        append_images=[second],
+        duration=100,
+        loop=0,
+    )
     return output.getvalue()
 
 
@@ -56,3 +73,14 @@ class RecipeImageMetadataTests(TestCase):
 
         with Image.open(image_path) as saved_image:
             self.assertFalse(saved_image.getexif())
+
+    def test_recipe_image_upload_rejects_animated_images(self):
+        recipe = Recipe.objects.create(title="Cake")
+        upload = SimpleUploadedFile(
+            "cake.gif",
+            animated_gif(),
+            content_type="image/gif",
+        )
+
+        with self.assertRaises(ValidationError):
+            RecipeImage.objects.create(recipe=recipe, image=upload)

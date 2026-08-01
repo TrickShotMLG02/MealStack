@@ -11,7 +11,6 @@ class Command(SeedCommand):
         return "Tags"
 
     def seed(self, *args, **kwargs):
-        Tag.objects.all().delete()
         for name in TAG_CATALOG:
             Tag.objects.update_or_create(
                 name=name,

@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from PIL import UnidentifiedImageError
 
 from apps.recipes.models import RecipeImage
-from apps.recipes.services.image_metadata import strip_image_metadata
+from apps.recipes.services.image_metadata import AnimatedImageError, strip_image_metadata
 
 
 class Command(BaseCommand):
@@ -38,6 +38,10 @@ class Command(BaseCommand):
             try:
                 with storage.open(name, "rb") as image_file:
                     result = strip_image_metadata(image_file, name)
+            except AnimatedImageError:
+                skipped += 1
+                self.stderr.write(f"Skipped animated image: {name}")
+                continue
             except UnidentifiedImageError:
                 skipped += 1
                 self.stderr.write(f"Skipped unsupported image: {name}")

@@ -2,11 +2,12 @@ import os
 import uuid
 
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from PIL import UnidentifiedImageError
 
-from apps.recipes.services.image_metadata import strip_image_metadata
+from apps.recipes.services.image_metadata import AnimatedImageError, strip_image_metadata
 
 
 def recipe_image_upload_to(instance, filename):
@@ -46,6 +47,8 @@ class RecipeImage(models.Model):
         if self.image and not self.image._committed:
             try:
                 stripped = strip_image_metadata(self.image.file, self.image.name)
+            except AnimatedImageError as exc:
+                raise ValidationError(_("Animated recipe images are not supported.")) from exc
             except UnidentifiedImageError:
                 pass
             else:

@@ -24,6 +24,10 @@ class ImageMetadataStripResult:
     format: str
 
 
+class AnimatedImageError(ValueError):
+    pass
+
+
 def _save_format(filename: str, image_format: str | None) -> str:
     if image_format:
         return image_format
@@ -56,6 +60,9 @@ def strip_image_metadata(file_obj, filename: str) -> ImageMetadataStripResult:
 
     try:
         with Image.open(file_obj) as image:
+            if getattr(image, "is_animated", False) or getattr(image, "n_frames", 1) > 1:
+                raise AnimatedImageError("Animated image uploads are not supported.")
+
             had_metadata = image_has_metadata(image)
             image_format = _save_format(filename, image.format)
             stripped = ImageOps.exif_transpose(image)

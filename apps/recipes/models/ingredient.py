@@ -7,7 +7,6 @@ class Ingredient(models.Model):
     ean = models.CharField(max_length=13, unique=True, null=True, blank=True, verbose_name=_("EAN"))
     name = models.CharField(max_length=200, verbose_name=_("Name"))
     generic_name = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Generic name"))
-    slug = models.SlugField(max_length=200, null=True, blank=True)
     brand = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Brand"))
     slug = models.SlugField(max_length=200, unique=True, blank=True, verbose_name=_("Slug"))
 
