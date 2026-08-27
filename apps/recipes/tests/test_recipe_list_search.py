@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.core.cache import cache
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.recipes.models import (
@@ -16,6 +17,10 @@ from apps.recipes.models import (
 
 
 class RecipeListSearchTests(TestCase):
+    def tearDown(self):
+        cache.clear()
+        super().tearDown()
+
     def _create_recipe(self, title, *, cuisine_name=None, tag_names=None, ingredient_names=None, step_texts=None, note_text=None, author=None, source=None):
         recipe = Recipe.objects.create(
             title=title,
@@ -174,6 +179,15 @@ class RecipeListSearchTests(TestCase):
 
         ingredient_suggestion = next(item for item in payload if item["label"] == "Basil")
         self.assertIn("kind=ingredient", ingredient_suggestion["href"])
+
+    @override_settings(PUBLIC_SEARCH_RATE_LIMIT=1, PUBLIC_RATE_LIMIT_WINDOW=60)
+    def test_search_suggestions_are_rate_limited_per_client(self):
+        first = self.client.get(reverse("recipes:recipe_search_suggestions"), {"q": "basil"})
+        second = self.client.get(reverse("recipes:recipe_search_suggestions"), {"q": "basil"})
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 429)
+        self.assertEqual(second["Retry-After"], "60")
 
     def test_ingredient_suggestions_do_not_include_weak_matches(self):
         self._create_recipe(

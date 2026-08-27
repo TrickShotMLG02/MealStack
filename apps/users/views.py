@@ -13,11 +13,26 @@ from django.urls import NoReverseMatch, reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.crypto import get_random_string
 from urllib.parse import urlencode
-from mozilla_django_oidc.utils import add_state_and_verifier_and_nonce_to_session, absolutify
+from mozilla_django_oidc.utils import (
+    add_state_and_verifier_and_nonce_to_session,
+    absolutify,
+    generate_code_challenge,
+)
 
 from apps.recipes.models import Recipe, RecipeImage
 from apps.users.forms import ProfileForm, ProfilePasswordForm, RecipeListForm
 from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
+
+
+def _safe_post_redirect(request, fallback):
+    next_url = request.POST.get("next")
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return next_url
+    return fallback
 
 
 @login_required
@@ -73,7 +88,7 @@ def toggle_bookmark(request, slug):
     bookmark, created = RecipeBookmark.objects.get_or_create(user=request.user, recipe=recipe)
     if not created:
         bookmark.delete()
-    return redirect(request.POST.get("next") or f"/recipes/{slug}/")
+    return redirect(_safe_post_redirect(request, f"/recipes/{slug}/"))
 
 
 @login_required
@@ -83,7 +98,7 @@ def add_to_list(request, slug):
         recipe_list = get_object_or_404(RecipeList, pk=request.POST.get("list_id"), user=request.user)
         recipe_list.recipes.add(recipe)
         messages.success(request, _("Recipe added to your list."))
-    return redirect(request.POST.get("next") or f"/recipes/{slug}/")
+    return redirect(_safe_post_redirect(request, f"/recipes/{slug}/"))
 
 
 @login_required
@@ -107,7 +122,7 @@ def update_recipe_lists(request, slug):
             else:
                 recipe_list.recipes.remove(recipe)
         messages.success(request, _("Your recipe lists were updated."))
-    return redirect(request.POST.get("next") or f"/recipes/{slug}/")
+    return redirect(_safe_post_redirect(request, f"/recipes/{slug}/"))
 
 
 @login_required
@@ -190,7 +205,10 @@ def oidc_login(request, slug):
         "state": state,
         "nonce": nonce,
     }
-    add_state_and_verifier_and_nonce_to_session(request, state, params, None)
+    code_verifier = get_random_string(64)
+    params["code_challenge"] = generate_code_challenge(code_verifier, "S256")
+    params["code_challenge_method"] = "S256"
+    add_state_and_verifier_and_nonce_to_session(request, state, params, code_verifier)
     request.session["oidc_provider_slug"] = provider.slug
     if request.user.is_authenticated and request.GET.get("link") == "1":
         request.session["oidc_link_user_id"] = request.user.pk

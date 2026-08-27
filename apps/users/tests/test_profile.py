@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from apps.recipes.models import Recipe
 from apps.common.backend.auth_backends import OIDCAuthBackend
-from apps.users.admin import OIDCProviderAdmin
+from apps.users.admin import OIDCProviderAdmin, OIDCProviderAdminForm
 from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
 
 
@@ -115,6 +115,40 @@ class ProfileTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIsNone(self.client.session["oidc_login_next"])
 
+    def test_recipe_mutation_redirects_reject_external_next_urls(self):
+        recipe_list = RecipeList.objects.create(user=self.user, name="Dinner")
+        endpoints = [
+            (reverse("users:toggle_bookmark", args=[self.recipe.slug]), {}),
+            (reverse("users:add_to_list", args=[self.recipe.slug]), {"list_id": recipe_list.pk}),
+            (reverse("users:update_recipe_lists", args=[self.recipe.slug]), {"list_ids": [recipe_list.pk]}),
+        ]
+
+        for endpoint, data in endpoints:
+            with self.subTest(endpoint=endpoint):
+                response = self.client.post(endpoint, {**data, "next": "https://evil.example/"})
+                self.assertTrue(response.url.startswith("/recipes/"))
+                self.assertNotIn("evil.example", response.url)
+
+    def test_oidc_client_secret_uses_password_widget_and_is_not_rendered(self):
+        provider = OIDCProvider.objects.create(
+            name="Keycloak", slug="keycloak", client_id="client", client_secret="super-secret",
+            authorization_endpoint="https://id.example.test/auth", token_endpoint="https://id.example.test/token",
+            userinfo_endpoint="https://id.example.test/userinfo",
+        )
+        form = OIDCProviderAdminForm(instance=provider)
+
+        self.assertEqual(form.fields["client_secret"].widget.input_type, "password")
+        self.assertNotIn("super-secret", form.as_p())
+        changed = OIDCProviderAdminForm({"name": provider.name, "slug": provider.slug, "client_id": provider.client_id,
+                                         "authorization_endpoint": provider.authorization_endpoint,
+                                         "token_endpoint": provider.token_endpoint, "userinfo_endpoint": provider.userinfo_endpoint,
+                                         "scopes": provider.scopes, "signing_algorithm": provider.signing_algorithm,
+                                         "enabled": provider.enabled, "authoritative": provider.authoritative,
+                                         "auto_create_users": provider.auto_create_users, "staff_groups_claim": provider.staff_groups_claim,
+                                         "staff_groups": provider.staff_groups}, instance=provider)
+        self.assertTrue(changed.is_valid())
+        self.assertEqual(changed.cleaned_data["client_secret"], "super-secret")
+
     def test_oidc_identity_can_be_unlinked_but_last_unusable_login_is_protected(self):
         provider = OIDCProvider.objects.create(
             name="Keycloak", slug="keycloak", client_id="client", client_secret="secret",
@@ -178,10 +212,11 @@ class ProfileTests(TestCase):
             staff_groups="admins",
         )
         Group.objects.create(name="admins")
+        Group.objects.create(name="unconfigured")
         backend = OIDCAuthBackend.__new__(OIDCAuthBackend)
         backend.provider = provider
 
-        backend.update_user(self.user, {"email": self.user.email, "groups": ["admins"]})
+        backend.update_user(self.user, {"email": self.user.email, "groups": ["admins", "unconfigured"]})
         self.user.refresh_from_db()
         self.assertTrue(self.user.is_staff)
         self.assertEqual(list(self.user.groups.values_list("name", flat=True)), ["admins"])

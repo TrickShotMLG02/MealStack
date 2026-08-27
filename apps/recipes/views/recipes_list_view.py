@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.conf import settings
 from django.db.models import Prefetch
 from django.shortcuts import render
 from django.templatetags.static import static
@@ -9,6 +10,7 @@ from urllib.parse import urlencode
 from apps.recipes.models import Recipe, RecipeImage
 from apps.users.models import RecipeBookmark
 from apps.recipes.selectors import search_recipes, search_suggestions
+from apps.common.rate_limiting import is_rate_limited
 
 def recipe_list(request):
     search_query = (request.GET.get("q") or "").strip()
@@ -64,6 +66,17 @@ def recipe_list(request):
 
 
 def recipe_search_suggestions(request):
+    if is_rate_limited(
+        request,
+        key_prefix="recipe-search-suggestions",
+        limit=settings.PUBLIC_SEARCH_RATE_LIMIT,
+        window=settings.PUBLIC_RATE_LIMIT_WINDOW,
+    ):
+        return JsonResponse(
+            {"error": "Too many search requests."},
+            status=429,
+            headers={"Retry-After": str(settings.PUBLIC_RATE_LIMIT_WINDOW)},
+        )
     query = (request.GET.get("q") or "").strip()
     suggestions = []
 

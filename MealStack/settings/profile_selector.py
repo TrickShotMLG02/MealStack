@@ -124,6 +124,8 @@ def apply_env_overrides():
         # Keep backend initialization safe when no legacy global provider is configured.
         settings.OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO", "HS256")
         settings.OIDC_OP_ISSUER = os.getenv("OIDC_ISSUER")
+        settings.OIDC_USE_PKCE = True
+        settings.OIDC_CALLBACK_CLASS = "apps.common.oidc_views.MealStackOIDCCallbackView"
 
         settings.OIDC_RP_SCOPES = os.getenv(
             "OIDC_SCOPES", "openid email profile"

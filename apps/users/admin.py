@@ -1,12 +1,34 @@
 from django.contrib import admin
+from django import forms
 from django.urls import NoReverseMatch, reverse
 from django.utils.translation import gettext_lazy as _
 
 from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
 
 
+class OIDCProviderAdminForm(forms.ModelForm):
+    client_secret = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(render_value=False),
+        help_text=_("Leave blank to keep the existing client secret."),
+    )
+
+    class Meta:
+        model = OIDCProvider
+        fields = "__all__"
+
+    def clean_client_secret(self):
+        secret = self.cleaned_data.get("client_secret")
+        if not secret and self.instance and self.instance.pk:
+            return self.instance.client_secret
+        if not secret:
+            raise forms.ValidationError(_("A client secret is required."))
+        return secret
+
+
 @admin.register(OIDCProvider)
 class OIDCProviderAdmin(admin.ModelAdmin):
+    form = OIDCProviderAdminForm
     list_display = ("name", "enabled", "authoritative", "auto_create_users")
     list_filter = ("enabled", "authoritative", "auto_create_users")
     prepopulated_fields = {"slug": ("name",)}
