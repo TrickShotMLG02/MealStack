@@ -15,7 +15,12 @@ function initRecipeDetailPage() {
     const storageKey = 'recipe-cook-mode';
     const baseServings = Number(article.dataset.baseServings || servingsInput?.value || 1) || 1;
     const locale = document.documentElement.lang || navigator.language || 'en';
-    const servingsFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+    const minServings = 0.01;
+    const servingsFormatter = new Intl.NumberFormat(locale, {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        useGrouping: false,
+    });
     const quantityFormatter = new Intl.NumberFormat(locale, {
         maximumFractionDigits: 2,
         minimumFractionDigits: 0,
@@ -46,6 +51,47 @@ function initRecipeDetailPage() {
         const normalized = value.trim().replace(/\s+/g, '').replace(',', '.');
         const parsed = Number(normalized);
         return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function parseServings(value) {
+        if (typeof value === 'number') {
+            return Number.isFinite(value) ? value : null;
+        }
+
+        if (typeof value !== 'string') {
+            return null;
+        }
+
+        const normalized = value.trim().replace(',', '.').replace(/\s+/g, ' ');
+        if (!normalized) {
+            return null;
+        }
+
+        const mixedMatch = normalized.match(/^(\d+(?:\.\d+)?)\s+(\d+)\/(\d+)$/);
+        if (mixedMatch) {
+            const whole = Number(mixedMatch[1]);
+            const numerator = Number(mixedMatch[2]);
+            const denominator = Number(mixedMatch[3]);
+            if (denominator > 0) {
+                return whole + numerator / denominator;
+            }
+        }
+
+        const fractionMatch = normalized.match(/^(\d+)\/(\d+)$/);
+        if (fractionMatch) {
+            const numerator = Number(fractionMatch[1]);
+            const denominator = Number(fractionMatch[2]);
+            if (denominator > 0) {
+                return numerator / denominator;
+            }
+        }
+
+        const parsed = Number(normalized.replace(/\s+/g, ''));
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function formatServingsValue(value) {
+        return servingsFormatter.format(value);
     }
 
     function gcd(a, b) {
@@ -105,12 +151,25 @@ function initRecipeDetailPage() {
     }
 
     function clampServings(value) {
-        const parsed = Number(value);
+        const parsed = parseServings(value);
         if (!Number.isFinite(parsed)) {
             return baseServings;
         }
 
-        return Math.max(1, Math.round(parsed));
+        return Math.max(minServings, parsed);
+    }
+
+    function nextLargerInteger(value) {
+        const servings = clampServings(value);
+        const rounded = Math.ceil(servings);
+        return rounded > servings ? rounded : rounded + 1;
+    }
+
+    function nextSmallerInteger(value) {
+        const servings = clampServings(value);
+        const rounded = Math.floor(servings);
+        const next = rounded < servings ? rounded : rounded - 1;
+        return Math.max(1, next);
     }
 
     function setPdfHref(servings) {
@@ -199,22 +258,22 @@ function initRecipeDetailPage() {
 
     function updateServingsDisplays(servings) {
         servingsDisplays.forEach((element) => {
-            element.textContent = servingsFormatter.format(servings);
+            element.textContent = formatServingsValue(servings);
         });
 
         if (selectedServingsSummary) {
-            selectedServingsSummary.textContent = servingsFormatter.format(servings);
+            selectedServingsSummary.textContent = formatServingsValue(servings);
         }
 
         if (selectedServingsNote) {
-            selectedServingsNote.textContent = servingsFormatter.format(servings);
+            selectedServingsNote.textContent = formatServingsValue(servings);
         }
     }
 
     function setServings(value) {
         const servings = clampServings(value);
         if (servingsInput) {
-            servingsInput.value = String(servings);
+            servingsInput.value = formatServingsValue(servings);
         }
 
         url.searchParams.set('servings', String(servings));
@@ -223,6 +282,15 @@ function initRecipeDetailPage() {
         updateIngredients(servings);
         updateNutrition(servings);
         setPdfHref(servings);
+    }
+
+    function setServingsFromInput() {
+        const parsed = parseServings(servingsInput ? servingsInput.value : baseServings);
+        if (!Number.isFinite(parsed) || parsed <= 0) {
+            return;
+        }
+
+        setServings(parsed);
     }
 
     function setMode(enabled) {
@@ -238,7 +306,7 @@ function initRecipeDetailPage() {
 
     if (servingsInput) {
         servingsInput.addEventListener('input', () => {
-            setServings(servingsInput.value);
+            setServingsFromInput();
         });
 
         servingsInput.addEventListener('change', () => {
@@ -248,13 +316,13 @@ function initRecipeDetailPage() {
 
     if (servingsDecrease) {
         servingsDecrease.addEventListener('click', () => {
-            setServings(clampServings(Number(servingsInput ? servingsInput.value : baseServings) - 1));
+            setServings(nextSmallerInteger(servingsInput ? servingsInput.value : baseServings));
         });
     }
 
     if (servingsIncrease) {
         servingsIncrease.addEventListener('click', () => {
-            setServings(clampServings(Number(servingsInput ? servingsInput.value : baseServings) + 1));
+            setServings(nextLargerInteger(servingsInput ? servingsInput.value : baseServings));
         });
     }
 

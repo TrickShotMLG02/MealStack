@@ -167,11 +167,9 @@
                 <input
                     id="recipe-servings-input"
                     class="recipe-servings-control__input"
-                    type="number"
-                    min="1"
-                    step="1"
+                    type="text"
                     value="{{ selected_servings }}"
-                    inputmode="numeric"
+                    inputmode="decimal"
                     data-servings-input
                     aria-label="{% trans 'Servings' %}"
                 >

@@ -1,23 +1,34 @@
+from fractions import Fraction
+import re
 from types import SimpleNamespace
 
 
-def coerce_servings(value, fallback: int) -> int:
+def coerce_servings(value, fallback: float) -> float:
     try:
-        servings = int(value)
-    except (TypeError, ValueError):
+        if isinstance(value, str):
+            normalized = value.strip().replace(",", ".")
+            mixed_match = re.fullmatch(r"(\d+(?:\.\d+)?)\s+(\d+)\/(\d+)", normalized)
+            if mixed_match:
+                whole, numerator, denominator = mixed_match.groups()
+                servings = float(Fraction(whole) + Fraction(int(numerator), int(denominator)))
+            else:
+                servings = float(Fraction(normalized))
+        else:
+            servings = float(value)
+    except (TypeError, ValueError, ZeroDivisionError):
         return fallback
 
-    return max(1, servings)
+    return servings if servings > 0 else fallback
 
 
-def scale_quantity(quantity: float, base_servings: int, target_servings: int) -> float:
+def scale_quantity(quantity: float, base_servings: float, target_servings: float) -> float:
     if base_servings <= 0:
         base_servings = 1
 
     return quantity * target_servings / base_servings
 
 
-def scale_nutrition(nutrition, target_servings: int):
+def scale_nutrition(nutrition, target_servings: float):
     if not nutrition:
         return SimpleNamespace(
             servings=target_servings,
