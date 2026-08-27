@@ -195,6 +195,32 @@
         >
             {% trans "Print PDF" %}
         </a>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'users:toggle_bookmark' recipe.slug %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="recipe-action recipe-bookmark-action{% if is_bookmarked %} recipe-bookmark-action--active{% endif %}" aria-label="{% if is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}" title="{% if is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5 3.9 12.4a5.55 5.55 0 0 1 7.85-7.85L12 4.8l.25-.25a5.55 5.55 0 0 1 7.85 7.85L12 20.5Z"></path></svg>
+            </button>
+        </form>
+        <details class="recipe-list-menu">
+            <summary class="recipe-action">{% trans "Add to lists" %}</summary>
+            <form method="post" action="{% url 'users:update_recipe_lists' recipe.slug %}">
+                {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <fieldset>
+                    <legend>{% trans "Select lists" %}</legend>
+                    {% for recipe_list in recipe_lists %}
+                    <label><input type="checkbox" name="list_ids" value="{{ recipe_list.pk }}"{% if recipe in recipe_list.recipes.all %} checked{% endif %}> {{ recipe_list.name }}</label>
+                    {% endfor %}
+                </fieldset>
+                <div class="recipe-list-menu__create">
+                    <label for="new-recipe-list-name">{% trans "Create a new list" %}</label>
+                    <div><input id="new-recipe-list-name" type="text" name="new_list_name" maxlength="100" placeholder="{% trans 'List name' %}"><button type="submit" class="recipe-action">{% trans "Create and add" %}</button></div>
+                </div>
+                <button type="submit" class="recipe-action recipe-action--primary">{% trans "Save lists" %}</button>
+            </form>
+        </details>
+        {% endif %}
         <button
             type="button"
             class="recipe-action"

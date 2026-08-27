@@ -1,0 +1,74 @@
+.profile-page { max-width: 1050px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+.profile-header { margin-bottom: 1.5rem; }
+.profile-header h1 { margin: 0; }
+.profile-header p:last-child { color: var(--text-muted-color); }
+.profile-eyebrow { margin: 0 0 .35rem; color: var(--text-muted-color); font-size: .82rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem; align-items: start; }
+.profile-page > .profile-card { margin-bottom: 1.25rem; }
+.profile-list-header { align-items: center; }
+.profile-card h2 { margin-top: 0; font-size: 1.45rem; }
+.profile-card { align-self: start; }
+.profile-card form p { display: grid; gap: .3rem; }
+.profile-card input,
+.profile-card select { max-width: 100%; min-height: 2.35rem; padding: .4rem .55rem; border: 1px solid var(--border-color); border-radius: .4rem; background: var(--background-color); color: var(--text-color); }
+.profile-page button.button,
+.profile-page a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    padding: .55rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 999px;
+    background: var(--button-bg-color);
+    color: var(--button-text-color);
+    font: inherit;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background-color 140ms ease;
+    box-shadow: 0 8px 16px var(--card-shadow-color);
+}
+.profile-page button.button:hover,
+.profile-page button.button:focus,
+.profile-page a.button:hover,
+.profile-page a.button:focus {
+    background: var(--button-hover-bg);
+    color: var(--button-text-color);
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px var(--card-shadow-color);
+}
+.profile-card ul.errorlist { color: #b42318; }
+.profile-message { padding: .7rem 1rem; border-radius: .45rem; background: var(--tag-bg-color); }
+.profile-facts { display: grid; gap: .35rem; margin: 1rem 0 0; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+.profile-facts div { display: flex; justify-content: space-between; gap: 1rem; }
+.profile-facts dt { color: var(--text-muted-color); }
+.profile-facts dd { margin: 0; font-weight: 600; text-align: right; }
+.profile-recipe-link { display: block; padding: .45rem 0; border-bottom: 1px solid var(--border-color); }
+.profile-list-form { display: flex; gap: .6rem; margin-bottom: 1rem; }
+.profile-list-form input { flex: 1; }
+.profile-list { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem 0; border-bottom: 1px solid var(--border-color); }
+.profile-list span { color: var(--text-muted-color); }
+.profile-remove-form { display: block; padding: .75rem 1rem 1rem; border-top: 1px solid var(--border-color); }
+.profile-page .recipe-card.card { height: auto; min-height: 0; overflow: visible; }
+.profile-page .recipe-card.card.hoverable:hover {
+    transform: none;
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+}
+.profile-page .recipe-card__link:hover .recipe-title,
+.profile-page .recipe-card__link:focus .recipe-title { text-decoration: none; }
+.profile-page .recipe-card__link { flex: none; }
+.profile-page .recipe-card__body { min-height: 0; padding: 1rem; }
+.profile-page .recipe-card__bookmark { top: .8rem; right: .8rem; }
+.button--danger { border-color: #b42318 !important; background: #b42318 !important; color: #fff !important; }
+.button--subtle { min-height: 2.2rem !important; padding: .45rem .8rem !important; background: transparent !important; color: var(--heading-color) !important; }
+.button--subtle:hover,
+.button--subtle:focus {
+    background: var(--button-hover-bg) !important;
+    border-color: var(--button-hover-bg) !important;
+    color: var(--button-text-color) !important;
+}
+.header-action-form { display: contents; }
+@media (max-width: 700px) { .profile-grid { grid-template-columns: 1fr; } .profile-list-form { flex-direction: column; } }

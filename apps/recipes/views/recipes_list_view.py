@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from urllib.parse import urlencode
 
 from apps.recipes.models import Recipe, RecipeImage
+from apps.users.models import RecipeBookmark
 from apps.recipes.selectors import search_recipes, search_suggestions
 
 def recipe_list(request):
@@ -39,7 +40,12 @@ def recipe_list(request):
 
     recipes = search_recipes(recipes, search_query, kind=search_kind)
 
-    for recipe in recipes:
+    recipe_list_items = list(recipes)
+    bookmarked_ids = set()
+    if request.user.is_authenticated:
+        bookmarked_ids = set(RecipeBookmark.objects.filter(user=request.user, recipe_id__in=[recipe.pk for recipe in recipe_list_items]).values_list("recipe_id", flat=True))
+
+    for recipe in recipe_list_items:
         primary_image = next(
             (
                 image
@@ -49,9 +55,10 @@ def recipe_list(request):
             None,
         )
         recipe.list_image_url = primary_image.image.url if primary_image else static("recipes/images/placeholder.jpg")
+        recipe.is_bookmarked = recipe.pk in bookmarked_ids
 
     return render(request, 'recipes/recipe_list.html', {
-        'recipes': recipes,
+        'recipes': recipe_list_items,
         'search_query': search_query,
     })
 

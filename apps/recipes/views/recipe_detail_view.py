@@ -6,6 +6,7 @@ from django.urls import reverse
 from apps.recipes.models import Recipe, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
 from apps.recipes.services.pdf import build_recipe_pdf
 from apps.recipes.services.servings import coerce_servings, scale_nutrition
+from apps.users.models import RecipeBookmark, RecipeList
 
 
 def _recipe_detail_queryset():
@@ -70,6 +71,8 @@ def recipe_detail(request, slug):
         "ingredient_count": ingredient_count,
         "step_count": step_count,
         "selected_servings": selected_servings,
+        "is_bookmarked": request.user.is_authenticated and RecipeBookmark.objects.filter(user=request.user, recipe=recipe).exists(),
+        "recipe_lists": RecipeList.objects.filter(user=request.user).prefetch_related("recipes") if request.user.is_authenticated else [],
     })
 
 

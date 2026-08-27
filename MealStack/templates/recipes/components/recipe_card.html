@@ -1,0 +1,27 @@
+{% load i18n time_tags %}
+<article class="recipe-card card hoverable">
+    <a class="recipe-card__link" href="{% url 'recipes:recipe_detail' recipe.slug %}" aria-label="{{ recipe.title }}">
+        <div class="recipe-card__media"><img src="{{ recipe.list_image_url }}" alt="{{ recipe.title }}"></div>
+        <div class="recipe-card__body">
+            <h3 class="recipe-title">{{ recipe.title }}</h3>
+            <div class="tag-container horizontal-tags recipe-card__meta">
+                <span class="tag">{% trans "Servings:" %} {{ recipe.servings }}</span>
+                <span class="tag">{% trans "Total time:" %} {{ recipe.total_time|pretty_duration }}</span>
+                {% if recipe.cuisine %}<span class="tag">{{ recipe.cuisine.name }}</span>{% endif %}
+            </div>
+        </div>
+    </a>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'users:toggle_bookmark' recipe.slug %}" class="recipe-card__bookmark-form">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit" class="recipe-card__bookmark{% if recipe.is_bookmarked %} recipe-card__bookmark--active{% endif %}" aria-label="{% if recipe.is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}" title="{% if recipe.is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5 3.9 12.4a5.55 5.55 0 0 1 7.85-7.85L12 4.8l.25-.25a5.55 5.55 0 0 1 7.85 7.85L12 20.5Z"></path></svg>
+        </button>
+    </form>
+    {% endif %}
+    {% if remove_list %}
+    <form method="post" action="{% url 'users:remove_from_list' remove_list.pk recipe.slug %}" class="profile-remove-form">
+        {% csrf_token %}<button type="submit" class="button button--subtle">{% trans "Remove from list" %}</button>
+    </form>
+    {% endif %}
+</article>

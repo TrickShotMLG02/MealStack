@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.recipes',
+    'apps.users',
     'apps.common',
 
     'nested_admin',
@@ -93,6 +94,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MealStack.wsgi.application'
 
 LOGIN_REDIRECT_URL = "/admin/"
+LOGIN_URL = "/admin/login/"
 
 TEST_RUNNER = "apps.common.test_runner.StyledProgressTestRunner"
 

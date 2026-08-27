@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Your profile" %} - MealStack{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">{% endblock %}
+
+{% block content %}
+<section class="profile-page">
+    <header class="profile-header">
+        <p class="profile-eyebrow">{% trans "Account" %}</p>
+        <h1>{% trans "Your profile" %}</h1>
+        <p>{% trans "Manage your account, saved recipes, and recipe lists." %}</p>
+    </header>
+
+    {% if messages %}{% for message in messages %}<p class="profile-message">{{ message }}</p>{% endfor %}{% endif %}
+
+    <div class="profile-grid">
+        <section class="profile-card card">
+            <h2>{% trans "Personal details" %}</h2>
+            <form method="post">
+                {% csrf_token %}<input type="hidden" name="action" value="profile">
+                {{ profile_form.as_p }}
+                <button type="submit" class="button">{% trans "Save changes" %}</button>
+            </form>
+            <dl class="profile-facts">
+                <div><dt>{% trans "Username" %}</dt><dd>{{ user.username }}</dd></div>
+                <div><dt>{% trans "Joined" %}</dt><dd>{{ user.date_joined|date:"DATE_FORMAT" }}</dd></div>
+            </dl>
+        </section>
+        <section class="profile-card card">
+            <h2>{% trans "Change password" %}</h2>
+            <form method="post">
+                {% csrf_token %}<input type="hidden" name="action" value="password">
+                {{ password_form.as_p }}
+                <button type="submit" class="button">{% trans "Change password" %}</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="profile-card card">
+        <h2>{% trans "OIDC connections" %}</h2>
+        {% if oidc_enabled %}
+            <p>{% trans "OIDC sign-in is enabled for this site." %}</p>
+            <p class="profile-muted">{% trans "Account linking is managed by your OIDC provider." %}</p>
+        {% else %}
+            <p>{% trans "OIDC sign-in is not enabled." %}</p>
+        {% endif %}
+    </section>
+
+    <div class="profile-grid">
+        <section class="profile-card card">
+            <h2>{% trans "Bookmarked recipes" %}</h2>
+            {% for bookmark in bookmarks %}<a class="profile-recipe-link" href="{% url 'recipes:recipe_detail' bookmark.recipe.slug %}">{{ bookmark.recipe.title }}</a>{% empty %}<p>{% trans "You have no bookmarked recipes yet." %}</p>{% endfor %}
+        </section>
+        <section class="profile-card card">
+            <h2>{% trans "Recipe lists" %}</h2>
+            <form method="post" class="profile-list-form">
+                {% csrf_token %}<input type="hidden" name="action" value="list">
+                {{ list_form.name }}
+                <button type="submit" class="button">{% trans "Create list" %}</button>
+            </form>
+            {% for recipe_list in recipe_lists %}
+                <div class="profile-list">
+                    <a href="{% url 'users:recipe_list_detail' recipe_list.pk %}"><strong>{{ recipe_list.name }}</strong></a>
+                    <span>{% blocktrans count recipe_count=recipe_list.recipes.count %}{{ recipe_count }} recipe{% plural %}{{ recipe_count }} recipes{% endblocktrans %}</span>
+                </div>
+            {% empty %}<p>{% trans "Create a list to organize recipes." %}</p>{% endfor %}
+        </section>
+    </div>
+</section>
+{% endblock %}

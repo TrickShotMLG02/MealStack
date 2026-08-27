@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n static time_tags %}
+{% block title %}{{ recipe_list.name }} - MealStack{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'users/css/profile.css' %}"><link rel="stylesheet" href="{% static 'recipes/css/recipe_list.css' %}">{% endblock %}
+{% block content %}
+<section class="profile-page">
+    <header class="profile-header profile-list-header">
+        <div><p class="profile-eyebrow">{% trans "Recipe list" %}</p><h1>{{ recipe_list.name }}</h1></div>
+        <form method="post" action="{% url 'users:delete_recipe_list' recipe_list.pk %}">{% csrf_token %}<button type="submit" class="button button--danger">{% trans "Delete list" %}</button></form>
+    </header>
+    <div class="recipe-grid">
+        {% for recipe in recipe_list.recipes.all %}
+        {% include "recipes/components/recipe_card.html" with remove_list=recipe_list %}
+        {% if False %}<article class="recipe-card card">
+            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="recipe-card__link">
+                <div class="recipe-card__body"><h3 class="recipe-title">{{ recipe.title }}</h3><span class="tag">{{ recipe.total_time|pretty_duration }}</span>{% if recipe.is_bookmarked %}<span class="recipe-card__bookmark recipe-card__bookmark--active" aria-label="{% trans 'Bookmarked' %}">♥</span>{% endif %}</div>
+            </a>
+            <form method="post" action="{% url 'users:remove_from_list' recipe_list.pk recipe.slug %}" class="profile-remove-form">{% csrf_token %}<button type="submit" class="button button--subtle">{% trans "Remove from list" %}</button></form>
+        </article>{% endif %}
+        {% empty %}<p class="recipe-list-empty">{% trans "This list is empty." %}</p>{% endfor %}
+    </div>
+</section>
+{% endblock %}

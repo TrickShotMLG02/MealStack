@@ -71,8 +71,12 @@
 
         <nav class="header-actions" id="header-actions" aria-label="{% trans 'Header actions' %}" data-header-menu>
             {% block header_buttons %}
-                {% if user.is_staff %}
-                    <a href="{% url 'admin:index' %}" class="header-action header-action--link">{% trans "Admin" %}</a>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="header-action header-action--link">{% trans "Admin panel" %}</a>{% endif %}
+                    <a href="{% url 'users:profile' %}" class="header-action header-action--link">{{ user.get_full_name|default:user.username }}</a>
+                    <form method="post" action="{% url 'users:logout' %}" class="header-action-form">
+                        {% csrf_token %}<button type="submit" class="header-action header-action--link">{% trans "Log out" %}</button>
+                    </form>
                 {% else %}
                     <a href="{% url 'admin_login' %}" class="header-action header-action--link">{% trans "Login" %}</a>
                 {% endif %}

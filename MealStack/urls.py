@@ -30,6 +30,7 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),
     path('recipes/', include('apps.recipes.urls', namespace='recipes')),
+    path('account/', include('apps.users.urls', namespace='users')),
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 

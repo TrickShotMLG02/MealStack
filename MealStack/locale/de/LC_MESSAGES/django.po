@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-01 19:30+0200\n"
+"POT-Creation-Date: 2026-08-27 11:44+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\MealStack\settings\base.py:133
+#: .\MealStack\settings\base.py:144
 msgid "English"
 msgstr "Englisch"
 
-#: .\MealStack\settings\base.py:134
+#: .\MealStack\settings\base.py:145
 msgid "German"
 msgstr "Deutsch"
 
@@ -44,7 +44,7 @@ msgid "Use internal authentication"
 msgstr "Interne Anmeldung verwenden"
 
 #: .\MealStack\templates\admin\recipe_importer.html:8
-#: .\apps\recipes\services\pdf.py:709
+#: .\apps\recipes\services\pdf.py:716
 msgid "Recipe URL"
 msgstr "Rezept-URL"
 
@@ -80,15 +80,19 @@ msgid "Header actions"
 msgstr "Header-Aktionen"
 
 #: .\MealStack\templates\components\header.html:75
-msgid "Admin"
-msgstr "Admin"
+msgid "Admin panel"
+msgstr "Adminbereich"
 
-#: .\MealStack\templates\components\header.html:77
+#: .\MealStack\templates\components\header.html:78
+msgid "Log out"
+msgstr "Abmelden"
+
+#: .\MealStack\templates\components\header.html:81
 msgid "Login"
 msgstr "Anmelden"
 
-#: .\MealStack\templates\components\header.html:83
-#: .\MealStack\templates\components\header.html:84
+#: .\MealStack\templates\components\header.html:87
+#: .\MealStack\templates\components\header.html:88
 msgid "Toggle theme"
 msgstr "Design wechseln"
 
@@ -105,6 +109,33 @@ msgstr "Vorheriges Bild"
 msgid "Next image"
 msgstr "Nächstes Bild"
 
+#: .\MealStack\templates\recipes\components\recipe_card.html:8
+#: .\MealStack\templates\recipes\recipe_list.html:46
+msgid "Servings:"
+msgstr "Portionen:"
+
+#: .\MealStack\templates\recipes\components\recipe_card.html:9
+#: .\MealStack\templates\recipes\recipe_list.html:47
+msgid "Total time:"
+msgstr "Gesamtzeit:"
+
+#: .\MealStack\templates\recipes\components\recipe_card.html:17
+#: .\MealStack\templates\recipes\recipe_detail.html:202
+#: .\MealStack\templates\recipes\recipe_list.html:54
+msgid "Remove bookmark"
+msgstr "Lesezeichen entfernen"
+
+#: .\MealStack\templates\recipes\components\recipe_card.html:17
+#: .\MealStack\templates\recipes\recipe_detail.html:202
+#: .\MealStack\templates\recipes\recipe_list.html:54
+msgid "Bookmark recipe"
+msgstr "Rezept merken"
+
+#: .\MealStack\templates\recipes\components\recipe_card.html:24
+#: .\MealStack\templates\users\recipe_list_detail.html:18
+msgid "Remove from list"
+msgstr "Aus Liste entfernen"
+
 #: .\MealStack\templates\recipes\recipe_detail.html:26
 msgid "At a glance"
 msgstr "Auf einen Blick"
@@ -113,16 +144,16 @@ msgstr "Auf einen Blick"
 #: .\MealStack\templates\recipes\recipe_detail.html:75
 #: .\MealStack\templates\recipes\recipe_detail.html:158
 #: .\MealStack\templates\recipes\recipe_detail.html:164
-#: .\MealStack\templates\recipes\recipe_detail.html:176
-#: .\apps\recipes\models\recipe.py:26 .\apps\recipes\services\pdf.py:435
+#: .\MealStack\templates\recipes\recipe_detail.html:174
+#: .\apps\recipes\models\recipe.py:26 .\apps\recipes\services\pdf.py:436
 msgid "Servings"
 msgstr "Portionen"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:35
-#: .\MealStack\templates\recipes\recipe_detail.html:212
-#: .\MealStack\templates\recipes\recipe_detail.html:222
-#: .\apps\recipes\models\ingredient.py:31 .\apps\recipes\services\pdf.py:576
-#: .\apps\recipes\services\pdf.py:584
+#: .\MealStack\templates\recipes\recipe_detail.html:236
+#: .\MealStack\templates\recipes\recipe_detail.html:246
+#: .\apps\recipes\models\ingredient.py:31 .\apps\recipes\services\pdf.py:583
+#: .\apps\recipes\services\pdf.py:591
 msgid "Ingredients"
 msgstr "Zutaten"
 
@@ -146,7 +177,7 @@ msgstr "Zu den Zutaten springen"
 #: .\apps\recipes\models\recipe_note.py:8
 #: .\apps\recipes\models\recipe_step_group.py:5
 #: .\apps\recipes\models\recipe_tag.py:5
-#: .\apps\recipes\views\recipes_list_view.py:77
+#: .\apps\recipes\views\recipes_list_view.py:84
 msgid "Recipe"
 msgstr "Rezept"
 
@@ -167,12 +198,12 @@ msgid "Recipe facts"
 msgstr "Rezeptdetails"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:79
-#: .\apps\recipes\services\pdf.py:436
+#: .\apps\recipes\services\pdf.py:443
 msgid "Prep"
 msgstr "Vorbereitung"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:83
-#: .\apps\recipes\services\pdf.py:437
+#: .\apps\recipes\services\pdf.py:444
 msgid "Cook"
 msgstr "Kochen"
 
@@ -181,43 +212,43 @@ msgid "Rest"
 msgstr "Ruhezeit"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:91
-#: .\apps\recipes\services\pdf.py:438 .\apps\recipes\services\pdf.py:522
+#: .\apps\recipes\services\pdf.py:445 .\apps\recipes\services\pdf.py:529
 msgid "Total"
 msgstr "Gesamt"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:107
-#: .\MealStack\templates\recipes\recipe_detail.html:215
-#: .\MealStack\templates\recipes\recipe_detail.html:269
-#: .\apps\recipes\admin\recipe.py:58 .\apps\recipes\services\pdf.py:517
+#: .\MealStack\templates\recipes\recipe_detail.html:239
+#: .\MealStack\templates\recipes\recipe_detail.html:293
+#: .\apps\recipes\admin\recipe.py:58 .\apps\recipes\services\pdf.py:524
 msgid "Nutrition"
 msgstr "Nährwerte"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:110
-#: .\MealStack\templates\recipes\recipe_detail.html:272
+#: .\MealStack\templates\recipes\recipe_detail.html:296
 msgid "Selected servings"
 msgstr "Gewählte Portionen"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:114
-#: .\MealStack\templates\recipes\recipe_detail.html:277
-#: .\apps\recipes\services\pdf.py:525
+#: .\MealStack\templates\recipes\recipe_detail.html:301
+#: .\apps\recipes\services\pdf.py:532
 msgid "Calories"
 msgstr "Kalorien"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:123
-#: .\MealStack\templates\recipes\recipe_detail.html:286
-#: .\apps\recipes\models\ingredient.py:19 .\apps\recipes\services\pdf.py:530
+#: .\MealStack\templates\recipes\recipe_detail.html:310
+#: .\apps\recipes\models\ingredient.py:19 .\apps\recipes\services\pdf.py:537
 msgid "Protein"
 msgstr "Eiweiß"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:132
-#: .\MealStack\templates\recipes\recipe_detail.html:304
-#: .\apps\recipes\models\ingredient.py:17 .\apps\recipes\services\pdf.py:540
+#: .\MealStack\templates\recipes\recipe_detail.html:328
+#: .\apps\recipes\models\ingredient.py:17 .\apps\recipes\services\pdf.py:547
 msgid "Carbs"
 msgstr "Kohlenhydrate"
 
 #: .\MealStack\templates\recipes\recipe_detail.html:141
-#: .\MealStack\templates\recipes\recipe_detail.html:295
-#: .\apps\recipes\models\ingredient.py:15 .\apps\recipes\services\pdf.py:535
+#: .\MealStack\templates\recipes\recipe_detail.html:319
+#: .\apps\recipes\models\ingredient.py:15 .\apps\recipes\services\pdf.py:542
 msgid "Fat"
 msgstr "Fett"
 
@@ -229,67 +260,92 @@ msgstr "Rezeptaktionen"
 msgid "Decrease servings"
 msgstr "Portionen verringern"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:178
+#: .\MealStack\templates\recipes\recipe_detail.html:176
 msgid "Increase servings"
 msgstr "Portionen erhöhen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:186
+#: .\MealStack\templates\recipes\recipe_detail.html:184
 msgid "Exit cook mode"
 msgstr "Kochmodus beenden"
 
+#: .\MealStack\templates\recipes\recipe_detail.html:185
 #: .\MealStack\templates\recipes\recipe_detail.html:187
-#: .\MealStack\templates\recipes\recipe_detail.html:189
 msgid "Cook mode"
 msgstr "Kochmodus"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:198
+#: .\MealStack\templates\recipes\recipe_detail.html:196
 msgid "Print PDF"
 msgstr "PDF drucken"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:204
 #: .\MealStack\templates\recipes\recipe_detail.html:207
+msgid "Add to lists"
+msgstr "Zu Listen hinzufügen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:211
+msgid "Select lists"
+msgstr "Listen auswählen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:217
+msgid "Create a new list"
+msgstr "Neue Liste erstellen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:218
+#: .\apps\users\forms.py:24
+msgid "List name"
+msgstr "Listenname"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:218
+msgid "Create and add"
+msgstr "Erstellen und hinzufügen"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:220
+msgid "Save lists"
+msgstr "Listen speichern"
+
+#: .\MealStack\templates\recipes\recipe_detail.html:228
+#: .\MealStack\templates\recipes\recipe_detail.html:231
 msgid "Share"
 msgstr "Teilen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:205
+#: .\MealStack\templates\recipes\recipe_detail.html:229
 msgid "Link copied"
 msgstr "Link kopiert"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:211
+#: .\MealStack\templates\recipes\recipe_detail.html:235
 msgid "Recipe sections"
 msgstr "Rezeptabschnitte"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:213
-#: .\MealStack\templates\recipes\recipe_detail.html:339
-#: .\apps\recipes\services\pdf.py:625 .\apps\recipes\services\pdf.py:633
+#: .\MealStack\templates\recipes\recipe_detail.html:237
+#: .\MealStack\templates\recipes\recipe_detail.html:363
+#: .\apps\recipes\services\pdf.py:632 .\apps\recipes\services\pdf.py:640
 msgid "Method"
 msgstr "Anleitung"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:214
-#: .\MealStack\templates\recipes\recipe_detail.html:254
-#: .\apps\recipes\services\pdf.py:675
+#: .\MealStack\templates\recipes\recipe_detail.html:238
+#: .\MealStack\templates\recipes\recipe_detail.html:278
+#: .\apps\recipes\services\pdf.py:682
 msgid "Notes"
 msgstr "Notizen"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:243
-#: .\MealStack\templates\recipes\recipe_detail.html:247
-#: .\apps\recipes\services\pdf.py:622
+#: .\MealStack\templates\recipes\recipe_detail.html:267
+#: .\MealStack\templates\recipes\recipe_detail.html:271
+#: .\apps\recipes\services\pdf.py:629
 msgid "No ingredients added yet."
 msgstr "Noch keine Zutaten hinzugefügt."
 
-#: .\MealStack\templates\recipes\recipe_detail.html:313
-#: .\apps\recipes\models\ingredient.py:18 .\apps\recipes\services\pdf.py:545
+#: .\MealStack\templates\recipes\recipe_detail.html:337
+#: .\apps\recipes\models\ingredient.py:18 .\apps\recipes\services\pdf.py:552
 msgid "Sugar"
 msgstr "Zucker"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:322
-#: .\apps\recipes\models\ingredient.py:20 .\apps\recipes\services\pdf.py:550
+#: .\MealStack\templates\recipes\recipe_detail.html:346
+#: .\apps\recipes\models\ingredient.py:20 .\apps\recipes\services\pdf.py:557
 msgid "Salt"
 msgstr "Salz"
 
-#: .\MealStack\templates\recipes\recipe_detail.html:353
-#: .\MealStack\templates\recipes\recipe_detail.html:357
-#: .\apps\recipes\services\pdf.py:670
+#: .\MealStack\templates\recipes\recipe_detail.html:377
+#: .\MealStack\templates\recipes\recipe_detail.html:381
+#: .\apps\recipes\services\pdf.py:677
 msgid "No steps added yet."
 msgstr "Noch keine Schritte hinzugefügt."
 
@@ -314,21 +370,112 @@ msgstr[1] ""
 msgid "Clear search"
 msgstr "Suche löschen"
 
-#: .\MealStack\templates\recipes\recipe_list.html:44
-msgid "Servings:"
-msgstr "Portionen:"
+#: .\MealStack\templates\recipes\recipe_list.html:39
+#: .\MealStack\templates\users\recipe_list_detail.html:16
+msgid "Bookmarked"
+msgstr "Gemerkte Rezepte"
 
-#: .\MealStack\templates\recipes\recipe_list.html:45
-msgid "Total time:"
-msgstr "Gesamtzeit:"
+#: .\MealStack\templates\recipes\recipe_list.html:39
+msgid "Not bookmarked"
+msgstr "Nicht gemerkt"
 
-#: .\MealStack\templates\recipes\recipe_list.html:52
+#: .\MealStack\templates\recipes\recipe_list.html:63
 msgid "No recipes matched your search."
 msgstr "Keine Rezepte entsprechen deiner Suche."
 
-#: .\MealStack\templates\recipes\recipe_list.html:54
+#: .\MealStack\templates\recipes\recipe_list.html:65
 msgid "No recipes available."
 msgstr "Keine Rezepte verfügbar."
+
+#: .\MealStack\templates\users\profile.html:4
+#: .\MealStack\templates\users\profile.html:11
+msgid "Your profile"
+msgstr "Dein Profil"
+
+#: .\MealStack\templates\users\profile.html:10
+msgid "Account"
+msgstr "Konto"
+
+#: .\MealStack\templates\users\profile.html:12
+msgid "Manage your account, saved recipes, and recipe lists."
+msgstr "Verwalte dein Konto, gespeicherte Rezepte und Rezeptlisten."
+
+#: .\MealStack\templates\users\profile.html:19
+msgid "Personal details"
+msgstr "Persönliche Daten"
+
+#: .\MealStack\templates\users\profile.html:23
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+#: .\MealStack\templates\users\profile.html:26
+msgid "Username"
+msgstr "Benutzername"
+
+#: .\MealStack\templates\users\profile.html:27
+msgid "Joined"
+msgstr "Beigetreten"
+
+#: .\MealStack\templates\users\profile.html:31
+#: .\MealStack\templates\users\profile.html:35
+msgid "Change password"
+msgstr "Passwort ändern"
+
+#: .\MealStack\templates\users\profile.html:41
+msgid "OIDC connections"
+msgstr "OIDC-Verbindungen"
+
+#: .\MealStack\templates\users\profile.html:43
+msgid "OIDC sign-in is enabled for this site."
+msgstr "Die OIDC-Anmeldung ist für diese Seite aktiviert."
+
+#: .\MealStack\templates\users\profile.html:44
+msgid "Account linking is managed by your OIDC provider."
+msgstr "Die Kontoverknüpfung wird von deinem OIDC-Anbieter verwaltet."
+
+#: .\MealStack\templates\users\profile.html:46
+msgid "OIDC sign-in is not enabled."
+msgstr "Die OIDC-Anmeldung ist nicht aktiviert."
+
+#: .\MealStack\templates\users\profile.html:52
+msgid "Bookmarked recipes"
+msgstr "Gemerkte Rezepte"
+
+#: .\MealStack\templates\users\profile.html:53
+msgid "You have no bookmarked recipes yet."
+msgstr "Du hast noch keine Rezepte gemerkt."
+
+#: .\MealStack\templates\users\profile.html:56 .\apps\users\models.py:28
+msgid "Recipe lists"
+msgstr "Rezeptlisten"
+
+#: .\MealStack\templates\users\profile.html:60
+msgid "Create list"
+msgstr "Liste erstellen"
+
+#: .\MealStack\templates\users\profile.html:65
+#, python-format
+msgid "%(recipe_count)s recipe"
+msgid_plural "%(recipe_count)s recipes"
+msgstr[0] "%(recipe_count)s Rezept"
+msgstr[1] "%(recipe_count)s Rezepte"
+
+#: .\MealStack\templates\users\profile.html:67
+msgid "Create a list to organize recipes."
+msgstr "Erstelle eine Liste, um Rezepte zu organisieren."
+
+#: .\MealStack\templates\users\recipe_list_detail.html:8
+#: .\apps\users\models.py:27
+msgid "Recipe list"
+msgstr "Rezeptliste"
+
+#: .\MealStack\templates\users\recipe_list_detail.html:9
+msgid "Delete list"
+msgstr "Liste löschen"
+
+#: .\MealStack\templates\users\recipe_list_detail.html:20
+msgid "This list is empty."
+msgstr "Diese Liste ist leer."
 
 #: .\apps\recipes\admin\admin_site.py:13
 msgid "Ingredient Importers"
@@ -391,7 +538,7 @@ msgstr "Typ"
 #: .\apps\recipes\models\cuisine.py:7 .\apps\recipes\models\ingredient.py:8
 #: .\apps\recipes\models\recipe_ingredient_group.py:6
 #: .\apps\recipes\models\recipe_step_group.py:6 .\apps\recipes\models\tag.py:6
-#: .\apps\recipes\models\unit.py:14
+#: .\apps\recipes\models\unit.py:14 .\apps\users\models.py:20
 msgid "Name"
 msgstr "Name"
 
@@ -401,7 +548,7 @@ msgid "Slug"
 msgstr "Slug"
 
 #: .\apps\recipes\models\cuisine.py:11 .\apps\recipes\models\recipe.py:37
-#: .\apps\recipes\views\recipes_list_view.py:79
+#: .\apps\recipes\views\recipes_list_view.py:86
 msgid "Cuisine"
 msgstr "Küche"
 
@@ -421,7 +568,7 @@ msgstr "Marke"
 msgid "kcal"
 msgstr "kcal"
 
-#: .\apps\recipes\models\ingredient.py:16 .\apps\recipes\services\pdf.py:558
+#: .\apps\recipes\models\ingredient.py:16 .\apps\recipes\services\pdf.py:565
 msgid "Saturates"
 msgstr "Gesättigte Fettsäuren"
 
@@ -445,7 +592,7 @@ msgstr "Aktualisiert am"
 
 #: .\apps\recipes\models\ingredient.py:30
 #: .\apps\recipes\models\recipe_ingredient.py:5
-#: .\apps\recipes\views\recipes_list_view.py:80
+#: .\apps\recipes\views\recipes_list_view.py:87
 msgid "Ingredient"
 msgstr "Zutat"
 
@@ -644,7 +791,7 @@ msgid "Recipe Step Groups"
 msgstr "Rezeptschritt-Gruppen"
 
 #: .\apps\recipes\models\recipe_tag.py:6 .\apps\recipes\models\tag.py:10
-#: .\apps\recipes\views\recipes_list_view.py:78
+#: .\apps\recipes\views\recipes_list_view.py:85
 msgid "Tag"
 msgstr "Tag"
 
@@ -672,15 +819,15 @@ msgstr "ML pro Einheit"
 msgid "Units"
 msgstr "Einheiten"
 
-#: .\apps\recipes\services\pdf.py:520
+#: .\apps\recipes\services\pdf.py:527
 msgid "Metric"
 msgstr "Wert"
 
-#: .\apps\recipes\services\pdf.py:521
+#: .\apps\recipes\services\pdf.py:528
 msgid "Per serving"
 msgstr "Pro Portion"
 
-#: .\apps\recipes\services\pdf.py:710
+#: .\apps\recipes\services\pdf.py:717
 msgid "Exported at"
 msgstr "Exportiert um"
 
@@ -722,6 +869,74 @@ msgstr "Fehler beim Importieren des Rezepts: %(error)s"
 #: .\apps\recipes\views\admin_importers_view.py:48
 msgid "Please provide a valid recipe URL."
 msgstr "Bitte eine gültige Rezept-URL angeben."
+
+#: .\apps\users\forms.py:13
+msgid "Email"
+msgstr "E-Mail"
+
+#: .\apps\users\models.py:14
+msgid "Recipe bookmark"
+msgstr "Rezept-Lesezeichen"
+
+#: .\apps\users\models.py:15
+msgid "Recipe bookmarks"
+msgstr "Rezept-Lesezeichen"
+
+#: .\apps\users\views.py:28
+msgid "Your profile was updated."
+msgstr "Dein Profil wurde aktualisiert."
+
+#: .\apps\users\views.py:35
+msgid "Your password was changed."
+msgstr "Dein Passwort wurde geändert."
+
+#: .\apps\users\views.py:41
+msgid "You already have a list with this name."
+msgstr "Du hast bereits eine Liste mit diesem Namen."
+
+#: .\apps\users\views.py:46
+msgid "Your recipe list was created."
+msgstr "Deine Rezeptliste wurde erstellt."
+
+#: .\apps\users\views.py:76
+msgid "Recipe added to your list."
+msgstr "Das Rezept wurde deiner Liste hinzugefügt."
+
+#: .\apps\users\views.py:89
+msgid "New list created and recipe added."
+msgstr "Neue Liste erstellt und Rezept hinzugefügt."
+
+#: .\apps\users\views.py:91
+msgid "A list with this name already exists."
+msgstr "Eine Liste mit diesem Namen existiert bereits."
+
+#: .\apps\users\views.py:99
+msgid "Your recipe lists were updated."
+msgstr "Deine Rezeptlisten wurden aktualisiert."
+
+#: .\apps\users\views.py:131
+msgid "Recipe removed from your list."
+msgstr "Das Rezept wurde aus deiner Liste entfernt."
+
+#: .\apps\users\views.py:140
+msgid "Lists containing recipes cannot be deleted."
+msgstr "Listen mit Rezepten können nicht gelöscht werden."
+
+#: .\apps\users\views.py:143
+msgid "Your recipe list was deleted."
+msgstr "Deine Rezeptliste wurde gelöscht."
+
+#~ msgid "recipes"
+#~ msgstr "Rezepte"
+
+#~ msgid "First name"
+#~ msgstr "Vorname"
+
+#~ msgid "Last name"
+#~ msgstr "Nachname"
+
+#~ msgid "Add recipe to list"
+#~ msgstr "Rezept zur Liste hinzufügen"
 
 #~ msgid "Sign Up"
 #~ msgstr "Registrieren"
