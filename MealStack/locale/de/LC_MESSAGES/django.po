@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-27 12:23+0200\n"
+"POT-Creation-Date: 2026-08-27 12:33+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -947,6 +947,10 @@ msgstr ""
 "deinem Identitätsanbieter. Trage die dort erzeugte Client-ID und das Client-"
 "Geheimnis im OIDC-Client-Bereich ein."
 
+#: .\apps\users\apps.py:8
+msgid "OIDC"
+msgstr "OIDC"
+
 #: .\apps\users\forms.py:13
 msgid "Email"
 msgstr "E-Mail"
@@ -1096,6 +1100,9 @@ msgstr "Du kannst deine einzige OIDC-Verbindung nicht entfernen."
 #: .\apps\users\views.py:218
 msgid "OIDC provider unlinked."
 msgstr "Die Verknüpfung mit dem OIDC-Anbieter wurde aufgehoben."
+
+#~ msgid "Users"
+#~ msgstr "Benutzer"
 
 #~ msgid "Or sign in with one of these OIDC providers"
 #~ msgstr "Oder mit einem dieser OIDC-Anbieter anmelden"
