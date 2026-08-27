@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-27 11:44+0200\n"
+"POT-Creation-Date: 2026-08-27 12:23+0200\n"
 "PO-Revision-Date: 2026-02-06 00:30+0100\n"
 "Last-Translator: YOUR NAME <YOUR EMAIL>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -387,6 +387,31 @@ msgstr "Keine Rezepte entsprechen deiner Suche."
 msgid "No recipes available."
 msgstr "Keine Rezepte verfügbar."
 
+#: .\MealStack\templates\users\login.html:4
+#: .\MealStack\templates\users\login.html:9
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: .\MealStack\templates\users\login.html:13
+msgid "Local login"
+msgstr "Lokale Anmeldung"
+
+#: .\MealStack\templates\users\login.html:18
+msgid "Sign in locally"
+msgstr "Lokal anmelden"
+
+#: .\MealStack\templates\users\login.html:23
+msgid "or"
+msgstr "oder"
+
+#: .\MealStack\templates\users\login.html:27 .\apps\users\models.py:28
+msgid "OIDC providers"
+msgstr "OIDC-Anbieter"
+
+#: .\MealStack\templates\users\login.html:36
+msgid "No OIDC providers have been configured yet."
+msgstr "Es wurden noch keine OIDC-Anbieter konfiguriert."
+
 #: .\MealStack\templates\users\profile.html:4
 #: .\MealStack\templates\users\profile.html:11
 msgid "Your profile"
@@ -426,12 +451,20 @@ msgid "OIDC connections"
 msgstr "OIDC-Verbindungen"
 
 #: .\MealStack\templates\users\profile.html:43
-msgid "OIDC sign-in is enabled for this site."
-msgstr "Die OIDC-Anmeldung ist für diese Seite aktiviert."
+msgid "Connect an identity provider to sign in with it."
+msgstr "Verbinde einen Identitätsanbieter, um dich damit anzumelden."
 
 #: .\MealStack\templates\users\profile.html:44
-msgid "Account linking is managed by your OIDC provider."
-msgstr "Die Kontoverknüpfung wird von deinem OIDC-Anbieter verwaltet."
+msgid "Unlink"
+msgstr "Trennen"
+
+#: .\MealStack\templates\users\profile.html:44
+msgid "Link"
+msgstr "Verknüpfen"
+
+#: .\MealStack\templates\users\profile.html:44
+msgid "No OIDC providers are enabled."
+msgstr "Es sind keine OIDC-Anbieter aktiviert."
 
 #: .\MealStack\templates\users\profile.html:46
 msgid "OIDC sign-in is not enabled."
@@ -445,7 +478,7 @@ msgstr "Gemerkte Rezepte"
 msgid "You have no bookmarked recipes yet."
 msgstr "Du hast noch keine Rezepte gemerkt."
 
-#: .\MealStack\templates\users\profile.html:56 .\apps\users\models.py:28
+#: .\MealStack\templates\users\profile.html:56 .\apps\users\models.py:68
 msgid "Recipe lists"
 msgstr "Rezeptlisten"
 
@@ -465,7 +498,7 @@ msgid "Create a list to organize recipes."
 msgstr "Erstelle eine Liste, um Rezepte zu organisieren."
 
 #: .\MealStack\templates\users\recipe_list_detail.html:8
-#: .\apps\users\models.py:27
+#: .\apps\users\models.py:67
 msgid "Recipe list"
 msgstr "Rezeptliste"
 
@@ -538,12 +571,14 @@ msgstr "Typ"
 #: .\apps\recipes\models\cuisine.py:7 .\apps\recipes\models\ingredient.py:8
 #: .\apps\recipes\models\recipe_ingredient_group.py:6
 #: .\apps\recipes\models\recipe_step_group.py:6 .\apps\recipes\models\tag.py:6
-#: .\apps\recipes\models\unit.py:14 .\apps\users\models.py:20
+#: .\apps\recipes\models\unit.py:14 .\apps\users\models.py:7
+#: .\apps\users\models.py:60
 msgid "Name"
 msgstr "Name"
 
 #: .\apps\recipes\models\cuisine.py:8 .\apps\recipes\models\ingredient.py:11
 #: .\apps\recipes\models\recipe.py:24 .\apps\recipes\models\tag.py:7
+#: .\apps\users\models.py:8
 msgid "Slug"
 msgstr "Slug"
 
@@ -577,7 +612,7 @@ msgid "Density"
 msgstr "Dichte"
 
 #: .\apps\recipes\models\ingredient.py:26 .\apps\recipes\models\recipe.py:43
-#: .\apps\recipes\models\recipe_note.py:15
+#: .\apps\recipes\models\recipe_note.py:15 .\apps\users\models.py:38
 #, fuzzy
 #| msgid "Exported at"
 msgid "Created at"
@@ -870,61 +905,216 @@ msgstr "Fehler beim Importieren des Rezepts: %(error)s"
 msgid "Please provide a valid recipe URL."
 msgstr "Bitte eine gültige Rezept-URL angeben."
 
+#: .\apps\users\admin.py:16
+msgid "OIDC client"
+msgstr "OIDC-Client"
+
+#: .\apps\users\admin.py:17
+msgid "Application connection details"
+msgstr "Anwendungs-Verbindungsdaten"
+
+#: .\apps\users\admin.py:18
+msgid "Account policy"
+msgstr "Kontorichtlinien"
+
+#: .\apps\users\admin.py:25
+msgid "Callback URL"
+msgstr "Callback-URL"
+
+#: .\apps\users\admin.py:34
+msgid "Required scopes"
+msgstr "Erforderliche Bereiche"
+
+#: .\apps\users\admin.py:38
+msgid "Authorization flow"
+msgstr "Autorisierungsablauf"
+
+#: .\apps\users\admin.py:40
+msgid "Authorization Code"
+msgstr "Autorisierungscode"
+
+#: .\apps\users\admin.py:42
+msgid "Setup instructions"
+msgstr "Einrichtungsanleitung"
+
+#: .\apps\users\admin.py:44
+msgid ""
+"Register the callback URL and enable the required scopes in your identity "
+"provider. Use the client ID and secret generated there in the OIDC client "
+"section."
+msgstr ""
+"Registriere die Callback-URL und aktiviere die erforderlichen Bereiche bei "
+"deinem Identitätsanbieter. Trage die dort erzeugte Client-ID und das Client-"
+"Geheimnis im OIDC-Client-Bereich ein."
+
 #: .\apps\users\forms.py:13
 msgid "Email"
 msgstr "E-Mail"
 
+#: .\apps\users\models.py:9
+msgid "Image URL"
+msgstr "Bild-URL"
+
+#: .\apps\users\models.py:10
+msgid "Client ID"
+msgstr "Client-ID"
+
+#: .\apps\users\models.py:11
+msgid "Client secret"
+msgstr "Client-Geheimnis"
+
+#: .\apps\users\models.py:12
+msgid "Authorization endpoint"
+msgstr "Autorisierungs-Endpunkt"
+
+#: .\apps\users\models.py:13
+msgid "Token endpoint"
+msgstr "Token-Endpunkt"
+
 #: .\apps\users\models.py:14
+msgid "User info endpoint"
+msgstr "Benutzerinfo-Endpunkt"
+
+#: .\apps\users\models.py:15
+msgid "JWKS endpoint"
+msgstr "JWKS-Endpunkt"
+
+#: .\apps\users\models.py:16
+msgid "Issuer"
+msgstr "Aussteller"
+
+#: .\apps\users\models.py:17
+msgid "Scopes"
+msgstr "Bereiche"
+
+#: .\apps\users\models.py:18
+msgid "Signing algorithm"
+msgstr "Signaturalgorithmus"
+
+#: .\apps\users\models.py:19
+msgid "Enabled"
+msgstr "Aktiviert"
+
+#: .\apps\users\models.py:20
+msgid "Authoritative"
+msgstr "Massgeblich"
+
+#: .\apps\users\models.py:21
+msgid "Auto-create users"
+msgstr "Benutzer automatisch erstellen"
+
+#: .\apps\users\models.py:22
+msgid "Staff groups claim"
+msgstr "Claim fuer Mitarbeitergruppen"
+
+#: .\apps\users\models.py:23
+msgid "Groups that grant staff access, separated by commas."
+msgstr "Gruppen, die durch Kommas getrennt den Mitarbeiterzugriff gewähren."
+
+#: .\apps\users\models.py:27
+msgid "OIDC provider"
+msgstr "OIDC-Anbieter"
+
+#: .\apps\users\models.py:35
+msgid "User"
+msgstr "Benutzer"
+
+#: .\apps\users\models.py:36
+msgid "Provider"
+msgstr "Anbieter"
+
+#: .\apps\users\models.py:37
+msgid "Subject"
+msgstr "Betreff"
+
+#: .\apps\users\models.py:42
+msgid "OIDC identity"
+msgstr "OIDC-Identität"
+
+#: .\apps\users\models.py:43
+msgid "OIDC identities"
+msgstr "OIDC-Identitäten"
+
+#: .\apps\users\models.py:54
 msgid "Recipe bookmark"
 msgstr "Rezept-Lesezeichen"
 
-#: .\apps\users\models.py:15
+#: .\apps\users\models.py:55
 msgid "Recipe bookmarks"
 msgstr "Rezept-Lesezeichen"
 
-#: .\apps\users\views.py:28
+#: .\apps\users\views.py:35
 msgid "Your profile was updated."
 msgstr "Dein Profil wurde aktualisiert."
 
-#: .\apps\users\views.py:35
+#: .\apps\users\views.py:42
 msgid "Your password was changed."
 msgstr "Dein Passwort wurde geändert."
 
-#: .\apps\users\views.py:41
+#: .\apps\users\views.py:48
 msgid "You already have a list with this name."
 msgstr "Du hast bereits eine Liste mit diesem Namen."
 
-#: .\apps\users\views.py:46
+#: .\apps\users\views.py:53
 msgid "Your recipe list was created."
 msgstr "Deine Rezeptliste wurde erstellt."
 
-#: .\apps\users\views.py:76
+#: .\apps\users\views.py:85
 msgid "Recipe added to your list."
 msgstr "Das Rezept wurde deiner Liste hinzugefügt."
 
-#: .\apps\users\views.py:89
+#: .\apps\users\views.py:100
 msgid "New list created and recipe added."
 msgstr "Neue Liste erstellt und Rezept hinzugefügt."
 
-#: .\apps\users\views.py:91
+#: .\apps\users\views.py:102
 msgid "A list with this name already exists."
 msgstr "Eine Liste mit diesem Namen existiert bereits."
 
-#: .\apps\users\views.py:99
+#: .\apps\users\views.py:109
 msgid "Your recipe lists were updated."
 msgstr "Deine Rezeptlisten wurden aktualisiert."
 
-#: .\apps\users\views.py:131
+#: .\apps\users\views.py:141
 msgid "Recipe removed from your list."
 msgstr "Das Rezept wurde aus deiner Liste entfernt."
 
-#: .\apps\users\views.py:140
+#: .\apps\users\views.py:150
 msgid "Lists containing recipes cannot be deleted."
 msgstr "Listen mit Rezepten können nicht gelöscht werden."
 
-#: .\apps\users\views.py:143
+#: .\apps\users\views.py:153
 msgid "Your recipe list was deleted."
 msgstr "Deine Rezeptliste wurde gelöscht."
+
+#: .\apps\users\views.py:215
+#, fuzzy
+#| msgid "You cannot remove your only sign-in method."
+msgid "You cannot remove your only OIDC connection."
+msgstr "Du kannst deine einzige OIDC-Verbindung nicht entfernen."
+
+#: .\apps\users\views.py:218
+msgid "OIDC provider unlinked."
+msgstr "Die Verknüpfung mit dem OIDC-Anbieter wurde aufgehoben."
+
+#~ msgid "Or sign in with one of these OIDC providers"
+#~ msgstr "Oder mit einem dieser OIDC-Anbieter anmelden"
+
+#~ msgid "No sign-in providers are currently available."
+#~ msgstr "Derzeit sind keine Anmeldeanbieter verfügbar."
+
+#~ msgid "Continue with"
+#~ msgstr "Weiter mit"
+
+#, python-format
+#~ msgid "Continue with %(provider_name)s"
+#~ msgstr "Weiter mit %(provider_name)s"
+
+#~ msgid "OIDC sign-in is enabled for this site."
+#~ msgstr "Die OIDC-Anmeldung ist für diese Seite aktiviert."
+
+#~ msgid "Account linking is managed by your OIDC provider."
+#~ msgstr "Die Kontoverknüpfung wird von deinem OIDC-Anbieter verwaltet."
 
 #~ msgid "recipes"
 #~ msgstr "Rezepte"
@@ -937,9 +1127,6 @@ msgstr "Deine Rezeptliste wurde gelöscht."
 
 #~ msgid "Add recipe to list"
 #~ msgstr "Rezept zur Liste hinzufügen"
-
-#~ msgid "Sign Up"
-#~ msgstr "Registrieren"
 
 #~ msgid "Per Serving"
 #~ msgstr "Pro Portion"

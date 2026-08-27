@@ -1,16 +1,23 @@
 from django.conf import settings
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.templatetags.static import static
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LoginView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
+from django.http import HttpResponseRedirect
+from django.urls import NoReverseMatch, reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.crypto import get_random_string
+from urllib.parse import urlencode
+from mozilla_django_oidc.utils import add_state_and_verifier_and_nonce_to_session, absolutify
 
 from apps.recipes.models import Recipe, RecipeImage
 from apps.users.forms import ProfileForm, ProfilePasswordForm, RecipeListForm
-from apps.users.models import RecipeBookmark, RecipeList
+from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
 
 
 @login_required
@@ -53,6 +60,8 @@ def profile(request):
         "bookmarks": RecipeBookmark.objects.filter(user=request.user).select_related("recipe"),
         "recipe_lists": RecipeList.objects.filter(user=request.user).prefetch_related("recipes"),
         "oidc_enabled": settings.OIDC_ENABLED,
+        "oidc_providers": OIDCProvider.objects.filter(Q(enabled=True) | Q(identities__user=request.user)).distinct(),
+        "linked_oidc_provider_ids": set(OIDCIdentity.objects.filter(user=request.user).values_list("provider_id", flat=True)),
     })
 
 
@@ -147,3 +156,64 @@ def delete_recipe_list(request, pk):
 
 class UserLogoutView(LogoutView):
     next_page = "/recipes/"
+
+
+class AccountLoginView(LoginView):
+    template_name = "users/login.html"
+
+    def get_success_url(self):
+        return self.get_redirect_url() or reverse("users:profile")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "local_login_enabled": not settings.OIDC_ENABLED or settings.OIDC_ALLOW_LOCAL_LOGIN,
+            "oidc_enabled": settings.OIDC_ENABLED,
+            "oidc_providers": OIDCProvider.objects.filter(enabled=True),
+        })
+        return context
+
+
+def oidc_login(request, slug):
+    provider = get_object_or_404(OIDCProvider, slug=slug, enabled=True)
+    state = get_random_string(32)
+    nonce = get_random_string(32)
+    try:
+        callback = reverse("oidc_authentication_callback")
+    except NoReverseMatch:
+        callback = "/oidc/callback/"
+    params = {
+        "response_type": "code",
+        "scope": provider.scopes,
+        "client_id": provider.client_id,
+        "redirect_uri": absolutify(request, callback),
+        "state": state,
+        "nonce": nonce,
+    }
+    add_state_and_verifier_and_nonce_to_session(request, state, params, None)
+    request.session["oidc_provider_slug"] = provider.slug
+    if request.user.is_authenticated and request.GET.get("link") == "1":
+        request.session["oidc_link_user_id"] = request.user.pk
+    next_url = request.GET.get("next")
+    request.session["oidc_login_next"] = (
+        next_url
+        if next_url and url_has_allowed_host_and_scheme(
+            next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        )
+        else None
+    )
+    return HttpResponseRedirect(f"{provider.authorization_endpoint}?{urlencode(params)}")
+
+
+@login_required
+def oidc_unlink(request, slug):
+    if request.method == "POST":
+        identity = get_object_or_404(OIDCIdentity, provider__slug=slug, user=request.user)
+        if request.user.oidc_identities.count() <= 1:
+            messages.error(request, _("You cannot remove your only OIDC connection."))
+        else:
+            identity.delete()
+            messages.success(request, _("OIDC provider unlinked."))
+    return redirect("users:profile")

@@ -51,6 +51,10 @@
 .profile-list-form input { flex: 1; }
 .profile-list { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem 0; border-bottom: 1px solid var(--border-color); }
 .profile-list span { color: var(--text-muted-color); }
+.profile-provider { display: flex; align-items: center; gap: .7rem; padding: .65rem 0; border-bottom: 1px solid var(--border-color); }
+.profile-provider form { margin-left: auto; }
+.profile-provider .button, .profile-provider > a.button { margin-left: auto; }
+.profile-provider-icon { width: 1.5rem; height: 1.5rem; object-fit: contain; }
 .profile-remove-form { display: block; padding: .75rem 1rem 1rem; border-top: 1px solid var(--border-color); }
 .profile-page .recipe-card.card { height: auto; min-height: 0; overflow: visible; }
 .profile-page .recipe-card.card.hoverable:hover {
