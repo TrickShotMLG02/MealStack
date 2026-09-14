@@ -2,9 +2,10 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 
-from apps.recipes.models import Recipe, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
+from apps.recipes.models import Recipe, RecipeComponent, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
+from apps.recipes.services.composition import CompositionError, compose_recipe
 from apps.recipes.services.pdf import build_recipe_pdf
 from apps.recipes.services.servings import coerce_servings, scale_nutrition
 from apps.users.models import RecipeBookmark, RecipeList
@@ -14,6 +15,11 @@ from apps.common.rate_limiting import is_rate_limited
 def _recipe_detail_queryset():
     return Recipe.objects.select_related("cuisine", "recipe_nutrition").prefetch_related(
         "tags",
+        Prefetch(
+            "components",
+            queryset=RecipeComponent.objects.select_related("child_recipe").order_by("order", "id"),
+            to_attr="prefetched_components",
+        ),
         Prefetch(
             "recipeimage_set",
             queryset=RecipeImage.objects.all().order_by("-is_primary", "ordering"),
@@ -48,22 +54,30 @@ def _recipe_detail_queryset():
 
 
 def recipe_detail(request, slug):
-    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published")
-    nutrition = getattr(recipe, "recipe_nutrition", None)
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published", visibility="listed")
+    try:
+        composition = compose_recipe(recipe, require_published=True)
+    except CompositionError as exc:
+        raise Http404(str(exc)) from exc
+
+    nutrition = composition.nutrition
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
 
     images = getattr(recipe, "prefetched_images", None) or recipe.images_or_placeholder
     ingredient_count = sum(
-        len(group.recipeingredient_set.all())
-        for group in getattr(recipe, "prefetched_ingredient_groups", [])
+        len(group.ingredients)
+        for section in composition.sections
+        for group in section.ingredient_groups
     )
     step_count = sum(
-        len(group.recipestep_set.all())
-        for group in getattr(recipe, "prefetched_step_groups", [])
+        len(group.steps)
+        for section in composition.sections
+        for group in section.step_groups
     )
 
     return render(request, "recipes/recipe_detail.html", {
         "recipe": recipe,
+        "composition": composition,
         "images": images,
         "nutrition": nutrition,
         "nutrition_totals": scale_nutrition(nutrition, selected_servings),
@@ -86,11 +100,14 @@ def recipe_export_pdf(request, slug):
         window=settings.PUBLIC_RATE_LIMIT_WINDOW,
     ):
         return HttpResponse("Too many PDF requests.", status=429, headers={"Retry-After": str(settings.PUBLIC_RATE_LIMIT_WINDOW)})
-    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published")
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published", visibility="listed")
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
     recipe_path = reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug})
     recipe_url = request.build_absolute_uri(f"{recipe_path}?servings={selected_servings}")
-    pdf_bytes = build_recipe_pdf(recipe, recipe_url, selected_servings)
+    try:
+        pdf_bytes = build_recipe_pdf(recipe, recipe_url, selected_servings)
+    except CompositionError as exc:
+        raise Http404(str(exc)) from exc
 
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="{recipe.slug or "recipe"}.pdf"'

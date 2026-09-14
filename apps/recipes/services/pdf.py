@@ -16,10 +16,9 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-from django.core.exceptions import ObjectDoesNotExist
-
 from apps.common.time import format_timedelta
 from apps.recipes.models import Recipe
+from apps.recipes.services.composition import compose_recipe
 from apps.recipes.services.servings import scale_nutrition, scale_quantity
 
 
@@ -56,14 +55,6 @@ def _recipe_image_path(recipe: Recipe) -> Path | None:
         return Path(placeholder)
 
     return None
-
-
-def _recipe_ingredient_groups(recipe: Recipe):
-    return getattr(recipe, "prefetched_ingredient_groups", None) or list(recipe.recipeingredientgroup_set.all())
-
-
-def _recipe_step_groups(recipe: Recipe):
-    return getattr(recipe, "prefetched_step_groups", None) or list(recipe.recipestepgroup_set.all())
 
 
 def _recipe_notes(recipe: Recipe):
@@ -219,6 +210,7 @@ def _section_table(rows, col_widths, background, border_color, extra_styles=None
 
 def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = None) -> bytes:
     target_servings = servings if servings is not None else recipe.servings
+    composition = compose_recipe(recipe, require_published=True)
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -440,9 +432,9 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
                 PALETTE["accent_soft"],
                 PALETTE["accent"],
             ),
-            _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-            _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-            _metric_card(_("Total"), _duration_display(recipe.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
+            _metric_card(_("Prep"), _duration_display(composition.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Cook"), _duration_display(composition.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Total"), _duration_display(composition.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
         ]],
         colWidths=[metric_card_width] * 4,
         rowHeights=[20 * mm],
@@ -514,10 +506,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
 
     story.append(Spacer(1, 10))
 
-    try:
-        nutrition = recipe.recipe_nutrition
-    except ObjectDoesNotExist:
-        nutrition = None
+    nutrition = composition.nutrition
 
     if nutrition:
         nutrition_totals = scale_nutrition(nutrition, target_servings)
@@ -581,101 +570,109 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
         story.append(Spacer(1, 10))
 
     story.append(Paragraph(_("Ingredients"), styles["SectionHeading"]))
-    ingredient_groups = _recipe_ingredient_groups(recipe)
-    for group in ingredient_groups:
-        ingredient_rows = []
-        has_group_title = len(ingredient_groups) > 1
-        if has_group_title:
-            ingredient_rows.append(
-                [
-                    Paragraph(escape(group.name or _("Ingredients")), styles["SectionSubheading"]),
-                    "",
-                ]
-            )
+    if not composition.has_ingredients:
+        story.append(Paragraph(_("No ingredients added yet."), styles["RecipeIntro"]))
+        story.append(Spacer(1, 4))
+    for section in composition.sections:
+        if not section.ingredient_groups:
+            continue
+        story.append(Paragraph(escape(section.title), styles["SectionSubheading"]))
+        ingredient_groups = section.ingredient_groups
+        for group in ingredient_groups:
+            ingredient_rows = []
+            has_group_title = len(ingredient_groups) > 1
+            if has_group_title:
+                ingredient_rows.append(
+                    [
+                        Paragraph(escape(group.name or _("Ingredients")), styles["SectionSubheading"]),
+                        "",
+                    ]
+                )
 
-        for ri in group.recipeingredient_set.all():
-            quantity = scale_quantity(ri.quantity, recipe.servings, target_servings)
-            ingredient_rows.append(
-                [
-                    Paragraph(f"{_format_fraction_quantity(quantity)} {escape(ri.unit.name)}", styles["IngredientAmount"]),
-                    Paragraph(escape(ri.ingredient.name), styles["IngredientName"]),
-                ]
-            )
+            for ingredient in group.ingredients:
+                quantity = scale_quantity(ingredient.quantity, recipe.servings, target_servings)
+                ingredient_rows.append(
+                    [
+                        Paragraph(f"{_format_fraction_quantity(quantity)} {escape(ingredient.unit.name)}", styles["IngredientAmount"]),
+                        Paragraph(escape(ingredient.ingredient.name), styles["IngredientName"]),
+                    ]
+                )
 
-        if ingredient_rows:
-            ingredient_table = _section_table(
-                ingredient_rows,
-                [34 * mm, doc.width - 34 * mm],
-                PALETTE["panel"],
-                PALETTE["line"],
-                extra_styles=[
-                    ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent_soft"]),
-                    ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
-                    *(
-                        [
-                            ("SPAN", (0, 0), (-1, 0)),
-                            ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
-                            ("NOSPLIT", (0, 0), (-1, 1)),
-                        ]
-                        if has_group_title and len(ingredient_rows) > 1
-                        else []
-                    ),
-                ],
-                repeat_rows=1 if has_group_title else 0,
-            )
-            story.append(ingredient_table)
-            story.append(Spacer(1, 6))
-        else:
-            story.append(Paragraph(_("No ingredients added yet."), styles["RecipeIntro"]))
-            story.append(Spacer(1, 4))
+            if ingredient_rows:
+                ingredient_table = _section_table(
+                    ingredient_rows,
+                    [34 * mm, doc.width - 34 * mm],
+                    PALETTE["panel"],
+                    PALETTE["line"],
+                    extra_styles=[
+                        ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent_soft"]),
+                        ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
+                        *(
+                            [
+                                ("SPAN", (0, 0), (-1, 0)),
+                                ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
+                                ("NOSPLIT", (0, 0), (-1, 1)),
+                            ]
+                            if has_group_title and len(ingredient_rows) > 1
+                            else []
+                        ),
+                    ],
+                    repeat_rows=1 if has_group_title else 0,
+                )
+                story.append(ingredient_table)
+                story.append(Spacer(1, 6))
 
     story.append(Paragraph(_("Method"), styles["SectionHeading"]))
-    step_groups = _recipe_step_groups(recipe)
-    for group in step_groups:
-        step_rows = []
-        has_group_title = len(step_groups) > 1
-        if has_group_title:
-            step_rows.append(
-                [
-                    Paragraph(escape(group.name or _("Method")), styles["SectionSubheading"]),
-                    "",
-                ]
-            )
+    if not composition.has_steps:
+        story.append(Paragraph(_("No steps added yet."), styles["RecipeIntro"]))
+        story.append(Spacer(1, 4))
+    for section in composition.sections:
+        if not section.step_groups:
+            continue
+        story.append(Paragraph(escape(section.title), styles["SectionSubheading"]))
+        step_groups = section.step_groups
+        for group in step_groups:
+            step_rows = []
+            has_group_title = len(step_groups) > 1
+            if has_group_title:
+                step_rows.append(
+                    [
+                        Paragraph(escape(group.name or _("Method")), styles["SectionSubheading"]),
+                        "",
+                    ]
+                )
 
-        for index, step in enumerate(group.recipestep_set.all(), start=1):
-            step_rows.append(
-                [
-                    Paragraph(str(index), styles["StepNumber"]),
-                    Paragraph(escape(step.description).replace("\n", "<br/>"), styles["StepText"]),
-                ]
-            )
+            for index, step in enumerate(group.steps, start=1):
+                step_rows.append(
+                    [
+                        Paragraph(str(index), styles["StepNumber"]),
+                        Paragraph(escape(step.description).replace("\n", "<br/>"), styles["StepText"]),
+                    ]
+                )
 
-        if step_rows:
-            step_table = _section_table(
-                step_rows,
-                [12 * mm, doc.width - 12 * mm],
-                PALETTE["panel"],
-                PALETTE["line"],
-                extra_styles=[
-                    ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
-                    ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), colors.white),
-                    *(
-                        [
-                            ("SPAN", (0, 0), (-1, 0)),
-                            ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
-                            ("NOSPLIT", (0, 0), (-1, 1)),
-                        ]
-                        if has_group_title and len(step_rows) > 1
-                        else []
-                    ),
-                ],
-                repeat_rows=1 if has_group_title else 0,
-            )
-            story.append(step_table)
-            story.append(Spacer(1, 6))
-        else:
-            story.append(Paragraph(_("No steps added yet."), styles["RecipeIntro"]))
-            story.append(Spacer(1, 4))
+            if step_rows:
+                step_table = _section_table(
+                    step_rows,
+                    [12 * mm, doc.width - 12 * mm],
+                    PALETTE["panel"],
+                    PALETTE["line"],
+                    extra_styles=[
+                        ("BACKGROUND", (0, 1 if has_group_title else 0), (0, -1), PALETTE["accent"]),
+                        ("TEXTCOLOR", (0, 1 if has_group_title else 0), (0, -1), colors.white),
+                        *(
+                            [
+                                ("SPAN", (0, 0), (-1, 0)),
+                                ("BACKGROUND", (0, 0), (-1, 0), PALETTE["panel_soft"]),
+                                ("NOSPLIT", (0, 0), (-1, 1)),
+                            ]
+                            if has_group_title and len(step_rows) > 1
+                            else []
+                        ),
+                    ],
+                    repeat_rows=1 if has_group_title else 0,
+                )
+                story.append(step_table)
+                story.append(Spacer(1, 6))
 
     notes = _recipe_notes(recipe)
     if notes:

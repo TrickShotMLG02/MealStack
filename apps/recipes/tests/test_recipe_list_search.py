@@ -21,11 +21,12 @@ class RecipeListSearchTests(TestCase):
         cache.clear()
         super().tearDown()
 
-    def _create_recipe(self, title, *, cuisine_name=None, tag_names=None, ingredient_names=None, step_texts=None, note_text=None, author=None, source=None):
+    def _create_recipe(self, title, *, cuisine_name=None, tag_names=None, ingredient_names=None, step_texts=None, note_text=None, author=None, source=None, visibility="listed"):
         recipe = Recipe.objects.create(
             title=title,
             servings=4,
             status="published",
+            visibility=visibility,
             author=author,
             source=source,
         )
@@ -59,6 +60,28 @@ class RecipeListSearchTests(TestCase):
             RecipeNote.objects.create(recipe=recipe, content=note_text, ordering=0)
 
         return recipe
+
+    def test_component_only_recipes_are_excluded_from_lists_and_search_suggestions(self):
+        visible = self._create_recipe("Public dinner")
+        hidden = self._create_recipe(
+            "Private topping",
+            ingredient_names=["Hidden herb"],
+            visibility="component_only",
+        )
+
+        response = self.client.get(reverse("recipes:recipe_list"))
+        self.assertContains(response, visible.title)
+        self.assertEqual(list(response.context["recipes"]), [visible])
+
+        search_response = self.client.get(reverse("recipes:recipe_list"), {"q": "Private topping"})
+        self.assertEqual(list(search_response.context["recipes"]), [])
+
+        suggestion_response = self.client.get(
+            reverse("recipes:recipe_search_suggestions"),
+            {"q": "Private topping"},
+        )
+        labels = [item["label"] for item in suggestion_response.json()["suggestions"]]
+        self.assertNotIn(hidden.title, labels)
 
     def test_search_matches_titles_tags_and_cuisine(self):
         recipe = self._create_recipe(

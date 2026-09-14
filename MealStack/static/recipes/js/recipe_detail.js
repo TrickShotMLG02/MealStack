@@ -86,8 +86,42 @@ function initRecipeDetailPage() {
             }
         }
 
-        const parsed = Number(normalized.replace(/\s+/g, ''));
+        if (/\s/.test(normalized)) {
+            return null;
+        }
+
+        const parsed = Number(normalized);
         return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function hasTrailingDecimalSeparator(value) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        return /^\s*\d+(?:[,.])\s*$/.test(value);
+    }
+
+    function hasIncompleteMixedFraction(value) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        return /^\s*\d+(?:[,.]\d+)?\s+$/.test(value);
+    }
+
+    function hasMixedFraction(value) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        return /^\s*\d+(?:[,.]\d+)?\s+\d+\/\d+\s*$/.test(value);
+    }
+
+    function shouldPreserveServingsInput(value) {
+        return hasTrailingDecimalSeparator(value)
+            || hasIncompleteMixedFraction(value)
+            || hasMixedFraction(value);
     }
 
     function formatServingsValue(value) {
@@ -270,10 +304,12 @@ function initRecipeDetailPage() {
         }
     }
 
-    function setServings(value) {
+    function setServings(value, {preserveInput = false} = {}) {
         const servings = clampServings(value);
         if (servingsInput) {
-            servingsInput.value = formatServingsValue(servings);
+            servingsInput.value = preserveInput
+                ? value
+                : formatServingsValue(servings);
         }
 
         url.searchParams.set('servings', String(servings));
@@ -285,12 +321,13 @@ function initRecipeDetailPage() {
     }
 
     function setServingsFromInput() {
-        const parsed = parseServings(servingsInput ? servingsInput.value : baseServings);
+        const inputValue = servingsInput ? servingsInput.value : baseServings;
+        const parsed = parseServings(inputValue);
         if (!Number.isFinite(parsed) || parsed <= 0) {
             return;
         }
 
-        setServings(parsed);
+        setServings(inputValue, {preserveInput: shouldPreserveServingsInput(inputValue)});
     }
 
     function setMode(enabled) {

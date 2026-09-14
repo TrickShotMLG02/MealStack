@@ -41,7 +41,7 @@
                     </div>
                     <div>
                         <span class="nutrition-label">{% trans "Total time" %}</span>
-                        <strong>{{ recipe.total_time|pretty_duration }}</strong>
+                        <strong>{{ composition.total_time|pretty_duration }}</strong>
                     </div>
                 </div>
 
@@ -89,7 +89,7 @@
                 </div>
                 <div>
                     <dt>{% trans "Total" %}</dt>
-                    <dd>{{ recipe.total_time|pretty_duration }}</dd>
+                    <dd>{{ composition.total_time|pretty_duration }}</dd>
                 </div>
             </dl>
 
@@ -155,7 +155,7 @@
     <section class="recipe-cook-header">
         <h1 class="recipe-cook-title">{{ recipe.title }}</h1>
         <p class="recipe-cook-meta">
-            {% trans "Servings" %}: {{ recipe.servings }} · {% trans "Total time" %}: {{ recipe.total_time|pretty_duration }}
+            {% trans "Servings" %}: <span data-servings-display>{{ recipe.servings }}</span> · {% trans "Total time" %}: {{ composition.total_time|pretty_duration }}
         </p>
     </section>
 
@@ -246,30 +246,43 @@
                     <h2 id="ingredients-title">{% trans "Ingredients" %}</h2>
                 </div>
 
-                {% for group in ingredient_groups %}
-                    {% if ingredient_groups|length > 1 %}
-                        <h3 class="group-title">{{ group.name }}</h3>
-                    {% endif %}
-                    <ul class="ingredient-list">
-                        {% for ri in group.recipeingredient_set.all %}
-                            <li>
-                                <span
-                                    class="ingredient-amount"
-                                    data-ingredient-quantity
-                                    data-base-quantity="{{ ri.quantity }}"
-                                    data-unit="{{ ri.unit.name }}"
-                                >
-                                    {{ ri.quantity }} {{ ri.unit.name }}
-                                </span>
-                                <span class="ingredient-name">{{ ri.ingredient.name }}</span>
-                            </li>
-                        {% empty %}
-                            <li class="empty-state">{% trans "No ingredients added yet." %}</li>
-                        {% endfor %}
-                    </ul>
-                {% empty %}
+                {% if composition.has_ingredients %}
+                    {% for section in composition.sections %}
+                        {% if section.ingredient_groups %}
+                        <div class="recipe-composition-section{% if section.is_component %} recipe-composition-section--component{% endif %}">
+                            <h3 class="composition-section-title">
+                                {% if section.is_component and section.recipe.status == "published" and section.recipe.visibility == "listed" %}
+                                    <a href="{% url 'recipes:recipe_detail' section.recipe.slug %}">{{ section.title }}</a>
+                                {% else %}
+                                    {{ section.title }}
+                                {% endif %}
+                            </h3>
+                            {% for group in section.ingredient_groups %}
+                                {% if section.ingredient_groups|length > 1 %}
+                                    <h4 class="group-title">{{ group.name }}</h4>
+                                {% endif %}
+                                <ul class="ingredient-list">
+                                    {% for ingredient in group.ingredients %}
+                                        <li>
+                                            <span
+                                                class="ingredient-amount"
+                                                data-ingredient-quantity
+                                                data-base-quantity="{{ ingredient.quantity }}"
+                                                data-unit="{{ ingredient.unit.name }}"
+                                            >
+                                                {{ ingredient.quantity }} {{ ingredient.unit.name }}
+                                            </span>
+                                            <span class="ingredient-name">{{ ingredient.ingredient.name }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
                     <p class="empty-state">{% trans "No ingredients added yet." %}</p>
-                {% endfor %}
+                {% endif %}
             </section>
 
             {% if notes %}
@@ -363,23 +376,36 @@
                     <h2 id="steps-title">{% trans "Method" %}</h2>
                 </div>
 
-                {% for group in step_groups %}
-                    {% if step_groups|length > 1 %}
-                        <h3 class="group-title">{{ group.name }}</h3>
-                    {% endif %}
-                    <ol class="steps-list">
-                        {% for step in group.recipestep_set.all %}
-                            <li>
-                                <span class="step-index">{{ forloop.counter }}</span>
-                                <p>{{ step.description }}</p>
-                            </li>
-                        {% empty %}
-                            <li class="empty-state">{% trans "No steps added yet." %}</li>
-                        {% endfor %}
-                    </ol>
-                {% empty %}
+                {% if composition.has_steps %}
+                    {% for section in composition.sections %}
+                        {% if section.step_groups %}
+                        <div class="recipe-composition-section{% if section.is_component %} recipe-composition-section--component{% endif %}">
+                            <h3 class="composition-section-title">
+                                {% if section.is_component and section.recipe.status == "published" and section.recipe.visibility == "listed" %}
+                                    <a href="{% url 'recipes:recipe_detail' section.recipe.slug %}">{{ section.title }}</a>
+                                {% else %}
+                                    {{ section.title }}
+                                {% endif %}
+                            </h3>
+                            {% for group in section.step_groups %}
+                                {% if section.step_groups|length > 1 %}
+                                    <h4 class="group-title">{{ group.name }}</h4>
+                                {% endif %}
+                                <ol class="steps-list">
+                                    {% for step in group.steps %}
+                                        <li>
+                                            <span class="step-index">{{ forloop.counter }}</span>
+                                            <p>{{ step.description }}</p>
+                                        </li>
+                                    {% endfor %}
+                                </ol>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
                     <p class="empty-state">{% trans "No steps added yet." %}</p>
-                {% endfor %}
+                {% endif %}
             </section>
         </main>
     </div>

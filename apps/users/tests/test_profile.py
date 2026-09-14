@@ -40,6 +40,15 @@ class ProfileTests(TestCase):
         })
         self.assertRedirects(response, "/recipes/")
 
+    def test_header_login_link_preserves_the_current_page(self):
+        self.client.logout()
+        response = self.client.get(reverse("recipes:recipe_detail", args=[self.recipe.slug]))
+
+        self.assertContains(
+            response,
+            f'href="/account/login/?next=/recipes/{self.recipe.slug}/"',
+        )
+
     @override_settings(OIDC_ENABLED=True, OIDC_ALLOW_LOCAL_LOGIN=False)
     def test_public_login_page_lists_only_enabled_oidc_providers_when_local_login_disabled(self):
         OIDCProvider.objects.create(
@@ -81,6 +90,26 @@ class ProfileTests(TestCase):
         self.assertContains(response, self.recipe.title)
         self.assertTrue(recipe_list.recipes.filter(pk=self.recipe.pk).exists())
 
+    def test_component_only_recipe_cannot_be_bookmarked_or_added_by_public_users(self):
+        hidden = Recipe.objects.create(
+            title="Private topping",
+            servings=1,
+            status="published",
+            visibility="component_only",
+        )
+        recipe_list = RecipeList.objects.create(user=self.user, name="Favourites")
+
+        bookmark_response = self.client.post(reverse("users:toggle_bookmark", args=[hidden.slug]))
+        list_response = self.client.post(
+            reverse("users:add_to_list", args=[hidden.slug]),
+            {"list_id": recipe_list.pk},
+        )
+
+        self.assertEqual(bookmark_response.status_code, 404)
+        self.assertEqual(list_response.status_code, 404)
+        self.assertFalse(RecipeBookmark.objects.filter(user=self.user, recipe=hidden).exists())
+        self.assertFalse(recipe_list.recipes.filter(pk=hidden.pk).exists())
+
     def test_recipe_detail_can_create_list_and_populated_lists_cannot_be_deleted(self):
         response = self.client.post(
             reverse("users:update_recipe_lists", args=[self.recipe.slug]),
@@ -104,6 +133,22 @@ class ProfileTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.client.session["oidc_provider_slug"], provider.slug)
         self.assertEqual(self.client.session["oidc_link_user_id"], self.user.pk)
+
+    def test_oidc_login_preserves_a_safe_next_url(self):
+        provider = OIDCProvider.objects.create(
+            name="Keycloak", slug="keycloak", client_id="client", client_secret="secret",
+            authorization_endpoint="https://id.example.test/auth", token_endpoint="https://id.example.test/token",
+            userinfo_endpoint="https://id.example.test/userinfo",
+        )
+
+        self.client.logout()
+        response = self.client.get(
+            reverse("users:oidc_login", args=[provider.slug]),
+            {"next": "/recipes/"},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.client.session["oidc_login_next"], "/recipes/")
 
     def test_oidc_login_discards_external_next_url(self):
         provider = OIDCProvider.objects.create(

@@ -45,6 +45,17 @@ class RecipeExportPdfTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.startswith(b"%PDF"))
 
+    def test_recipe_detail_accepts_mixed_fraction_servings(self):
+        recipe = Recipe.objects.create(title="Cake", servings=4, status="published")
+
+        response = self.client.get(
+            reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug}),
+            {"servings": "7 3/4"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["selected_servings"], 7.75)
+
     def test_export_pdf_does_not_expose_drafts(self):
         recipe = Recipe.objects.create(title="Private Cake", servings=4, status="draft")
 
@@ -83,8 +94,15 @@ class RecipeExportPdfTests(TestCase):
 
         self.assertEqual(coerce_servings("3", 4), 3)
         self.assertEqual(coerce_servings("2.5", 4), 2.5)
+        self.assertEqual(coerce_servings("2,5", 4), 2.5)
         self.assertAlmostEqual(coerce_servings("1/3", 4), 1 / 3)
         self.assertEqual(coerce_servings("1 1/2", 4), 1.5)
+        self.assertEqual(coerce_servings("7 3/4", 4), 7.75)
+        self.assertEqual(coerce_servings("7,5 1/2", 4), 8)
+        self.assertEqual(coerce_servings("  7 3/4  ", 4), 7.75)
+        self.assertEqual(coerce_servings("3/0", 4), 4)
+        self.assertEqual(coerce_servings("7 3/0", 4), 4)
+        self.assertEqual(coerce_servings("7 3", 4), 4)
         self.assertEqual(coerce_servings("-1", 4), 4)
         self.assertEqual(coerce_servings("0", 4), 4)
         self.assertEqual(scale_quantity(250, 4, 2), 125)

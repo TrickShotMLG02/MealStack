@@ -181,6 +181,54 @@ msgstr "Zu den Zutaten springen"
 msgid "Recipe"
 msgstr "Rezept"
 
+#: .\apps\recipes\models\recipe_component.py:37
+msgid "Recipe Component"
+msgstr "Rezeptkomponente"
+
+#: .\apps\recipes\models\recipe_component.py:38
+msgid "Recipe Components"
+msgstr "Rezeptkomponenten"
+
+#: .\apps\recipes\models\recipe_component.py:15
+msgid "Parent recipe"
+msgstr "Übergeordnetes Rezept"
+
+#: .\apps\recipes\models\recipe_component.py:23
+msgid "Linked recipe"
+msgstr "Verknüpftes Rezept"
+
+#: .\apps\recipes\models\recipe_component.py:27
+msgid "Used servings"
+msgstr "Verwendete Portionen"
+
+#: .\apps\recipes\models\recipe_component.py:31
+msgid "Section title override"
+msgstr "Überschreibung des Abschnittstitels"
+
+#: .\apps\recipes\models\recipe_component.py:32
+msgid "Optional heading shown for this linked recipe."
+msgstr "Optionale Überschrift für dieses verknüpfte Rezept."
+
+#: .\apps\recipes\models\recipe_component.py:28
+msgid "How many servings of the linked recipe are used in the parent recipe."
+msgstr "Anzahl der Portionen des verknüpften Rezepts, die im übergeordneten Rezept verwendet werden."
+
+#: .\apps\recipes\models\recipe.py:45
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+#: .\apps\recipes\models\recipe.py:46
+msgid "Listed"
+msgstr "Aufgelistet"
+
+#: .\apps\recipes\models\recipe.py:47
+msgid "Component only"
+msgstr "Nur als Komponente"
+
+#: .\apps\recipes\models\recipe.py:51
+msgid "Component-only recipes are available through linked recipes but are not shown independently to users."
+msgstr "Nur als Komponente verfügbare Rezepte sind über verknüpfte Rezepte verfügbar, werden Nutzern aber nicht eigenständig angezeigt."
+
 #: .\MealStack\templates\recipes\recipe_detail.html:62
 #: .\MealStack\templates\recipes\recipe_detail.html:66
 #, python-format

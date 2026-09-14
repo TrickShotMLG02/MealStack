@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.html import format_html
+from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext_lazy as _
 from nested_admin.nested import NestedModelAdmin, NestedStackedInline, NestedTabularInline
 
@@ -14,8 +14,10 @@ from apps.recipes.models import (
     RecipeNote,
     RecipeImage,
     Cuisine,
+    RecipeComponent,
 )
 from apps.recipes.services.nutrition import update_recipe_nutrition
+from apps.recipes.admin.search import FuzzySearchAdminMixin
 
 
 class RecipeIngredientInline(NestedTabularInline):
@@ -58,6 +60,16 @@ class RecipeNutritionInline(NestedTabularInline):
     verbose_name_plural = _("Nutrition")
     classes = ("collapse",)
 
+
+class RecipeComponentInline(NestedTabularInline):
+    model = RecipeComponent
+    fk_name = "parent_recipe"
+    extra = 1
+    autocomplete_fields = ["child_recipe"]
+    fields = ["child_recipe", "servings", "title_override", "order"]
+    ordering = ["order", "id"]
+    classes = ("collapse",)
+
 class RecipeTagsInline(NestedTabularInline):
     model = RecipeTag
     extra = 1
@@ -85,7 +97,7 @@ class RecipeImageInline(NestedTabularInline):
         )
 
 @admin.register(Recipe)
-class RecipeAdmin(NestedModelAdmin):
+class RecipeAdmin(FuzzySearchAdminMixin, NestedModelAdmin):
     save_on_top = True
     autocomplete_fields = ["cuisine"]
     actions = ["mark_as_published", "mark_as_draft"]
@@ -93,6 +105,7 @@ class RecipeAdmin(NestedModelAdmin):
         'title',
         'primary_image_preview',
         'servings',
+        'visibility',
         'preparation_time',
         'cooking_time',
         'resting_time',
@@ -102,8 +115,9 @@ class RecipeAdmin(NestedModelAdmin):
         'updated_at',
         'status',
     ]
-    list_filter = ['status', 'created_at', 'cuisine']
+    list_filter = ['status', 'visibility', 'created_at', 'cuisine']
     search_fields = ['title', 'source', 'author']
+    fuzzy_search_fields = search_fields
     fieldsets = (
         (
             _("Recipe"),
@@ -112,10 +126,12 @@ class RecipeAdmin(NestedModelAdmin):
                     "title",
                     "slug",
                     "status",
+                    "visibility",
                     "servings",
                     "cuisine",
                     "author",
                     "source",
+                    "component_usage_notice",
                 ),
             },
         ),
@@ -128,6 +144,7 @@ class RecipeAdmin(NestedModelAdmin):
             },
         ),
     )
+    readonly_fields = ["component_usage_notice"]
 
     def primary_image_preview(self, obj):
         """
@@ -142,12 +159,33 @@ class RecipeAdmin(NestedModelAdmin):
             )
         return "-"
 
+    def component_usage_notice(self, obj):
+        if not obj or not obj.pk:
+            return _("Save this recipe first to see where it is used.")
+
+        parents = list(
+            obj.used_in_recipes.select_related("parent_recipe")
+            .order_by("parent_recipe__title")
+            .values_list("parent_recipe__title", flat=True)
+        )
+        if not parents:
+            return _("This recipe is not currently linked to another recipe.")
+
+        message = _(
+            "This recipe is used by %(count)d other recipe(s). Changes to its ingredients, steps, and nutrition will affect them."
+        ) % {"count": len(parents)}
+        items = format_html_join("", "<li>{}</li>", ((title,) for title in parents))
+        return format_html("<p>{}</p><ul>{}</ul>", message, items)
+
+    component_usage_notice.short_description = _("Linked recipe impact")
+
     primary_image_preview.short_description = _("Primary Image")
 
     inlines = [
         RecipeImageInline,
         RecipeIngredientGroupInline,
         RecipeStepGroupInline,
+        RecipeComponentInline,
         RecipeNotesInline,
         RecipeNutritionInline,
         RecipeTagsInline,

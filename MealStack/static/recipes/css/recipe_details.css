@@ -539,6 +539,28 @@ a.recipe-action--primary:focus {
     padding: 0;
 }
 
+.recipe-composition-section + .recipe-composition-section {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.composition-section-title {
+    margin: 0 0 0.85rem;
+    color: var(--heading-color);
+    font-size: 1.05rem;
+}
+
+.composition-section-title a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+}
+
+.recipe-composition-section--component .composition-section-title {
+    color: var(--heading-muted-color);
+}
+
 .recipe-panel > .group-title:first-of-type {
     margin-top: 0;
 }

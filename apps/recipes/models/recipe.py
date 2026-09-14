@@ -15,6 +15,11 @@ STATUS_CHOICES = [
     ('published', _('Published')),
 ]
 
+VISIBILITY_CHOICES = [
+    ('listed', _('Listed')),
+    ('component_only', _('Component only')),
+]
+
 class Recipe(models.Model):
     class Meta:
         verbose_name = _("Recipe")
@@ -40,6 +45,13 @@ class Recipe(models.Model):
     source = models.URLField(blank=True, null=True, verbose_name=_("Source"))
     author = models.CharField(max_length=40, blank=True, null=True, verbose_name=_("Author"))
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', verbose_name=_("Status"))
+    visibility = models.CharField(
+        max_length=20,
+        choices=VISIBILITY_CHOICES,
+        default='listed',
+        verbose_name=_("Visibility"),
+        help_text=_("Component-only recipes are available through linked recipes but are not shown independently to users."),
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 

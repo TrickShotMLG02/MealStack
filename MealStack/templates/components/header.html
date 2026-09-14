@@ -78,7 +78,7 @@
                         {% csrf_token %}<button type="submit" class="header-action header-action--link">{% trans "Log out" %}</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'users:login' %}" class="header-action header-action--link">{% trans "Login" %}</a>
+                    <a href="{% url 'users:login' %}?next={{ request.get_full_path|urlencode }}" class="header-action header-action--link">{% trans "Login" %}</a>
                 {% endif %}
                 <button
                     type="button"

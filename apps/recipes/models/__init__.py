@@ -11,3 +11,4 @@ from .recipe_ingredient import *
 from .recipe_step import *
 from .recipe_step_group import *
 from .recipe_nutrition import *
+from .recipe_component import *

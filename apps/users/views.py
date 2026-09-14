@@ -72,8 +72,17 @@ def profile(request):
         "profile_form": profile_form,
         "password_form": password_form,
         "list_form": list_form,
-        "bookmarks": RecipeBookmark.objects.filter(user=request.user).select_related("recipe"),
-        "recipe_lists": RecipeList.objects.filter(user=request.user).prefetch_related("recipes"),
+        "bookmarks": RecipeBookmark.objects.filter(
+            user=request.user,
+            recipe__status="published",
+            recipe__visibility="listed",
+        ).select_related("recipe"),
+        "recipe_lists": RecipeList.objects.filter(user=request.user).prefetch_related(
+            Prefetch(
+                "recipes",
+                queryset=Recipe.objects.filter(status="published", visibility="listed"),
+            )
+        ),
         "oidc_enabled": settings.OIDC_ENABLED,
         "oidc_providers": OIDCProvider.objects.filter(Q(enabled=True) | Q(identities__user=request.user)).distinct(),
         "linked_oidc_provider_ids": set(OIDCIdentity.objects.filter(user=request.user).values_list("provider_id", flat=True)),
@@ -84,7 +93,7 @@ def profile(request):
 def toggle_bookmark(request, slug):
     if request.method != "POST":
         return redirect("recipes:recipe_detail", slug=slug)
-    recipe = get_object_or_404(Recipe, slug=slug, status="published")
+    recipe = get_object_or_404(Recipe, slug=slug, status="published", visibility="listed")
     bookmark, created = RecipeBookmark.objects.get_or_create(user=request.user, recipe=recipe)
     if not created:
         bookmark.delete()
@@ -93,7 +102,7 @@ def toggle_bookmark(request, slug):
 
 @login_required
 def add_to_list(request, slug):
-    recipe = get_object_or_404(Recipe, slug=slug, status="published")
+    recipe = get_object_or_404(Recipe, slug=slug, status="published", visibility="listed")
     if request.method == "POST":
         recipe_list = get_object_or_404(RecipeList, pk=request.POST.get("list_id"), user=request.user)
         recipe_list.recipes.add(recipe)
@@ -103,7 +112,7 @@ def add_to_list(request, slug):
 
 @login_required
 def update_recipe_lists(request, slug):
-    recipe = get_object_or_404(Recipe, slug=slug, status="published")
+    recipe = get_object_or_404(Recipe, slug=slug, status="published", visibility="listed")
     if request.method == "POST":
         new_list_name = (request.POST.get("new_list_name") or "").strip()
         selected_ids = set(request.POST.getlist("list_ids"))
@@ -131,7 +140,7 @@ def recipe_list_detail(request, pk):
         RecipeList.objects.prefetch_related(
             Prefetch(
                 "recipes",
-                queryset=Recipe.objects.select_related("cuisine").prefetch_related(
+                    queryset=Recipe.objects.filter(status="published", visibility="listed").select_related("cuisine").prefetch_related(
                     Prefetch("recipeimage_set", queryset=RecipeImage.objects.all().order_by("-is_primary", "ordering"), to_attr="images")
                 ),
             )

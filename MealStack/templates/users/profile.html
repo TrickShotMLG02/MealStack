@@ -41,7 +41,7 @@
         <h2>{% trans "OIDC connections" %}</h2>
         {% if oidc_enabled %}
             <p>{% trans "Connect an identity provider to sign in with it." %}</p>
-            {% for provider in oidc_providers %}<div class="profile-provider">{% if provider.image_url %}<img class="profile-provider-icon" src="{{ provider.image_url }}" alt="">{% endif %}<strong>{{ provider.name }}</strong>{% if provider.pk in linked_oidc_provider_ids %}<form method="post" action="{% url 'users:oidc_unlink' provider.slug %}">{% csrf_token %}<button type="submit" class="button button--subtle">{% trans "Unlink" %}</button></form>{% else %}<a class="button" href="{% url 'users:oidc_login' provider.slug %}?link=1">{% trans "Link" %}</a>{% endif %}</div>{% empty %}<p>{% trans "No OIDC providers are enabled." %}</p>{% endfor %}
+            {% for provider in oidc_providers %}<div class="profile-provider">{% if provider.image_url %}<img class="profile-provider-icon" src="{{ provider.image_url }}" alt="">{% endif %}<strong>{{ provider.name }}</strong>{% if provider.pk in linked_oidc_provider_ids %}<form method="post" action="{% url 'users:oidc_unlink' provider.slug %}">{% csrf_token %}<button type="submit" class="button button--subtle">{% trans "Unlink" %}</button></form>{% else %}<a class="button" href="{% url 'users:oidc_login' provider.slug %}?link=1&amp;next={{ request.get_full_path|urlencode }}">{% trans "Link" %}</a>{% endif %}</div>{% empty %}<p>{% trans "No OIDC providers are enabled." %}</p>{% endfor %}
         {% else %}
             <p>{% trans "OIDC sign-in is not enabled." %}</p>
         {% endif %}
