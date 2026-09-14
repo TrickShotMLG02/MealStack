@@ -120,8 +120,12 @@ def apply_env_overrides():
         settings.OIDC_OP_USER_ENDPOINT = os.getenv("OIDC_USERINFO_ENDPOINT")
         settings.OIDC_OP_JWKS_ENDPOINT = os.getenv("OIDC_JWKS_ENDPOINT")
 
-        settings.OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO")
+        # The database-backed provider overrides this on each authentication.
+        # Keep backend initialization safe when no legacy global provider is configured.
+        settings.OIDC_RP_SIGN_ALGO = os.getenv("OIDC_RP_SIGN_ALGO", "HS256")
         settings.OIDC_OP_ISSUER = os.getenv("OIDC_ISSUER")
+        settings.OIDC_USE_PKCE = True
+        settings.OIDC_CALLBACK_CLASS = "apps.common.oidc_views.MealStackOIDCCallbackView"
 
         settings.OIDC_RP_SCOPES = os.getenv(
             "OIDC_SCOPES", "openid email profile"

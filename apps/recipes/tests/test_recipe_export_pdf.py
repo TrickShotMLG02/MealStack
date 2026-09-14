@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
-from django.test import TestCase
+from django.core.cache import cache
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.recipes.models import Ingredient, Recipe, RecipeIngredient, RecipeIngredientGroup, RecipeStep, RecipeStepGroup, Unit
@@ -8,8 +9,12 @@ from apps.recipes.services.servings import coerce_servings, scale_nutrition, sca
 
 
 class RecipeExportPdfTests(TestCase):
+    def tearDown(self):
+        cache.clear()
+        super().tearDown()
+
     def test_export_pdf_returns_pdf_response(self):
-        recipe = Recipe.objects.create(title="Cake", servings=4, status="draft")
+        recipe = Recipe.objects.create(title="Cake", servings=4, status="published")
         ingredient_group = RecipeIngredientGroup.objects.create(recipe=recipe, name="Main", order=0)
         step_group = RecipeStepGroup.objects.create(recipe=recipe, name="Method", order=0)
         ingredient = Ingredient.objects.create(name="Sugar")
@@ -31,7 +36,7 @@ class RecipeExportPdfTests(TestCase):
         self.assertTrue(response.content.startswith(b"%PDF"))
 
     def test_export_pdf_accepts_servings_query_param(self):
-        recipe = Recipe.objects.create(title="Cake", servings=4, status="draft")
+        recipe = Recipe.objects.create(title="Cake", servings=4, status="published")
         response = self.client.get(
             reverse("recipes:recipe_export_pdf", kwargs={"slug": recipe.slug}),
             {"servings": 2},
@@ -39,6 +44,32 @@ class RecipeExportPdfTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.content.startswith(b"%PDF"))
+
+    def test_export_pdf_does_not_expose_drafts(self):
+        recipe = Recipe.objects.create(title="Private Cake", servings=4, status="draft")
+
+        response = self.client.get(reverse("recipes:recipe_export_pdf", kwargs={"slug": recipe.slug}))
+
+        self.assertEqual(response.status_code, 404)
+
+    @override_settings(PUBLIC_PDF_RATE_LIMIT=1, PUBLIC_RATE_LIMIT_WINDOW=60)
+    def test_pdf_exports_are_rate_limited_per_client(self):
+        recipe = Recipe.objects.create(title="Cake", servings=4, status="published")
+        url = reverse("recipes:recipe_export_pdf", kwargs={"slug": recipe.slug})
+
+        first = self.client.get(url)
+        second = self.client.get(url)
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 429)
+        self.assertEqual(second["Retry-After"], "60")
+
+    def test_recipe_detail_does_not_expose_drafts(self):
+        recipe = Recipe.objects.create(title="Private Cake", servings=4, status="draft")
+
+        response = self.client.get(reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug}))
+
+        self.assertEqual(response.status_code, 404)
 
     def test_servings_scaling_helpers_scale_values(self):
         nutrition = SimpleNamespace(
@@ -51,10 +82,15 @@ class RecipeExportPdfTests(TestCase):
         )
 
         self.assertEqual(coerce_servings("3", 4), 3)
-        self.assertEqual(coerce_servings("-1", 4), 1)
+        self.assertEqual(coerce_servings("2.5", 4), 2.5)
+        self.assertAlmostEqual(coerce_servings("1/3", 4), 1 / 3)
+        self.assertEqual(coerce_servings("1 1/2", 4), 1.5)
+        self.assertEqual(coerce_servings("-1", 4), 4)
+        self.assertEqual(coerce_servings("0", 4), 4)
         self.assertEqual(scale_quantity(250, 4, 2), 125)
+        self.assertEqual(scale_quantity(250, 4, 2.5), 156.25)
 
-        totals = scale_nutrition(nutrition, 3)
-        self.assertEqual(totals.kcal, 300)
-        self.assertEqual(totals.protein, 30)
-        self.assertEqual(totals.carbs, 60)
+        totals = scale_nutrition(nutrition, 2.5)
+        self.assertEqual(totals.kcal, 250)
+        self.assertEqual(totals.protein, 25)
+        self.assertEqual(totals.carbs, 50)

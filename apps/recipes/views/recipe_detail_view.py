@@ -1,11 +1,14 @@
 from django.db.models import Prefetch
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.conf import settings
+from django.http import HttpResponse
 
 from apps.recipes.models import Recipe, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
 from apps.recipes.services.pdf import build_recipe_pdf
 from apps.recipes.services.servings import coerce_servings, scale_nutrition
+from apps.users.models import RecipeBookmark, RecipeList
+from apps.common.rate_limiting import is_rate_limited
 
 
 def _recipe_detail_queryset():
@@ -45,7 +48,7 @@ def _recipe_detail_queryset():
 
 
 def recipe_detail(request, slug):
-    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published")
     nutrition = getattr(recipe, "recipe_nutrition", None)
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
 
@@ -70,11 +73,20 @@ def recipe_detail(request, slug):
         "ingredient_count": ingredient_count,
         "step_count": step_count,
         "selected_servings": selected_servings,
+        "is_bookmarked": request.user.is_authenticated and RecipeBookmark.objects.filter(user=request.user, recipe=recipe).exists(),
+        "recipe_lists": RecipeList.objects.filter(user=request.user).prefetch_related("recipes") if request.user.is_authenticated else [],
     })
 
 
 def recipe_export_pdf(request, slug):
-    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug)
+    if is_rate_limited(
+        request,
+        key_prefix="recipe-pdf",
+        limit=settings.PUBLIC_PDF_RATE_LIMIT,
+        window=settings.PUBLIC_RATE_LIMIT_WINDOW,
+    ):
+        return HttpResponse("Too many PDF requests.", status=429, headers={"Retry-After": str(settings.PUBLIC_RATE_LIMIT_WINDOW)})
+    recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published")
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
     recipe_path = reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug})
     recipe_url = request.build_absolute_uri(f"{recipe_path}?servings={selected_servings}")

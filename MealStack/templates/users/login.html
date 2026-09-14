@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Sign in" %} - MealStack{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'users/css/login.css' %}">{% endblock %}
+
+{% block content %}
+<section class="account-login card">
+    <h1>{% trans "Sign in" %}</h1>
+
+    {% if local_login_enabled %}
+        <section class="login-section">
+            <h2>{% trans "Local login" %}</h2>
+            <form method="post" class="login-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+                <button class="button" type="submit">{% trans "Sign in locally" %}</button>
+            </form>
+        </section>
+    {% endif %}
+
+    {% if local_login_enabled and oidc_enabled %}<div class="login-divider"><span>{% trans "or" %}</span></div>{% endif %}
+
+    {% if oidc_enabled %}
+        <section class="login-section login-section--providers">
+            <h2>{% trans "OIDC providers" %}</h2>
+            {% if oidc_providers %}<div class="login-providers">
+                {% for provider in oidc_providers %}
+                    <a class="login-provider" href="{% url 'users:oidc_login' provider.slug %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">
+                        <span class="login-provider__icon">{% if provider.image_url %}<img src="{{ provider.image_url }}" alt="">{% else %}<span aria-hidden="true">{{ provider.name|first|upper }}</span>{% endif %}</span>
+                        <span class="login-provider__name">{{ provider.name }}</span>
+                        <span class="login-provider__arrow" aria-hidden="true">→</span>
+                    </a>
+                {% endfor %}
+            </div>{% else %}<p class="login-empty">{% trans "No OIDC providers have been configured yet." %}</p>{% endif %}
+        </section>
+    {% endif %}
+</section>
+{% endblock %}

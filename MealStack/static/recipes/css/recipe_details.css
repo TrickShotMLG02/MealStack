@@ -217,6 +217,120 @@
     align-items: center;
 }
 
+.recipe-toolbar > form {
+    display: contents;
+}
+
+.recipe-list-menu {
+    position: relative;
+}
+
+.recipe-list-menu summary {
+    list-style: none;
+}
+
+.recipe-list-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.recipe-list-menu[open] summary {
+    border-color: var(--heading-accent-color);
+}
+
+.recipe-list-menu > form {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 17rem;
+    padding: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg-color);
+    box-shadow: 0 12px 28px var(--card-shadow-color);
+}
+
+.recipe-list-menu fieldset {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0 0 0.8rem;
+    padding: 0;
+    border: 0;
+}
+
+.recipe-list-menu legend {
+    margin-bottom: 0.55rem;
+    color: var(--text-muted-color);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.recipe-list-menu label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 1.8rem;
+    color: var(--heading-color);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.recipe-list-menu__create {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0 0 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.recipe-list-menu__create > label {
+    min-height: 0;
+    color: var(--text-muted-color);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.recipe-list-menu__create > div {
+    display: flex;
+    gap: 0.45rem;
+}
+
+.recipe-list-menu__create input {
+    min-width: 0;
+    flex: 1;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--background-color);
+    color: var(--heading-color);
+    font: inherit;
+}
+
+.recipe-list-menu__create .recipe-action {
+    height: 2.4rem;
+    padding-inline: 0.8rem;
+    font-size: 0.85rem;
+}
+
+.recipe-list-menu input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+.recipe-toolbar select {
+    min-height: 2.75rem;
+    max-width: 12rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--card-bg-color);
+    color: var(--heading-color);
+    font: inherit;
+}
+
 .recipe-servings-control {
     display: grid;
     gap: 0.35rem;
@@ -339,6 +453,38 @@ a.recipe-action--primary:focus {
 .recipe-action--primary:focus {
     border-color: var(--button-hover-bg);
     color: var(--recipe-contrast-text-color);
+}
+
+.recipe-bookmark-action {
+    width: 2.75rem;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.recipe-bookmark-action svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 1.8;
+}
+
+.recipe-bookmark-action--active {
+    color: #f05a5a;
+}
+
+.recipe-bookmark-action--active svg {
+    fill: currentColor;
+}
+
+.recipe-bookmark-action:hover,
+.recipe-bookmark-action:focus {
+    color: #f05a5a;
+}
+
+.recipe-bookmark-action:hover svg,
+.recipe-bookmark-action:focus svg {
+    fill: currentColor;
 }
 
 .recipe-section-nav {

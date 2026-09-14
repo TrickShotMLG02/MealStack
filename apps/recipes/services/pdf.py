@@ -217,7 +217,7 @@ def _section_table(rows, col_widths, background, border_color, extra_styles=None
     return table
 
 
-def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = None) -> bytes:
+def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = None) -> bytes:
     target_servings = servings if servings is not None else recipe.servings
     buffer = BytesIO()
     doc = SimpleDocTemplate(
@@ -432,7 +432,14 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: int | None = Non
 
     metric_row = Table(
         [[
-            _metric_card(_("Servings"), str(target_servings), styles, metric_card_width, PALETTE["accent_soft"], PALETTE["accent"]),
+            _metric_card(
+                _("Servings"),
+                _format_fraction_quantity(target_servings),
+                styles,
+                metric_card_width,
+                PALETTE["accent_soft"],
+                PALETTE["accent"],
+            ),
             _metric_card(_("Prep"), _duration_display(recipe.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
             _metric_card(_("Cook"), _duration_display(recipe.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
             _metric_card(_("Total"), _duration_display(recipe.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),

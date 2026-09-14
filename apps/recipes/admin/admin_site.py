@@ -63,3 +63,11 @@ my_admin_site = MyAdminSite(name="myadmin")
 
 # TODO: Just a quick fix, consider registering stuff directly to this page
 my_admin_site._registry = admin.site._registry.copy()
+
+# The users admin module may be autodiscovered after this registry snapshot.
+# Register its models explicitly on the site that is mounted by the project.
+from apps.users.admin import OIDCIdentityAdmin, OIDCProviderAdmin
+from apps.users.models import OIDCIdentity, OIDCProvider
+
+my_admin_site.register(OIDCProvider, OIDCProviderAdmin)
+my_admin_site.register(OIDCIdentity, OIDCIdentityAdmin)

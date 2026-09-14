@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.conf import settings
 from django.db.models import Prefetch
 from django.shortcuts import render
 from django.templatetags.static import static
@@ -7,7 +8,9 @@ from django.utils.translation import gettext as _
 from urllib.parse import urlencode
 
 from apps.recipes.models import Recipe, RecipeImage
+from apps.users.models import RecipeBookmark
 from apps.recipes.selectors import search_recipes, search_suggestions
+from apps.common.rate_limiting import is_rate_limited
 
 def recipe_list(request):
     search_query = (request.GET.get("q") or "").strip()
@@ -39,7 +42,12 @@ def recipe_list(request):
 
     recipes = search_recipes(recipes, search_query, kind=search_kind)
 
-    for recipe in recipes:
+    recipe_list_items = list(recipes)
+    bookmarked_ids = set()
+    if request.user.is_authenticated:
+        bookmarked_ids = set(RecipeBookmark.objects.filter(user=request.user, recipe_id__in=[recipe.pk for recipe in recipe_list_items]).values_list("recipe_id", flat=True))
+
+    for recipe in recipe_list_items:
         primary_image = next(
             (
                 image
@@ -49,14 +57,26 @@ def recipe_list(request):
             None,
         )
         recipe.list_image_url = primary_image.image.url if primary_image else static("recipes/images/placeholder.jpg")
+        recipe.is_bookmarked = recipe.pk in bookmarked_ids
 
     return render(request, 'recipes/recipe_list.html', {
-        'recipes': recipes,
+        'recipes': recipe_list_items,
         'search_query': search_query,
     })
 
 
 def recipe_search_suggestions(request):
+    if is_rate_limited(
+        request,
+        key_prefix="recipe-search-suggestions",
+        limit=settings.PUBLIC_SEARCH_RATE_LIMIT,
+        window=settings.PUBLIC_RATE_LIMIT_WINDOW,
+    ):
+        return JsonResponse(
+            {"error": "Too many search requests."},
+            status=429,
+            headers={"Retry-After": str(settings.PUBLIC_RATE_LIMIT_WINDOW)},
+        )
     query = (request.GET.get("q") or "").strip()
     suggestions = []
 

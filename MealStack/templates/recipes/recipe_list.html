@@ -32,9 +32,11 @@
 
     <div class="recipe-grid">
         {% for recipe in recipes %}
-        <a class="recipe-card card hoverable" href="{% url 'recipes:recipe_detail' recipe.slug %}" aria-label="{{ recipe.title }}">
+        <article class="recipe-card card hoverable">
+        <a class="recipe-card__link" href="{% url 'recipes:recipe_detail' recipe.slug %}" aria-label="{{ recipe.title }}">
             <div class="recipe-card__media">
                 <img src="{{ recipe.list_image_url }}" alt="{{ recipe.title }}">
+                {% if user.is_authenticated %}<span class="recipe-card__bookmark{% if recipe.is_bookmarked %} recipe-card__bookmark--active{% endif %}" aria-label="{% if recipe.is_bookmarked %}{% trans 'Bookmarked' %}{% else %}{% trans 'Not bookmarked' %}{% endif %}" title="{% if recipe.is_bookmarked %}{% trans 'Bookmarked' %}{% else %}{% trans 'Not bookmarked' %}{% endif %}">♥</span>{% endif %}
             </div>
 
             <div class="recipe-card__body">
@@ -46,6 +48,15 @@
                 </div>
             </div>
         </a>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'users:toggle_bookmark' recipe.slug %}" class="recipe-card__bookmark-form">
+            {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <button type="submit" class="recipe-card__bookmark{% if recipe.is_bookmarked %} recipe-card__bookmark--active{% endif %}" aria-label="{% if recipe.is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}" title="{% if recipe.is_bookmarked %}{% trans 'Remove bookmark' %}{% else %}{% trans 'Bookmark recipe' %}{% endif %}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20.5 3.9 12.4a5.55 5.55 0 0 1 7.85-7.85L12 4.8l.25-.25a5.55 5.55 0 0 1 7.85 7.85L12 20.5Z"></path></svg>
+            </button>
+        </form>
+        {% endif %}
+        </article>
         {% empty %}
         <p class="recipe-list-empty">
             {% if search_query %}

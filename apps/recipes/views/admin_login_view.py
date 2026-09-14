@@ -12,7 +12,7 @@ class CustomAdminLoginView(LoginView):
         next_url = self.get_redirect_url()
         if next_url:
             return next_url
-        return "/admin/"
+        return "/admin/" if self.request.user.is_staff else "/account/profile/"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

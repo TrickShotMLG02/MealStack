@@ -1,0 +1,22 @@
+.account-login { box-sizing: border-box; width: min(100% - 2rem, 22rem); margin: 1.5rem auto; padding: 1.25rem; }
+.account-login h1 { margin: 0 0 1rem; font-size: 1.8rem; }
+.login-section h2 { margin: 0 0 .65rem; padding: 0; border: 0; font-size: 1rem; }
+.login-providers { display: grid; gap: .45rem; }
+.login-provider { display: flex; align-items: center; gap: .7rem; min-height: 2.5rem; padding: .45rem .65rem; border: 1px solid var(--border-color); border-radius: .5rem; color: var(--text-color); text-decoration: none; transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease; }
+.login-provider:hover, .login-provider:focus { border-color: var(--primary-color); background: var(--tag-bg-color); color: var(--text-color); text-decoration: none; transform: translateY(-1px); }
+.login-provider__icon { display: inline-flex; align-items: center; justify-content: center; width: 1.45rem; height: 1.45rem; overflow: hidden; border-radius: .3rem; background: var(--tag-bg-color); color: var(--heading-color); font-size: .78rem; font-weight: 800; }
+.login-provider__icon img { width: 100%; height: 100%; object-fit: contain; }
+.login-provider__name { flex: 1; font-weight: 650; }
+.login-provider__arrow { color: var(--text-muted-color); font-size: 1.1rem; transition: transform 140ms ease; }
+.login-provider:hover .login-provider__arrow, .login-provider:focus .login-provider__arrow { transform: translateX(2px); color: var(--primary-color); }
+.login-divider { display: flex; align-items: center; gap: .75rem; margin: 1.1rem 0; color: var(--text-muted-color); font-size: .85rem; }
+.login-divider::before, .login-divider::after { content: ""; flex: 1; border-top: 1px solid var(--border-color); }
+.login-form { display: grid; gap: .2rem; }
+.login-form p { display: grid; gap: .25rem; margin: 0 0 .55rem; }
+.login-form label { font-size: .9rem; font-weight: 600; }
+.login-form input { box-sizing: border-box; width: 100%; min-height: 2.2rem; padding: .35rem .5rem; border: 1px solid var(--input-border-color, var(--border-color)); border-radius: .4rem; background: var(--input-bg-color, var(--background-color)); color: var(--input-text-color, var(--text-color)); }
+.login-form input:focus { outline: 2px solid color-mix(in srgb, var(--primary-color) 35%, transparent); outline-offset: 1px; border-color: var(--input-focus-border-color, var(--primary-color)); }
+.login-form .button { box-sizing: border-box; width: 100%; min-height: 2.35rem; margin-top: .2rem; padding: .5rem .8rem; border: 1px solid var(--primary-color); border-radius: var(--button-border-radius, .4rem); background: var(--button-bg-color, var(--primary-color)); color: var(--button-text-color, #fff); font: inherit; font-weight: 700; cursor: pointer; transition: background-color 140ms ease, transform 140ms ease, box-shadow 140ms ease; }
+.login-form .button:hover, .login-form .button:focus { background: var(--button-hover-bg, var(--primary-color)); color: var(--button-text-color, #fff); transform: translateY(-1px); box-shadow: 0 5px 12px var(--card-shadow-color); }
+.login-empty { margin: 0; color: var(--text-muted-color); }
+@media (max-width: 700px) { .account-login { margin: 1.5rem 1rem; } }

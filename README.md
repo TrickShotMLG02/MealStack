@@ -23,7 +23,8 @@ It supports recipe search, tagging, categories, localized UI text, OIDC login, r
 - Share recipe URLs, including the current serving selection
 - Manage ingredients, units, tags, categories, and importers in the admin
 - Bulk update recipe status between draft and published in the admin
-- Sign in with OIDC or use the built-in login
+- Sign in through the public account login with local authentication or configured OIDC providers
+- Link OIDC identities to user profiles, bookmark recipes, and organize recipes into personal lists
 - Import ingredients from OpenFoodFacts
 - Import recipes from Chefkoch, BBC Good Food, and Epicurious
 - Run ingredient imports from the CLI with `ingredient_importer`
@@ -98,6 +99,46 @@ Default seed login:
 
 - User: `admin`
 - Password: `admin`
+
+### Authentication and OIDC
+
+The public login page is available at `/account/login/`. The admin login remains available at
+`/admin/login/` and is intended for admin access.
+
+Enable OIDC in `.env` with:
+
+```env
+OIDC_ENABLED=true
+OIDC_ALLOW_LOCAL_LOGIN=true
+```
+
+OIDC providers are managed in the admin under **OIDC → OIDC providers**. Create one provider
+record for each service you want to offer, such as Google, Microsoft, Keycloak, Authentik, GitHub,
+or Steam. Each provider can have its own:
+
+- display name, slug, and icon/image URL
+- client ID and secret
+- authorization, token, user-info, and JWKS endpoints
+- scopes and signing algorithm
+- enabled/disabled status
+- automatic user creation policy
+- authoritative status and groups claim mapping for staff/group synchronization
+
+The shared callback URL to register with every identity provider is:
+
+```text
+https://your-domain.example/oidc/callback/
+```
+
+The active absolute callback URL and required scopes are also shown as readonly values on the
+provider edit page in the admin. The exact URL should use the public host and scheme of the
+deployment.
+
+When OIDC is enabled but no database providers have been configured, the public login page keeps
+the OIDC section visible and explains that setup is still required. The `OIDC_CLIENT_ID`,
+`OIDC_CLIENT_SECRET`, endpoint, issuer, and scope environment variables remain supported for the
+legacy single-provider/admin OAuth flow; database-backed providers are the recommended way to
+configure multiple providers for the public login page.
 
 ## Tests and coverage
 

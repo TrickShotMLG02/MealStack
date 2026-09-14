@@ -39,6 +39,12 @@ ALLOWED_HOSTS = []
 
 OIDC_ENABLED = False
 OIDC_ALLOW_LOCAL_LOGIN = True
+OIDC_USE_PKCE = True
+OIDC_CALLBACK_CLASS = "apps.common.oidc_views.MealStackOIDCCallbackView"
+
+PUBLIC_PDF_RATE_LIMIT = 30
+PUBLIC_SEARCH_RATE_LIMIT = 60
+PUBLIC_RATE_LIMIT_WINDOW = 60
 
 AUTHENTICATION_BACKENDS = []
 
@@ -53,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.recipes',
+    'apps.users',
     'apps.common',
 
     'nested_admin',
@@ -93,6 +100,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MealStack.wsgi.application'
 
 LOGIN_REDIRECT_URL = "/admin/"
+LOGIN_URL = "/account/login/"
 
 TEST_RUNNER = "apps.common.test_runner.StyledProgressTestRunner"
 
