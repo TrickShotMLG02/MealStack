@@ -92,7 +92,7 @@ for _index in range(50):
 class OIDCIdentityAuthenticationTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="linked-user", email="linked@example.com")
-        self.other_user = get_user_model().objects.create_user(username="other-user", email="linked@example.com")
+        self.other_user = get_user_model().objects.create_user(username="other-user", email="other@example.com")
         self.provider = make_provider(200, issuer="https://id.example.test", signing_algorithm="HS256")
 
     def backend(self, session=None):
@@ -107,12 +107,48 @@ class OIDCIdentityAuthenticationTests(TestCase):
         }
         return backend
 
-    def test_unlinked_provider_identity_cannot_log_in_by_email(self):
+    def test_unlinked_provider_identity_can_log_in_by_verified_email(self):
         backend = self.backend()
 
         result = backend.get_or_create_user(None, None, {"sub": "unlinked-sub"})
 
+        self.assertEqual(result, self.user)
+        self.assertTrue(
+            OIDCIdentity.objects.filter(
+                provider=self.provider,
+                subject="unlinked-sub",
+                user=self.user,
+            ).exists()
+        )
+
+    def test_unlinked_provider_identity_respects_disabled_auto_creation(self):
+        self.provider.auto_create_users = False
+        self.provider.save(update_fields=["auto_create_users"])
+        backend = self.backend()
+        backend.get_userinfo = lambda access_token, id_token, payload: {
+            "sub": payload["sub"],
+            "email": "new-user@example.com",
+            "email_verified": True,
+        }
+
+        result = backend.get_or_create_user(None, None, {"sub": "new-sub"})
+
         self.assertIsNone(result)
+        self.assertFalse(OIDCIdentity.objects.filter(provider=self.provider, subject="new-sub").exists())
+
+    def test_unlinked_provider_identity_can_create_a_new_user(self):
+        backend = self.backend()
+        backend.get_userinfo = lambda access_token, id_token, payload: {
+            "sub": payload["sub"],
+            "email": "new-user@example.com",
+            "email_verified": True,
+        }
+
+        result = backend.get_or_create_user(None, None, {"sub": "new-sub"})
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result.email, "new-user@example.com")
+        self.assertTrue(OIDCIdentity.objects.filter(provider=self.provider, subject="new-sub", user=result).exists())
 
     def test_linking_existing_identity_belonging_to_other_user_is_rejected(self):
         OIDCIdentity.objects.create(user=self.other_user, provider=self.provider, subject="existing-sub")
@@ -164,6 +200,10 @@ class OIDCIdentityAuthenticationTests(TestCase):
         self.assertFalse(backend.verify_claims({"email": "linked@example.com", "email_verified": True}))
         self.assertFalse(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": False}))
         self.assertTrue(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": True}))
+        self.assertTrue(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": "true"}))
+        self.assertTrue(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": "1"}))
+        self.assertTrue(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": 1}))
+        self.assertFalse(backend.verify_claims({"sub": "subject", "email": "linked@example.com", "email_verified": "false"}))
         self.assertTrue(backend.verify_claims({"sub": "subject"}))
         for invalid_subject in ("", "   ", None, 123, []):
             self.assertFalse(backend.verify_claims({"sub": invalid_subject}))
@@ -249,3 +289,21 @@ class OIDCCallbackCleanupTests(TestCase):
                 MealStackOIDCCallbackView().get(request)
 
         self.assertFalse(any(key.startswith("oidc_") for key in request.session))
+
+    def test_regular_user_is_not_redirected_to_admin_after_oidc_login(self):
+        from apps.common.oidc_views import MealStackOIDCCallbackView
+
+        view = MealStackOIDCCallbackView()
+        view.request = SimpleNamespace(session={"oidc_login_next": "/admin/"})
+        view.user = get_user_model().objects.create_user(username="regular")
+
+        self.assertEqual(view.success_url, "/recipes/")
+
+    def test_staff_user_keeps_admin_oidc_destination(self):
+        from apps.common.oidc_views import MealStackOIDCCallbackView
+
+        view = MealStackOIDCCallbackView()
+        view.request = SimpleNamespace(session={"oidc_login_next": "/admin/"})
+        view.user = get_user_model().objects.create_user(username="staff", is_staff=True)
+
+        self.assertEqual(view.success_url, "/admin/")

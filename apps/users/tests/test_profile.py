@@ -40,6 +40,23 @@ class ProfileTests(TestCase):
         })
         self.assertRedirects(response, "/recipes/")
 
+    def test_regular_user_cannot_be_redirected_to_admin_by_next_parameter(self):
+        self.client.logout()
+        response = self.client.post(reverse("users:login"), {
+            "username": "cook", "password": "secret123", "next": "/admin/",
+        })
+        self.assertRedirects(response, "/recipes/")
+
+    def test_staff_user_is_redirected_to_admin_by_next_parameter(self):
+        admin_user = get_user_model().objects.create_user(
+            username="admin", password="secret123", is_staff=True,
+        )
+        self.client.logout()
+        response = self.client.post(reverse("users:login"), {
+            "username": admin_user.username, "password": "secret123", "next": "/admin/",
+        })
+        self.assertRedirects(response, "/admin/")
+
     def test_header_login_link_preserves_the_current_page(self):
         self.client.logout()
         response = self.client.get(reverse("recipes:recipe_detail", args=[self.recipe.slug]))
@@ -77,6 +94,19 @@ class ProfileTests(TestCase):
         self.assertContains(response, "Local login")
         self.assertContains(response, "OIDC providers")
         self.assertContains(response, "No OIDC providers have been configured yet.")
+
+    @override_settings(OIDC_ENABLED=True, OIDC_ALLOW_LOCAL_LOGIN=True)
+    def test_admin_login_uses_the_default_account_login_page(self):
+        self.client.logout()
+        response = self.client.get("/admin/login/")
+
+        self.assertRedirects(response, "/account/login/?next=%2Fadmin%2F")
+
+    def test_admin_login_preserves_requested_destination(self):
+        self.client.logout()
+        response = self.client.get("/admin/login/?next=/admin/recipes/")
+
+        self.assertRedirects(response, "/account/login/?next=%2Fadmin%2Frecipes%2F")
 
     def test_user_can_toggle_bookmark_and_add_recipe_to_list(self):
         response = self.client.post(reverse("users:toggle_bookmark", args=[self.recipe.slug]))

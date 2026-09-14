@@ -186,7 +186,10 @@ class AccountLoginView(LoginView):
     template_name = "users/login.html"
 
     def get_success_url(self):
-        return self.get_redirect_url() or reverse("users:profile")
+        redirect_url = self.get_redirect_url()
+        if redirect_url and redirect_url.startswith("/admin/") and not self.request.user.is_staff:
+            return "/recipes/"
+        return redirect_url or reverse("users:profile")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

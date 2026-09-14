@@ -100,6 +100,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'MealStack.wsgi.application'
 
 LOGIN_REDIRECT_URL = "/admin/"
+LOGIN_REDIRECT_URL_FAILURE = "/account/login/"
 LOGIN_URL = "/account/login/"
 
 TEST_RUNNER = "apps.common.test_runner.StyledProgressTestRunner"

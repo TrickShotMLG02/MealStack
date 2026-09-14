@@ -15,9 +15,16 @@ It supports recipe search, tagging, categories, localized UI text, OIDC login, r
 ## 📌 Features
 
 - Create, edit, and manage recipes
+- Combine recipes into reusable linked components such as dough, sauces, toppings, and side dishes
+- Configure the servings used by each linked component while keeping one recipe detail page
+- Combine ingredients, preparation steps, cooking times, and nutrition from linked recipes
+- Prevent circular recipe links and protect component recipes from accidental deletion
+- Mark recipes as **component only** so they are available through parent recipes without appearing in the public recipe list
 - Search recipes, ingredients, tags, and categories
+- Use fuzzy search in admin forms and autocomplete fields, which is useful for large ingredient catalogs
 - Browse recipes in a compact list layout and a polished detail view
-- Adjust servings and recalculate displayed values
+- Adjust servings and recalculate ingredients and nutrition live on the recipe page
+- Enter decimal servings with either a locale decimal separator or mixed fractions such as `7 3/4`
 - Use cook mode for a compact, focused reading experience
 - Export styled recipe PDFs for printing or saving
 - Share recipe URLs, including the current serving selection
@@ -134,11 +141,67 @@ The active absolute callback URL and required scopes are also shown as readonly 
 provider edit page in the admin. The exact URL should use the public host and scheme of the
 deployment.
 
+The login link in the site header preserves the page the visitor was viewing. Direct access to
+the admin area uses the same public login page; staff users return to the admin panel, while
+regular users return to the recipe start page if they do not have admin access.
+
 When OIDC is enabled but no database providers have been configured, the public login page keeps
 the OIDC section visible and explains that setup is still required. The `OIDC_CLIENT_ID`,
 `OIDC_CLIENT_SECRET`, endpoint, issuer, and scope environment variables remain supported for the
 legacy single-provider/admin OAuth flow; database-backed providers are the recommended way to
 configure multiple providers for the public login page.
+
+## Troubleshooting
+
+### OIDC login fails with `Claims verification failed`
+
+Meal Stack requires a stable `sub` claim. When the provider returns an `email` claim, it also
+requires `email_verified` to be true. This protects account matching by email and avoids treating
+an unverified address as an existing Meal Stack account.
+
+Some providers do not emit `email_verified` by default. Authentik is one example. Create a
+property mapping for the application and return the standard claim as a boolean:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": True,
+}
+```
+
+Attach the mapping to the Authentik provider/application and make sure it is included in the
+requested token or UserInfo response. Enable the relevant `openid email profile` scopes. If the
+custom mapping is attached to a provider-specific scope such as `user`, add that scope to the
+provider's Meal Stack **Scopes** field as well:
+
+```text
+openid email profile user
+```
+
+There is no universal OIDC scope named `user`; the required scope name depends on the identity
+provider. The same issue can occur with other OIDC providers if they omit the claim, return it
+under a non-standard name, or return an unexpected value. A string such as `"true"` is accepted,
+but a missing or false claim is rejected when an email is supplied.
+
+When diagnosing the problem, inspect the claim names and sanitized values in the ID token/UserInfo
+response, without sharing the token or client secret. Also verify that the provider record is
+enabled and that its issuer, client ID, endpoints, JWKS endpoint, and signing algorithm match the
+identity provider configuration.
+
+### OIDC login returns to the wrong page
+
+The header login link includes the current page as a safe `next` destination. Direct admin access
+uses `/admin/` as its default destination. Staff users can return there; regular users are sent to
+`/recipes/` instead. If a deployment still returns to the home page after a failed login, confirm
+that it includes the current `LOGIN_REDIRECT_URL_FAILURE` setting and that the deployed image
+contains the current OIDC callback configuration.
+
+### Component recipes do not appear in the recipe list
+
+Set the linked recipe's visibility to **Component only**. It remains available when linked from a
+parent recipe but is intentionally hidden from public recipe lists and direct public recipe pages.
+The parent recipe must still be published for public users to view the composed ingredients and
+steps.
 
 ## Tests and coverage
 

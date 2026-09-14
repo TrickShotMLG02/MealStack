@@ -25,7 +25,7 @@ from apps.recipes.admin import *
 
 urlpatterns = [
     path("", RedirectView.as_view(url="/recipes/", permanent=False)),
-    path("admin/login/", views.CustomAdminLoginView.as_view(), name="admin_login"),
+    path("admin/login/", views.admin_login_redirect, name="admin_login"),
     path('admin/', my_admin_site.urls),
     #path('admin/', admin.site.urls),
     path('_nested_admin/', include('nested_admin.urls')),

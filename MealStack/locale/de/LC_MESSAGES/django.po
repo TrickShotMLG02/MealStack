@@ -39,6 +39,10 @@ msgstr "Importieren"
 msgid "Login with OAuth"
 msgstr "Mit OAuth anmelden"
 
+#: .\MealStack\templates\admin\login.html:12
+msgid "Login with"
+msgstr "Anmelden mit"
+
 #: .\MealStack\templates\admin\login.html:18
 msgid "Use internal authentication"
 msgstr "Interne Anmeldung verwenden"

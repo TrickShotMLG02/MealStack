@@ -6,9 +6,15 @@
 <div style="text-align: center">
 
   {% if OIDC_ENABLED %}
-    <form action="{% url 'oidc_authentication_init' %}" method="get">
-      <input type="submit" class="default" value="{% trans 'Login with OAuth' %}">
-    </form>
+    {% if OIDC_PROVIDERS %}
+      {% for provider in OIDC_PROVIDERS %}
+        <a href="{% url 'users:oidc_login' provider.slug %}?next=/admin/" class="default">{% trans 'Login with' %} {{ provider.name }}</a>
+      {% endfor %}
+    {% else %}
+      <form action="{% url 'oidc_authentication_init' %}" method="get">
+        <input type="submit" class="default" value="{% trans 'Login with OAuth' %}">
+      </form>
+    {% endif %}
   {% endif %}
 
   {% if OIDC_ENABLED and OIDC_ALLOW_LOCAL_LOGIN %}

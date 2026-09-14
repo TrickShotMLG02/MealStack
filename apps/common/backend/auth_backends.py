@@ -85,6 +85,19 @@ class OIDCAuthBackend(OIDCAuthenticationBackend):
             raise SuspiciousOperation("OIDC authorized party validation failed.")
         return claims
 
+    def get_userinfo(self, access_token, id_token, payload):
+        user_info = super().get_userinfo(access_token, id_token, payload)
+        if not isinstance(user_info, dict):
+            return user_info
+
+        # Some providers omit standard claims from userinfo even though they
+        # are present in the already validated ID token. Fill only missing
+        # values; never let userinfo override validated token claims.
+        for claim in ("sub", "email", "email_verified"):
+            if claim not in user_info and claim in payload:
+                user_info[claim] = payload[claim]
+        return user_info
+
     def get_or_create_user(self, access_token, id_token, payload):
         if not self.provider:
             return super().get_or_create_user(access_token, id_token, payload)
@@ -111,14 +124,30 @@ class OIDCAuthBackend(OIDCAuthenticationBackend):
                     return None
             return user
 
-        # Normal login is identity-only. A provider must have been explicitly
-        # linked from the user's profile before it can authenticate that user.
         identity = OIDCIdentity.objects.filter(
             provider=self.provider, subject=subject
         ).select_related("user").first()
-        if not identity:
+        if identity:
+            return self.update_user(identity.user, user_info)
+
+        # A verified provider email is safe for the initial account match and
+        # makes the configured auto-create policy usable for first-time users.
+        users = self.filter_users_by_claims(user_info)
+        if len(users) > 1:
             return None
-        return self.update_user(identity.user, user_info)
+        if len(users) == 1:
+            user = self.update_user(users[0], user_info)
+        elif self.provider.auto_create_users:
+            user = self.create_user(user_info)
+        else:
+            return None
+
+        try:
+            with transaction.atomic():
+                OIDCIdentity.objects.create(provider=self.provider, subject=subject, user=user)
+        except IntegrityError:
+            return None
+        return user
 
     def create_user(self, claims):
         # auto-create user from OIDC claims
@@ -158,6 +187,11 @@ class OIDCAuthBackend(OIDCAuthenticationBackend):
         subject = claims.get("sub")
         if not isinstance(subject, str) or not subject.strip():
             return False
-        if claims.get("email") and claims.get("email_verified") is not True:
+        email_verified = claims.get("email_verified")
+        if isinstance(email_verified, str):
+            email_verified = email_verified.strip().lower() in {"true", "1", "yes"}
+        elif isinstance(email_verified, int):
+            email_verified = email_verified == 1
+        if claims.get("email") and email_verified is not True:
             return False
         return True
