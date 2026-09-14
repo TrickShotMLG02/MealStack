@@ -30,7 +30,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y default-libmysqlclient-dev pkg-config
+          sudo apt-get install -y default-libmysqlclient-dev gettext pkg-config
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -42,6 +42,9 @@ jobs:
 
       - name: Install project dependencies
         run: uv sync --dev
+
+      - name: Compile translations
+        run: uv run python manage.py compilemessages --ignore "*/site-packages/*"
 
       - name: Run tests with coverage
         run: uv run coverage run manage.py test --keepdb --no-progress --no-color
