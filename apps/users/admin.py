@@ -1,10 +1,23 @@
 from django.contrib import admin
 from django import forms
+from django.utils.html import format_html
 from django.urls import NoReverseMatch, reverse
 from django.utils.translation import gettext_lazy as _
 
 from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
 
+
+class OIDCImageURLWidget(forms.URLInput):
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
+        classes = self.attrs.get("class", "").split()
+        if "vTextField" not in classes:
+            classes.append("vTextField")
+        self.attrs["class"] = " ".join(classes)
+
+    class Media:
+        css = {"all": ("users/css/oidc_provider_admin.css",)}
+        js = ("users/js/oidc_provider_admin.js",)
 
 class OIDCProviderAdminForm(forms.ModelForm):
     client_secret = forms.CharField(
@@ -16,6 +29,7 @@ class OIDCProviderAdminForm(forms.ModelForm):
     class Meta:
         model = OIDCProvider
         fields = "__all__"
+        widgets = {"image_url": OIDCImageURLWidget}
 
     def clean_client_secret(self):
         secret = self.cleaned_data.get("client_secret")
@@ -32,9 +46,9 @@ class OIDCProviderAdmin(admin.ModelAdmin):
     list_display = ("name", "enabled", "authoritative", "auto_create_users")
     list_filter = ("enabled", "authoritative", "auto_create_users")
     prepopulated_fields = {"slug": ("name",)}
-    readonly_fields = ("callback_url", "required_scopes", "authorization_flow", "setup_instructions")
+    readonly_fields = ("image_preview", "callback_url", "required_scopes", "authorization_flow", "setup_instructions")
     fieldsets = (
-        (None, {"fields": ("name", "slug", "image_url", "enabled")}),
+        (None, {"fields": ("name", "slug", "image_url", "image_preview", "enabled")}),
         (_("OIDC client"), {"fields": ("client_id", "client_secret", "authorization_endpoint", "token_endpoint", "userinfo_endpoint", "jwks_endpoint", "issuer", "scopes", "signing_algorithm")}),
         (_("Application connection details"), {"fields": ("callback_url", "required_scopes", "authorization_flow", "setup_instructions")}),
         (_("Account policy"), {"fields": ("auto_create_users", "authoritative", "staff_groups_claim", "staff_groups")}),
@@ -56,6 +70,20 @@ class OIDCProviderAdmin(admin.ModelAdmin):
     @admin.display(description=_("Required scopes"))
     def required_scopes(self, obj):
         return obj.scopes or "openid email profile"
+
+    @admin.display(description=_("Icon preview"))
+    def image_preview(self, obj):
+        preview_url = obj.image_url if obj else ""
+        return format_html(
+            '<div class="oidc-image-preview" data-oidc-image-preview>'
+            '<img src="{}" alt="{}" data-oidc-image-preview-image{}>'
+            '<span data-oidc-image-preview-empty>{}</span>'
+            '</div>',
+            preview_url,
+            _("OIDC provider icon preview"),
+            "" if preview_url else ' class="is-hidden"',
+            _("Enter an image URL to preview the provider icon."),
+        )
 
     @admin.display(description=_("Authorization flow"))
     def authorization_flow(self, obj):

@@ -1,0 +1,20 @@
+.oidc-image-preview {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    margin: 0.5rem 0 0.75rem;
+    min-height: 3rem;
+}
+
+.oidc-image-preview img {
+    border: 1px solid var(--hairline-color, #ddd);
+    border-radius: 0.5rem;
+    height: 3rem;
+    object-fit: contain;
+    padding: 0.25rem;
+    width: 3rem;
+}
+
+.oidc-image-preview .is-hidden {
+    display: none;
+}

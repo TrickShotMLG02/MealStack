@@ -977,6 +977,18 @@ msgstr "Callback-URL"
 msgid "Required scopes"
 msgstr "Erforderliche Bereiche"
 
+#: .\apps\users\admin.py
+msgid "Icon preview"
+msgstr "Icon-Vorschau"
+
+#: .\apps\users\admin.py
+msgid "OIDC provider icon preview"
+msgstr "Vorschau des OIDC-Anbieter-Icons"
+
+#: .\apps\users\admin.py
+msgid "Enter an image URL to preview the provider icon."
+msgstr "Bild-URL eingeben, um das Anbieter-Icon in der Vorschau anzuzeigen."
+
 #: .\apps\users\admin.py:38
 msgid "Authorization flow"
 msgstr "Autorisierungsablauf"

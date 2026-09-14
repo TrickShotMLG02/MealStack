@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from apps.recipes.models import Recipe
 from apps.common.backend.auth_backends import OIDCAuthBackend
-from apps.users.admin import OIDCProviderAdmin, OIDCProviderAdminForm
+from apps.users.admin import OIDCImageURLWidget, OIDCProviderAdmin, OIDCProviderAdminForm
 from apps.users.models import OIDCIdentity, OIDCProvider, RecipeBookmark, RecipeList
 
 
@@ -223,6 +223,25 @@ class ProfileTests(TestCase):
                                          "staff_groups": provider.staff_groups}, instance=provider)
         self.assertTrue(changed.is_valid())
         self.assertEqual(changed.cleaned_data["client_secret"], "super-secret")
+
+    def test_oidc_image_url_has_live_preview_widget(self):
+        provider = OIDCProvider.objects.create(
+            name="Keycloak", slug="keycloak", image_url="https://id.example.test/icon.svg",
+            client_id="client", client_secret="secret",
+            authorization_endpoint="https://id.example.test/auth", token_endpoint="https://id.example.test/token",
+            userinfo_endpoint="https://id.example.test/userinfo",
+        )
+        form = OIDCProviderAdminForm(instance=provider)
+
+        self.assertIsInstance(form.fields["image_url"].widget, OIDCImageURLWidget)
+        self.assertIn("vTextField", form.fields["image_url"].widget.attrs["class"])
+        form_html = form.as_p()
+        self.assertIn('id="id_image_url"', form_html)
+        self.assertNotIn("data-oidc-image-preview", form_html)
+        preview_html = OIDCProviderAdmin(OIDCProvider, admin.site).image_preview(provider)
+        self.assertIn("data-oidc-image-preview", preview_html)
+        self.assertIn("https://id.example.test/icon.svg", preview_html)
+        self.assertIn("users/js/oidc_provider_admin.js", str(form.media))
 
     def test_oidc_identity_can_be_unlinked_but_last_unusable_login_is_protected(self):
         provider = OIDCProvider.objects.create(
