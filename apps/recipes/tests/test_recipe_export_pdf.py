@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from apps.recipes.models import Ingredient, Recipe, RecipeIngredient, RecipeIngredientGroup, RecipeStep, RecipeStepGroup, Unit
+from apps.recipes.services.pdf import recipe_pdf_filename
 from apps.recipes.services.servings import coerce_servings, scale_nutrition, scale_quantity
 
 
@@ -33,7 +34,28 @@ class RecipeExportPdfTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "application/pdf")
         self.assertIn("inline", response["Content-Disposition"])
+        self.assertIn('filename="cake.pdf"', response["Content-Disposition"])
         self.assertTrue(response.content.startswith(b"%PDF"))
+
+    def test_pdf_filename_uses_recipe_title_and_removes_forbidden_characters(self):
+        self.assertEqual(
+            recipe_pdf_filename('Mom\'s <best> cake: "really"?'),
+            "moms-best-cake-really.pdf",
+        )
+
+    def test_pdf_filename_uses_recipe_slug_and_falls_back_for_empty_titles(self):
+        self.assertEqual(recipe_pdf_filename("  Cake.  "), "cake.pdf")
+        self.assertEqual(recipe_pdf_filename(""), "recipe.pdf")
+
+    def test_export_pdf_uses_safe_recipe_title_as_filename(self):
+        recipe = Recipe.objects.create(title="Fish & Chips: Mum's way?", servings=4, status="published")
+
+        response = self.client.get(reverse("recipes:recipe_export_pdf", kwargs={"slug": recipe.slug}))
+
+        self.assertEqual(
+            response["Content-Disposition"],
+            'inline; filename="fish-chips-mums-way.pdf"',
+        )
 
     def test_export_pdf_accepts_servings_query_param(self):
         recipe = Recipe.objects.create(title="Cake", servings=4, status="published")

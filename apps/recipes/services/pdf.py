@@ -17,6 +17,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Flowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from apps.common.time import format_timedelta
+from apps.common.text_formatting import slugify
 from apps.recipes.models import Recipe
 from apps.recipes.services.composition import compose_recipe
 from apps.recipes.services.servings import scale_nutrition, scale_quantity
@@ -34,6 +35,11 @@ PALETTE = {
     "panel_soft": colors.HexColor("#f7f9fb"),
     "panel_alt": colors.HexColor("#fff9f1"),
 }
+
+
+def recipe_pdf_filename(title: str) -> str:
+    """Return the slugified recipe title as a PDF filename."""
+    return f"{slugify(title) or 'recipe'}.pdf"
 
 
 def _recipe_image_path(recipe: Recipe) -> Path | None:

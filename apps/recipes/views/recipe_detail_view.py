@@ -3,10 +3,11 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.conf import settings
 from django.http import Http404, HttpResponse
+from django.utils.http import content_disposition_header
 
 from apps.recipes.models import Recipe, RecipeComponent, RecipeImage, RecipeIngredient, RecipeIngredientGroup, RecipeNote, RecipeStep, RecipeStepGroup
 from apps.recipes.services.composition import CompositionError, compose_recipe
-from apps.recipes.services.pdf import build_recipe_pdf
+from apps.recipes.services.pdf import build_recipe_pdf, recipe_pdf_filename
 from apps.recipes.services.servings import coerce_servings, scale_nutrition
 from apps.users.models import RecipeBookmark, RecipeList
 from apps.common.rate_limiting import is_rate_limited
@@ -110,6 +111,9 @@ def recipe_export_pdf(request, slug):
         raise Http404(str(exc)) from exc
 
     response = HttpResponse(pdf_bytes, content_type="application/pdf")
-    response["Content-Disposition"] = f'inline; filename="{recipe.slug or "recipe"}.pdf"'
+    response["Content-Disposition"] = content_disposition_header(
+        as_attachment=False,
+        filename=recipe_pdf_filename(recipe.title),
+    )
     response["Cache-Control"] = "no-store"
     return response
