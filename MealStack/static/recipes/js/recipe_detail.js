@@ -15,6 +15,7 @@ function initRecipeDetailPage() {
     const storageKey = 'recipe-cook-mode';
     const baseServings = Number(article.dataset.baseServings || servingsInput?.value || 1) || 1;
     const locale = document.documentElement.lang || navigator.language || 'en';
+    const browserLocale = navigator.language || locale;
     const minServings = 0.01;
     const servingsFormatter = new Intl.NumberFormat(locale, {
         maximumFractionDigits: 2,
@@ -213,6 +214,12 @@ function initRecipeDetailPage() {
 
         const pdfUrl = new URL(pdfLink.getAttribute('href'), window.location.href);
         pdfUrl.searchParams.set('servings', String(servings));
+        const timezoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (timezoneName) {
+            pdfUrl.searchParams.set('timezone', timezoneName);
+        }
+        pdfUrl.searchParams.set('timezone_offset', String(-new Date().getTimezoneOffset()));
+        pdfUrl.searchParams.set('locale', browserLocale);
         pdfLink.href = pdfUrl.toString();
     }
 
@@ -340,6 +347,12 @@ function initRecipeDetailPage() {
     const saved = localStorage.getItem(storageKey) === '1';
     setMode(saved);
     setServings(servingsInput ? servingsInput.value : baseServings);
+
+    if (pdfLink) {
+        pdfLink.addEventListener('click', () => {
+            setPdfHref(servingsInput ? servingsInput.value : baseServings);
+        });
+    }
 
     if (servingsInput) {
         servingsInput.addEventListener('input', () => {

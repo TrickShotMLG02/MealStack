@@ -104,9 +104,17 @@ def recipe_export_pdf(request, slug):
     recipe = get_object_or_404(_recipe_detail_queryset(), slug=slug, status="published", visibility="listed")
     selected_servings = coerce_servings(request.GET.get("servings"), recipe.servings)
     recipe_path = reverse("recipes:recipe_detail", kwargs={"slug": recipe.slug})
-    recipe_url = request.build_absolute_uri(f"{recipe_path}?servings={selected_servings}")
+    servings_for_url = format(selected_servings, ".15g")
+    recipe_url = request.build_absolute_uri(f"{recipe_path}?servings={servings_for_url}")
     try:
-        pdf_bytes = build_recipe_pdf(recipe, recipe_url, selected_servings)
+        pdf_bytes = build_recipe_pdf(
+            recipe,
+            recipe_url,
+            selected_servings,
+            timezone_name=request.GET.get("timezone"),
+            timezone_offset=request.GET.get("timezone_offset"),
+            locale_name=request.GET.get("locale"),
+        )
     except CompositionError as exc:
         raise Http404(str(exc)) from exc
 

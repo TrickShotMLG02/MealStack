@@ -3,11 +3,15 @@ from __future__ import annotations
 from io import BytesIO
 from math import gcd
 from pathlib import Path
+from datetime import timedelta, timezone as datetime_timezone
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from xml.sax.saxutils import escape
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.utils import timezone
+from django.utils import translation
+from django.utils.formats import date_format
 from django.utils.translation import gettext as _
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -210,7 +214,14 @@ def _section_table(rows, col_widths, background, border_color, extra_styles=None
     return table
 
 
-def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = None) -> bytes:
+def build_recipe_pdf(
+    recipe: Recipe,
+    recipe_url: str,
+    servings: float | None = None,
+    timezone_name: str | None = None,
+    timezone_offset: str | int | None = None,
+    locale_name: str | None = None,
+) -> bytes:
     target_servings = servings if servings is not None else recipe.servings
     composition = compose_recipe(recipe, require_published=True)
     buffer = BytesIO()
@@ -723,6 +734,28 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
                 story.append(note_box)
                 story.append(Spacer(1, 5))
 
+    export_timezone = None
+    if timezone_offset is not None:
+        try:
+            offset_minutes = int(timezone_offset)
+            if -14 * 60 <= offset_minutes <= 14 * 60:
+                export_timezone = datetime_timezone(timedelta(minutes=offset_minutes))
+        except (TypeError, ValueError):
+            export_timezone = None
+    if export_timezone is None and timezone_name:
+        try:
+            export_timezone = ZoneInfo(timezone_name)
+        except (ValueError, ZoneInfoNotFoundError):
+            export_timezone = None
+
+    exported_at = timezone.localtime(timezone.now(), export_timezone)
+    format_language = (locale_name or "").replace("_", "-").split("-", 1)[0].lower()
+    supported_languages = {language for language, _label in settings.LANGUAGES}
+    if format_language not in supported_languages:
+        format_language = translation.get_language()
+    with translation.override(format_language):
+        exported_at_text = date_format(exported_at, "DATETIME_FORMAT")
+
     def add_footer(canvas, doc_obj):
         canvas.saveState()
         canvas.setFillColor(PALETTE["page"])
@@ -736,7 +769,7 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
         canvas.setFillColor(PALETTE["muted"])
         footer_y = 8.6 * mm
         canvas.drawString(doc_obj.leftMargin, footer_y, f"{_('Recipe URL')}: {recipe_url}")
-        exported_text = f"{_('Exported at')}: {timezone.localtime(timezone.now()).strftime('%Y-%m-%d %H:%M')}"
+        exported_text = f"{_('Exported at')}: {exported_at_text}"
         canvas.drawRightString(A4[0] - doc_obj.rightMargin, footer_y, exported_text)
         canvas.setFont("Helvetica-Bold", 8.2)
         canvas.setFillColor(PALETTE["accent"])
