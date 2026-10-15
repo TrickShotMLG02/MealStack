@@ -417,32 +417,30 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
         Paragraph(_format_meta(recipe), styles["RecipeMeta"]),
     ]
 
-    metric_card_width = hero_left_content_width / 4
-
     if tags:
         tag_text = ", ".join(escape(tag.name) for tag in tags)
         intro_flowables.append(_boxed_paragraph(tag_text, styles, "TagLine", hero_left_content_width, PALETTE["accent_soft"], PALETTE["accent"]))
         intro_flowables.append(Spacer(1, 3 * mm))
 
-    metric_row = Table(
+    primary_metric_width = hero_left_content_width / 2
+    time_metric_width = hero_left_content_width / 3
+    primary_metric_row = Table(
         [[
             _metric_card(
                 _("Servings"),
                 _format_fraction_quantity(target_servings),
                 styles,
-                metric_card_width,
+                primary_metric_width,
                 PALETTE["accent_soft"],
                 PALETTE["accent"],
             ),
-            _metric_card(_("Prep"), _duration_display(composition.preparation_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-            _metric_card(_("Cook"), _duration_display(composition.cooking_time), styles, metric_card_width, PALETTE["panel_soft"], PALETTE["line"]),
-            _metric_card(_("Total"), _duration_display(composition.total_time), styles, metric_card_width, PALETTE["accent_warm"], PALETTE["accent"]),
+            _metric_card(_("Total"), _duration_display(composition.total_time), styles, primary_metric_width, PALETTE["accent_warm"], PALETTE["accent"]),
         ]],
-        colWidths=[metric_card_width] * 4,
+        colWidths=[primary_metric_width] * 2,
         rowHeights=[20 * mm],
         hAlign="LEFT",
     )
-    metric_row.setStyle(
+    primary_metric_row.setStyle(
         TableStyle(
             [
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
@@ -453,7 +451,28 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
             ]
         )
     )
-    intro_flowables.append(metric_row)
+    time_metric_row = Table(
+        [[
+            _metric_card(_("Prep"), _duration_display(composition.preparation_time), styles, time_metric_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Cook"), _duration_display(composition.cooking_time), styles, time_metric_width, PALETTE["panel_soft"], PALETTE["line"]),
+            _metric_card(_("Rest"), _duration_display(composition.resting_time), styles, time_metric_width, PALETTE["panel_soft"], PALETTE["line"]),
+        ]],
+        colWidths=[time_metric_width] * 3,
+        rowHeights=[20 * mm],
+        hAlign="LEFT",
+    )
+    time_metric_row.setStyle(
+        TableStyle(
+            [
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
+        )
+    )
+    intro_flowables.extend([primary_metric_row, Spacer(1, 2 * mm), time_metric_row])
 
     if has_hero_image:
         try:
