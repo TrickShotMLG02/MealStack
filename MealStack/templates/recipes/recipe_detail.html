@@ -235,7 +235,7 @@
     <nav class="recipe-section-nav" aria-label="{% trans 'Recipe sections' %}">
         <a href="#ingredients-panel">{% trans "Ingredients" %}</a>
         <a href="#steps-panel">{% trans "Method" %}</a>
-        {% if notes %}<a href="#notes-panel">{% trans "Notes" %}</a>{% endif %}
+        {% if composition.has_notes %}<a href="#notes-panel">{% trans "Notes" %}</a>{% endif %}
         {% if nutrition %}<a href="#nutrition-panel">{% trans "Nutrition" %}</a>{% endif %}
     </nav>
 

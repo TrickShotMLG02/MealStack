@@ -681,7 +681,6 @@ a.recipe-action--primary:focus {
 .recipe-detail--cook-mode .recipe-hero__summary,
 .recipe-detail--cook-mode .recipe-glance,
 .recipe-detail--cook-mode .recipe-summary-panel,
-.recipe-detail--cook-mode #notes-panel,
 .recipe-detail--cook-mode #nutrition-panel,
 .recipe-detail--cook-mode .recipe-section-nav {
     display: none;

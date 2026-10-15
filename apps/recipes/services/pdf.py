@@ -63,10 +63,6 @@ def _recipe_image_path(recipe: Recipe) -> Path | None:
     return None
 
 
-def _recipe_notes(recipe: Recipe):
-    return getattr(recipe, "prefetched_notes", None) or list(recipe.recipenote_set.all())
-
-
 def _format_decimal_quantity(quantity: float) -> str:
     return f"{quantity:.2f}".rstrip("0").rstrip(".")
 
@@ -680,13 +676,17 @@ def build_recipe_pdf(recipe: Recipe, recipe_url: str, servings: float | None = N
                 story.append(step_table)
                 story.append(Spacer(1, 6))
 
-    notes = _recipe_notes(recipe)
-    if notes:
+    if composition.has_notes:
         story.append(Paragraph(_("Notes"), styles["SectionHeading"]))
-        for note in notes:
-            if note.content:
+        for section in composition.sections:
+            for note in section.notes:
+                if not note.content:
+                    continue
                 note_box = Table(
-                    [[Paragraph(escape(note.content).replace("\n", "<br/>"), styles["NoteText"])]],
+                    [[Paragraph(
+                        f"<b>{escape(section.title)}:</b> {escape(note.content).replace(chr(10), '<br/>')}",
+                        styles["NoteText"],
+                    )]],
                     colWidths=[doc.width],
                 )
                 note_box.setStyle(
