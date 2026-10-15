@@ -15,7 +15,6 @@ function initRecipeDetailPage() {
     const storageKey = 'recipe-cook-mode';
     const baseServings = Number(article.dataset.baseServings || servingsInput?.value || 1) || 1;
     const locale = document.documentElement.lang || navigator.language || 'en';
-    const browserLocale = navigator.language || locale;
     const minServings = 0.01;
     const servingsFormatter = new Intl.NumberFormat(locale, {
         maximumFractionDigits: 2,
@@ -219,7 +218,6 @@ function initRecipeDetailPage() {
             pdfUrl.searchParams.set('timezone', timezoneName);
         }
         pdfUrl.searchParams.set('timezone_offset', String(-new Date().getTimezoneOffset()));
-        pdfUrl.searchParams.set('locale', browserLocale);
         pdfLink.href = pdfUrl.toString();
     }
 

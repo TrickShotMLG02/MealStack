@@ -187,7 +187,7 @@ class RecipeCompositionTests(TestCase):
         self.assertContains(response, 'data-per-serving="600.0"')
         self.assertContains(response, 'data-base-quantity="200.0"')
         self.assertContains(response, "href=\"/recipes/tomato-sauce/\"")
-        self.assertContains(response, "recipes/js/recipe_detail.js?v=2")
+        self.assertContains(response, "recipes/js/recipe_detail.js?v=3")
 
     def test_published_parent_hides_if_component_is_unpublished(self):
         sauce = self.make_recipe("Draft sauce", status="draft", quantity=200)

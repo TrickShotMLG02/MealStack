@@ -17,7 +17,7 @@ from apps.recipes.models import (
     RecipeStepGroup,
     Unit,
 )
-from apps.recipes.services.pdf import _format_exported_at, build_recipe_pdf, recipe_pdf_filename
+from apps.recipes.services.pdf import _format_exported_at, _localized_text, build_recipe_pdf, recipe_pdf_filename
 from apps.recipes.services.servings import coerce_servings, scale_nutrition, scale_quantity
 
 
@@ -26,14 +26,14 @@ class RecipeExportPdfTests(TestCase):
         cache.clear()
         super().tearDown()
 
-    def test_export_timestamp_uses_browser_offset_and_language_locale(self):
+    def test_export_timestamp_uses_website_language_and_browser_offset(self):
         exported_at = datetime(2026, 10, 15, 12, 34, tzinfo=datetime_timezone.utc)
 
         result = _format_exported_at(
             exported_at,
             timezone_name="Europe/Paris",
             timezone_offset="120",
-            locale_name="de-DE",
+            language_code="de",
         )
 
         self.assertIn("14:34", result)
@@ -46,10 +46,20 @@ class RecipeExportPdfTests(TestCase):
             exported_at,
             timezone_name="Europe/Paris",
             timezone_offset="not-an-offset",
-            locale_name="de-DE",
+            language_code="de",
         )
 
         self.assertIn("14:34", result)
+
+    def test_pdf_footer_labels_follow_website_language(self):
+        from django.utils.translation import override
+
+        with override("en"):
+            exported_label = _localized_text("Exported at", "de")
+            recipe_url_label = _localized_text("Recipe URL", "de")
+
+        self.assertEqual(exported_label, "Exportiert um")
+        self.assertEqual(recipe_url_label, "Rezept-URL")
 
     def test_export_view_canonicalizes_servings_url_and_passes_localization(self):
         recipe = Recipe.objects.create(title="Cake", servings=4, status="published")
@@ -62,15 +72,15 @@ class RecipeExportPdfTests(TestCase):
                     "servings": "1.0",
                     "timezone": "Europe/Paris",
                     "timezone_offset": "120",
-                    "locale": "de-DE",
                 },
+                HTTP_ACCEPT_LANGUAGE="de",
             )
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(build_pdf.call_args.args[1].endswith("?servings=1"))
         self.assertEqual(build_pdf.call_args.kwargs["timezone_name"], "Europe/Paris")
         self.assertEqual(build_pdf.call_args.kwargs["timezone_offset"], "120")
-        self.assertEqual(build_pdf.call_args.kwargs["locale_name"], "de-DE")
+        self.assertEqual(build_pdf.call_args.kwargs["language_code"], "de")
 
         with patch("apps.recipes.views.recipe_detail_view.build_recipe_pdf", return_value=b"%PDF") as build_pdf:
             self.client.get(export_url, {"servings": "1.25"})

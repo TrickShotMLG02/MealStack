@@ -113,7 +113,7 @@ def recipe_export_pdf(request, slug):
             selected_servings,
             timezone_name=request.GET.get("timezone"),
             timezone_offset=request.GET.get("timezone_offset"),
-            locale_name=request.GET.get("locale"),
+            language_code=request.LANGUAGE_CODE,
         )
     except CompositionError as exc:
         raise Http404(str(exc)) from exc

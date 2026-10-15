@@ -214,12 +214,23 @@ def _section_table(rows, col_widths, background, border_color, extra_styles=None
     return table
 
 
+def _format_language(language_or_locale: str | None) -> str | None:
+    language = (language_or_locale or "").replace("_", "-").split("-", 1)[0].lower()
+    supported_languages = {code for code, _label in settings.LANGUAGES}
+    return language if language in supported_languages else translation.get_language()
+
+
+def _localized_text(message: str, language_code: str | None) -> str:
+    with translation.override(_format_language(language_code)):
+        return _(message)
+
+
 def _format_exported_at(
     value,
     *,
     timezone_name: str | None = None,
     timezone_offset: str | int | None = None,
-    locale_name: str | None = None,
+    language_code: str | None = None,
 ) -> str:
     export_timezone = None
     if timezone_offset is not None:
@@ -236,11 +247,7 @@ def _format_exported_at(
             export_timezone = None
 
     localized_value = timezone.localtime(value, export_timezone)
-    format_language = (locale_name or "").replace("_", "-").split("-", 1)[0].lower()
-    supported_languages = {language for language, _label in settings.LANGUAGES}
-    if format_language not in supported_languages:
-        format_language = translation.get_language()
-    with translation.override(format_language):
+    with translation.override(_format_language(language_code)):
         return date_format(localized_value, "DATETIME_FORMAT")
 
 
@@ -250,7 +257,7 @@ def build_recipe_pdf(
     servings: float | None = None,
     timezone_name: str | None = None,
     timezone_offset: str | int | None = None,
-    locale_name: str | None = None,
+    language_code: str | None = None,
 ) -> bytes:
     target_servings = servings if servings is not None else recipe.servings
     composition = compose_recipe(recipe, require_published=True)
@@ -768,8 +775,10 @@ def build_recipe_pdf(
         timezone.now(),
         timezone_name=timezone_name,
         timezone_offset=timezone_offset,
-        locale_name=locale_name,
+        language_code=language_code,
     )
+    exported_at_label = _localized_text("Exported at", language_code)
+    recipe_url_label = _localized_text("Recipe URL", language_code)
 
     def add_footer(canvas, doc_obj):
         canvas.saveState()
@@ -783,8 +792,8 @@ def build_recipe_pdf(
         canvas.setFont("Helvetica", 8)
         canvas.setFillColor(PALETTE["muted"])
         footer_y = 8.6 * mm
-        canvas.drawString(doc_obj.leftMargin, footer_y, f"{_('Recipe URL')}: {recipe_url}")
-        exported_text = f"{_('Exported at')}: {exported_at_text}"
+        canvas.drawString(doc_obj.leftMargin, footer_y, f"{recipe_url_label}: {recipe_url}")
+        exported_text = f"{exported_at_label}: {exported_at_text}"
         canvas.drawRightString(A4[0] - doc_obj.rightMargin, footer_y, exported_text)
         canvas.setFont("Helvetica-Bold", 8.2)
         canvas.setFillColor(PALETTE["accent"])
