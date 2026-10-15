@@ -11,6 +11,7 @@ from apps.recipes.models import (
     RecipeComponent,
     RecipeIngredient,
     RecipeIngredientGroup,
+    RecipeNote,
     RecipeStep,
     RecipeStepGroup,
 )
@@ -48,6 +49,7 @@ class RecipeSection:
     recipe: Recipe
     ingredient_groups: tuple[ComposedIngredientGroup, ...]
     step_groups: tuple[ComposedStepGroup, ...]
+    notes: tuple[RecipeNote, ...] = ()
     is_component: bool = False
 
 
@@ -106,6 +108,10 @@ class RecipeComposition:
             for group in section.step_groups
         )
 
+    @property
+    def has_notes(self) -> bool:
+        return any(note.content for section in self.sections for note in section.notes)
+
 
 _NUTRITION_FIELDS = (
     "kcal",
@@ -136,6 +142,11 @@ def _recipe_content_queryset():
                 Prefetch("recipestep_set", queryset=RecipeStep.objects.order_by("order"))
             ).order_by("order"),
             to_attr="prefetched_step_groups",
+        ),
+        Prefetch(
+            "recipenote_set",
+            queryset=RecipeNote.objects.order_by("ordering", "id"),
+            to_attr="prefetched_notes",
         ),
         Prefetch(
             "components",
@@ -193,9 +204,8 @@ def compose_recipe(
     servings. The public serving control and PDF exporter can then scale every
     line consistently using ``target / root.servings``.
 
-    Preparation, cooking, and resting time are calculated as parallel tracks:
-    the slowest track among the parent and all components determines each
-    category, then the categories are added for the displayed total.
+    Preparation, cooking, and resting time are accumulated across the parent
+    and every linked component.
     """
     sections: list[RecipeSection] = []
     summary = NutritionSummary()
@@ -241,6 +251,7 @@ def compose_recipe(
                 recipe=current,
                 ingredient_groups=tuple(ingredient_groups),
                 step_groups=tuple(step_groups),
+                notes=tuple(getattr(current, "prefetched_notes", ())),
                 is_component=is_component,
             )
         )
@@ -267,9 +278,9 @@ def compose_recipe(
     visit(recipe, 1.0, 0, recipe.title, False)
 
     nutrition = summary.finalize(recipe.servings) if nutrition_available else None
-    preparation_time = max(preparation_times, default=timedelta())
-    cooking_time = max(cooking_times, default=timedelta())
-    resting_time = max(resting_times, default=timedelta())
+    preparation_time = sum(preparation_times, timedelta())
+    cooking_time = sum(cooking_times, timedelta())
+    resting_time = sum(resting_times, timedelta())
 
     return RecipeComposition(
         recipe=recipe,

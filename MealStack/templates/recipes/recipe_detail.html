@@ -77,15 +77,15 @@
                 </div>
                 <div>
                     <dt>{% trans "Prep" %}</dt>
-                    <dd>{{ recipe.preparation_time|pretty_duration }}</dd>
+                    <dd>{{ composition.preparation_time|pretty_duration }}</dd>
                 </div>
                 <div>
                     <dt>{% trans "Cook" %}</dt>
-                    <dd>{{ recipe.cooking_time|pretty_duration }}</dd>
+                    <dd>{{ composition.cooking_time|pretty_duration }}</dd>
                 </div>
                 <div>
                     <dt>{% trans "Rest" %}</dt>
-                    <dd>{{ recipe.resting_time|pretty_duration }}</dd>
+                    <dd>{{ composition.resting_time|pretty_duration }}</dd>
                 </div>
                 <div>
                     <dt>{% trans "Total" %}</dt>
@@ -285,16 +285,18 @@
                 {% endif %}
             </section>
 
-            {% if notes %}
+            {% if composition.has_notes %}
             <section class="recipe-panel" id="notes-panel" aria-labelledby="notes-title">
                 <div class="section-heading">
                     <h2 id="notes-title">{% trans "Notes" %}</h2>
                 </div>
                 <div class="note-list">
-                    {% for note in notes %}
-                        {% if note.content %}
-                            <p>{{ note.content }}</p>
-                        {% endif %}
+                    {% for section in composition.sections %}
+                        {% for note in section.notes %}
+                            {% if note.content %}
+                                <p><strong>{{ section.title }}:</strong> {{ note.content }}</p>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </div>
             </section>
