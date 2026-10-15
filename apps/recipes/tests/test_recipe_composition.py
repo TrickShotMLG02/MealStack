@@ -14,6 +14,7 @@ from apps.recipes.models import (
     RecipeComponent,
     RecipeIngredient,
     RecipeIngredientGroup,
+    RecipeNote,
     RecipeNutrition,
     RecipeStep,
     RecipeStepGroup,
@@ -127,7 +128,7 @@ class RecipeCompositionTests(TestCase):
         self.assertEqual(after, 2800)
         self.assertTrue(RecipeNutrition.objects.filter(recipe=meal).exists())
 
-    def test_parallel_time_uses_the_slowest_track(self):
+    def test_composed_times_accumulate_parent_and_component_durations(self):
         sauce = self.make_recipe("Sauce", servings=2)
         sauce.preparation_time = timedelta(minutes=20)
         sauce.cooking_time = timedelta(minutes=40)
@@ -138,10 +139,40 @@ class RecipeCompositionTests(TestCase):
 
         composition = compose_recipe(meal, require_published=True)
 
-        self.assertEqual(composition.preparation_time, timedelta(minutes=20))
-        self.assertEqual(composition.cooking_time, timedelta(minutes=40))
-        self.assertEqual(composition.resting_time, timedelta(minutes=2))
-        self.assertEqual(composition.total_time, timedelta(minutes=62))
+        self.assertEqual(composition.preparation_time, timedelta(minutes=25))
+        self.assertEqual(composition.cooking_time, timedelta(minutes=50))
+        self.assertEqual(composition.resting_time, timedelta(minutes=3))
+        self.assertEqual(composition.total_time, timedelta(minutes=78))
+
+    def test_composed_times_include_nested_components(self):
+        child = self.make_recipe("Child")
+        parent = self.make_recipe("Parent")
+        grandparent = self.make_recipe("Grandparent")
+        RecipeComponent.objects.create(parent_recipe=parent, child_recipe=child, servings=1)
+        RecipeComponent.objects.create(parent_recipe=grandparent, child_recipe=parent, servings=1)
+
+        composition = compose_recipe(grandparent)
+
+        self.assertEqual(composition.preparation_time, timedelta(minutes=15))
+        self.assertEqual(composition.cooking_time, timedelta(minutes=30))
+        self.assertEqual(composition.resting_time, timedelta(minutes=6))
+        self.assertEqual(composition.total_time, timedelta(minutes=51))
+
+    def test_composed_notes_are_rendered_with_their_recipe_section(self):
+        child = self.make_recipe("Sauce")
+        parent = self.make_recipe("Meal")
+        RecipeNote.objects.create(recipe=parent, content="Serve immediately.")
+        RecipeNote.objects.create(recipe=child, content="Season to taste.")
+        RecipeComponent.objects.create(parent_recipe=parent, child_recipe=child, servings=1)
+
+        response = self.client.get(reverse("recipes:recipe_detail", kwargs={"slug": parent.slug}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Meal:")
+        self.assertContains(response, "Serve immediately.")
+        self.assertContains(response, "Sauce:")
+        self.assertContains(response, "Season to taste.")
+        self.assertContains(response, 'href="#notes-panel"')
 
     def test_public_detail_renders_all_component_sections_and_aggregate_nutrition(self):
         sauce = self.make_recipe("Tomato sauce", servings=2, quantity=200, step="Simmer the sauce.")
@@ -156,6 +187,7 @@ class RecipeCompositionTests(TestCase):
         self.assertContains(response, 'data-per-serving="600.0"')
         self.assertContains(response, 'data-base-quantity="200.0"')
         self.assertContains(response, "href=\"/recipes/tomato-sauce/\"")
+        self.assertContains(response, "recipes/js/recipe_detail.js?v=2")
 
     def test_published_parent_hides_if_component_is_unpublished(self):
         sauce = self.make_recipe("Draft sauce", status="draft", quantity=200)

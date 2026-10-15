@@ -214,6 +214,36 @@ def _section_table(rows, col_widths, background, border_color, extra_styles=None
     return table
 
 
+def _format_exported_at(
+    value,
+    *,
+    timezone_name: str | None = None,
+    timezone_offset: str | int | None = None,
+    locale_name: str | None = None,
+) -> str:
+    export_timezone = None
+    if timezone_offset is not None:
+        try:
+            offset_minutes = int(timezone_offset)
+            if -14 * 60 <= offset_minutes <= 14 * 60:
+                export_timezone = datetime_timezone(timedelta(minutes=offset_minutes))
+        except (TypeError, ValueError):
+            export_timezone = None
+    if export_timezone is None and timezone_name:
+        try:
+            export_timezone = ZoneInfo(timezone_name)
+        except (ValueError, ZoneInfoNotFoundError):
+            export_timezone = None
+
+    localized_value = timezone.localtime(value, export_timezone)
+    format_language = (locale_name or "").replace("_", "-").split("-", 1)[0].lower()
+    supported_languages = {language for language, _label in settings.LANGUAGES}
+    if format_language not in supported_languages:
+        format_language = translation.get_language()
+    with translation.override(format_language):
+        return date_format(localized_value, "DATETIME_FORMAT")
+
+
 def build_recipe_pdf(
     recipe: Recipe,
     recipe_url: str,
@@ -734,27 +764,12 @@ def build_recipe_pdf(
                 story.append(note_box)
                 story.append(Spacer(1, 5))
 
-    export_timezone = None
-    if timezone_offset is not None:
-        try:
-            offset_minutes = int(timezone_offset)
-            if -14 * 60 <= offset_minutes <= 14 * 60:
-                export_timezone = datetime_timezone(timedelta(minutes=offset_minutes))
-        except (TypeError, ValueError):
-            export_timezone = None
-    if export_timezone is None and timezone_name:
-        try:
-            export_timezone = ZoneInfo(timezone_name)
-        except (ValueError, ZoneInfoNotFoundError):
-            export_timezone = None
-
-    exported_at = timezone.localtime(timezone.now(), export_timezone)
-    format_language = (locale_name or "").replace("_", "-").split("-", 1)[0].lower()
-    supported_languages = {language for language, _label in settings.LANGUAGES}
-    if format_language not in supported_languages:
-        format_language = translation.get_language()
-    with translation.override(format_language):
-        exported_at_text = date_format(exported_at, "DATETIME_FORMAT")
+    exported_at_text = _format_exported_at(
+        timezone.now(),
+        timezone_name=timezone_name,
+        timezone_offset=timezone_offset,
+        locale_name=locale_name,
+    )
 
     def add_footer(canvas, doc_obj):
         canvas.saveState()
