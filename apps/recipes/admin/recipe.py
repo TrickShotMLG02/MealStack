@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.forms import HiddenInput
 from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext_lazy as _
 from nested_admin.nested import NestedModelAdmin, NestedStackedInline, NestedTabularInline
@@ -20,33 +21,46 @@ from apps.recipes.services.nutrition import update_recipe_nutrition
 from apps.recipes.admin.search import FuzzySearchAdminMixin
 
 
-class RecipeIngredientInline(NestedTabularInline):
+class SortableInlineMixin:
+    sortable_field_name = None
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == self.sortable_field_name:
+            kwargs["widget"] = HiddenInput()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+class RecipeIngredientInline(SortableInlineMixin, NestedTabularInline):
     model = RecipeIngredient
     fk_name = 'group'
     extra = 1
     autocomplete_fields = ['ingredient', 'unit']
     fields = ['ingredient', 'quantity', 'unit', 'order']
     ordering = ['order']
+    sortable_field_name = 'order'
 
-class RecipeIngredientGroupInline(NestedStackedInline):
+class RecipeIngredientGroupInline(SortableInlineMixin, NestedStackedInline):
     model = RecipeIngredientGroup
     inlines = [RecipeIngredientInline]
     extra = 1
     fields = ['name', 'order']
     ordering = ['order']
+    sortable_field_name = 'order'
 
-class RecipeStepInline(NestedTabularInline):
+class RecipeStepInline(SortableInlineMixin, NestedTabularInline):
     model = RecipeStep
     extra = 1
     fields = ['order', 'description']
     ordering = ['order']
+    sortable_field_name = 'order'
 
-class RecipeStepGroupInline(NestedStackedInline):
+class RecipeStepGroupInline(SortableInlineMixin, NestedStackedInline):
     model = RecipeStepGroup
     inlines = [RecipeStepInline]
     extra = 1
     fields = ['name', 'order']
     ordering = ['order']
+    sortable_field_name = 'order'
 
 class RecipeNutritionInline(NestedTabularInline):
     model = RecipeNutrition
@@ -61,7 +75,7 @@ class RecipeNutritionInline(NestedTabularInline):
     classes = ("collapse",)
 
 
-class RecipeComponentInline(NestedTabularInline):
+class RecipeComponentInline(SortableInlineMixin, NestedTabularInline):
     model = RecipeComponent
     fk_name = "parent_recipe"
     extra = 1
@@ -69,24 +83,27 @@ class RecipeComponentInline(NestedTabularInline):
     fields = ["child_recipe", "servings", "title_override", "order"]
     ordering = ["order", "id"]
     classes = ("collapse",)
+    sortable_field_name = 'order'
 
 class RecipeTagsInline(NestedTabularInline):
     model = RecipeTag
     extra = 1
     classes = ("collapse",)
 
-class RecipeNotesInline(NestedTabularInline):
+class RecipeNotesInline(SortableInlineMixin, NestedTabularInline):
     model = RecipeNote
     extra = 1
     classes = ("collapse",)
+    sortable_field_name = 'ordering'
 
-class RecipeImageInline(NestedTabularInline):
+class RecipeImageInline(SortableInlineMixin, NestedTabularInline):
     model = RecipeImage
     extra = 0
     readonly_fields = ("preview",)
     classes = ("collapse",)
 
     fields = ("preview", "image", "caption", "is_primary", "ordering")
+    sortable_field_name = 'ordering'
 
     def preview(self, obj):
         if not obj.image:
