@@ -57,6 +57,29 @@ class IngredientImporterTests(TestCase):
         self.assertEqual(ingredient.name, "Sugar")
         self.assertEqual(ingredient.kcal, 0)
 
+    def test_openfoodfacts_reimport_preserves_manual_ingredient_weight(self):
+        ingredient = Ingredient.objects.create(
+            ean="1234567890123",
+            name="Eggs",
+            grams_per_unit=55,
+        )
+        api = Mock()
+        api.product.get.return_value = {
+            "code": "1234567890123",
+            "brands": "Farm",
+            "product_name": "Eggs",
+            "product_name_de": "Eier",
+            "generic_name": "Eggs",
+            "generic_name_de": "Eier",
+            "nutriments": {"energy-kcal": 143},
+        }
+
+        with patch("apps.recipes.importers.ingredients.openfoodfacts.openfoodfacts.API", return_value=api):
+            imported = OpenFoodFactsImporter().import_ingredient()
+
+        self.assertEqual(imported.pk, ingredient.pk)
+        self.assertEqual(imported.grams_per_unit, 55)
+
     def test_openfoodfacts_importer_raises_for_missing_product(self):
         api = Mock()
         api.product.get.return_value = None

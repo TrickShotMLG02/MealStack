@@ -36,6 +36,28 @@ class RecipeNutritionServiceTests(TestCase):
         self.assertEqual(nutrition.per_serving_kcal, 250)
         self.assertEqual(nutrition.per_serving_carbs, 62.5)
 
+    def test_count_nutrition_prefers_ingredient_weight_per_unit(self):
+        recipe = Recipe.objects.create(title="Eggs", servings=1, status="draft")
+        group = RecipeIngredientGroup.objects.create(recipe=recipe, order=0)
+        eggs = Ingredient.objects.create(name="Egg", kcal=200, grams_per_unit=50)
+        pieces = Unit.objects.create(name="pcs", type="count", grams_per_unit=30)
+        RecipeIngredient.objects.create(group=group, ingredient=eggs, quantity=3, unit=pieces)
+
+        nutrition = update_recipe_nutrition(recipe)
+
+        self.assertEqual(nutrition.total_kcal, 300)
+
+    def test_count_nutrition_falls_back_to_unit_weight_per_unit(self):
+        recipe = Recipe.objects.create(title="Eggs", servings=1, status="draft")
+        group = RecipeIngredientGroup.objects.create(recipe=recipe, order=0)
+        eggs = Ingredient.objects.create(name="Egg", kcal=200)
+        pieces = Unit.objects.create(name="pcs", type="count", grams_per_unit=30)
+        RecipeIngredient.objects.create(group=group, ingredient=eggs, quantity=3, unit=pieces)
+
+        nutrition = update_recipe_nutrition(recipe)
+
+        self.assertEqual(nutrition.total_kcal, 180)
+
 
 class RecipeAdminTests(TestCase):
     def test_save_related_refreshes_nutrition_after_inline_save(self):

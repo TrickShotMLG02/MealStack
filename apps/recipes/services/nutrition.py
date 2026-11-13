@@ -25,8 +25,10 @@ def update_recipe_nutrition(recipe: Recipe) -> RecipeNutrition:
         elif unit.type == 'volume' and unit.ml_per_unit and ingredient.density:
             grams = quantity * unit.ml_per_unit * ingredient.density
         elif unit.type == 'count':
-            # If unit counts, assume grams_per_unit or fallback
-            grams = quantity * (unit.grams_per_unit or 0)
+            grams_per_unit = ingredient.grams_per_unit
+            if grams_per_unit is None:
+                grams_per_unit = unit.grams_per_unit
+            grams = quantity * (grams_per_unit or 0)
         else:
             grams = 0  # unknown conversion
 

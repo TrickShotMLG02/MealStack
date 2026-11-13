@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from apps.common.text_formatting import slugify
@@ -21,6 +22,13 @@ class Ingredient(models.Model):
 
     # grams per ml
     density = models.FloatField(null=True, blank=True, verbose_name=_("Density"))
+    grams_per_unit = models.FloatField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0.000001)],
+        verbose_name=_("Grams per unit"),
+        help_text=_("Optional weight of one counted item; overrides the count unit's default for nutrition calculations."),
+    )
 
     # metadata
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))

@@ -5,6 +5,6 @@ from apps.recipes.admin.search import FuzzySearchAdminMixin
 
 @admin.register(Ingredient)
 class IngredientAdmin(FuzzySearchAdminMixin, admin.ModelAdmin):
-    list_display = ['name', 'kcal', 'protein', 'fat', 'saturates', 'carbs', 'sugar', 'salt', 'density']
+    list_display = ['name', 'kcal', 'protein', 'fat', 'saturates', 'carbs', 'sugar', 'salt', 'density', 'grams_per_unit']
     search_fields = ['name', 'generic_name', 'brand', 'ean']
     fuzzy_search_fields = search_fields

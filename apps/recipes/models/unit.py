@@ -32,7 +32,10 @@ class Unit(models.Model):
                 return quantity * (self.ml_per_unit or 1) * ingredient.density
             raise ValueError(f"Cannot convert volume to weight without density for {ingredient}")
         elif self.type == 'count':
-            return quantity * (self.grams_per_unit or 0)
+            grams_per_unit = getattr(ingredient, "grams_per_unit", None)
+            if grams_per_unit is None:
+                grams_per_unit = self.grams_per_unit
+            return quantity * (grams_per_unit or 0)
         raise ValueError(f"Unknown unit type: {self.type}")
 
     def __str__(self):

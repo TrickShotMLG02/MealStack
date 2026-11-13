@@ -87,6 +87,8 @@ class ModelBehaviorTests(TestCase):
         self.assertEqual(gram.to_grams(100), 100)
         self.assertEqual(cup.to_grams(2, flour), 288)
         self.assertEqual(piece.to_grams(3), 150)
+        flour.grams_per_unit = 60
+        self.assertEqual(piece.to_grams(3, flour), 180)
         with self.assertRaises(ValueError):
             cup.to_grams(1)
         with self.assertRaises(ValueError):
